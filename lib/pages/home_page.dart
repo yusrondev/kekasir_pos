@@ -45,17 +45,18 @@ class _HomePageState extends State<HomePage> {
       height: 150,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
           colors: [
             Color(0xff344BBC),
             Color(0xff344BBC),
+            Color(0xff273A99),
             Color(0xff273A99)
           ]
         ),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30)
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20)
         )
       ),
     );
