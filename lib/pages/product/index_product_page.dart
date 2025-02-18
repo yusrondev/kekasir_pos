@@ -2,6 +2,7 @@ import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -90,10 +91,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
   Widget buildProductList(){
     return isLoading ? Column(
       children: [
-        Gap(200),
-        CircularProgressIndicator(color: primaryColor,),
-        Gap(20),
-        Label(text: "Tunggu Sebentar...",)
+        Gap(100),
+        CustomLoader.showCustomLoader(),
       ],
     ) : GridView.builder(
       padding: EdgeInsets.all(0),

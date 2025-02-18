@@ -9,11 +9,13 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:lottie/lottie.dart';
 
 class FormProductPage extends StatefulWidget {
   final Product? product;
@@ -112,6 +114,18 @@ class _FormProductPageState extends State<FormProductPage> {
         return;
       }
 
+      // Tampilkan Lottie loading animation
+      showDialog(
+        context: context,
+        barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+        barrierColor: Colors.white.withValues(alpha: 0.8),
+        builder: (BuildContext context) {
+          return Center(
+            child: CustomLoader.showCustomLoader()
+          );
+        },
+      );
+
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
@@ -125,6 +139,7 @@ class _FormProductPageState extends State<FormProductPage> {
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
+          Navigator.pop(context); 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Jumlah melebihi stok yang tersedia!')));
           return;
         }
@@ -139,6 +154,8 @@ class _FormProductPageState extends State<FormProductPage> {
           quantity.text
         );
       }
+
+      Navigator.pop(context); 
 
       if (success == true) {
         // ignore: use_build_context_synchronously
