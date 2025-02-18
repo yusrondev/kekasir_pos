@@ -104,7 +104,7 @@ class _FormProductPageState extends State<FormProductPage> {
     if (_formKey.currentState!.validate()) {
       bool success;
 
-       String priceValue = _cleanCurrency(priceController.text);
+      String priceValue = _cleanCurrency(priceController.text);
 
       if (widget.product == null) {
         // Jika produk baru, buat produk
@@ -117,6 +117,11 @@ class _FormProductPageState extends State<FormProductPage> {
           quantity.text
         );
       } else {
+        int? parsedQuantity = int.tryParse(quantity.text);
+        if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Jumlah melebihi stok yang tersedia!')));
+          return;
+        }
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
