@@ -186,8 +186,8 @@ class _FormProductPageState extends State<FormProductPage> {
               Column(
                 children: [
                   SizedBox(
-                    width: 160,
-                    height: 160,
+                    width: 170,
+                    height: 170,
                     child: Row(
                       children: [
                         _image == null ? Gap(0) : ClipRRect(
