@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String? apiUrl = dotenv.env['API_URL'];
-  final String? bearerToken = dotenv.env['BEARER_TOKEN'];
   final String? apiToken = dotenv.env['API_TOKEN'];
 
   Future<Map<String, String>> get _headers async {

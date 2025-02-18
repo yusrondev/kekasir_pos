@@ -77,8 +77,11 @@ class PriceField extends StatelessWidget {
   final String? shortDescription;
   final int? maxLength;
   final int? maxLine;
+  final Function(String)? onChanged;
 
-  const PriceField({
+  final NumberFormat _currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+
+  PriceField({
     super.key,
     this.label,
     this.maxLength,
@@ -86,7 +89,14 @@ class PriceField extends StatelessWidget {
     this.controller,
     this.placeholder,
     this.maxLine,
+    this.onChanged,
   });
+
+  String _formatCurrency(String value) {
+    if (value.isEmpty) return '';
+    final number = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    return _currencyFormat.format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +124,10 @@ class PriceField extends StatelessWidget {
         child: Expanded(
           child: TextField(
             keyboardType: TextInputType.number,
-            inputFormatters: [ThousandsFormatter()],
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(14),
+            ], 
             cursorColor: Color(0xffB1B9C3),
             maxLength: maxLength,
             maxLines: maxLine,
@@ -129,6 +142,13 @@ class PriceField extends StatelessWidget {
                 fontSize: 14
                 )
               ),
+              onChanged: (value) {
+                final formatted = _formatCurrency(value);
+                controller!.value = TextEditingValue(
+                  text: formatted,
+                  selection: TextSelection.collapsed(offset: formatted.length),
+                );
+              },
             ),
           )
         ),

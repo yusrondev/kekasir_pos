@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -34,7 +36,7 @@ class _FormProductPageState extends State<FormProductPage> {
     super.initState();
     if (widget.product != null) {
       nameController.text = widget.product!.name;
-      priceController.text = widget.product!.price.toInt().toString();
+      priceController.text = formatRupiah(widget.product!.price);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
     }
@@ -78,15 +80,21 @@ class _FormProductPageState extends State<FormProductPage> {
     }
   }
 
+  String _cleanCurrency(String value) {
+    return value.replaceAll(RegExp(r'[^0-9]'), ''); // Menghapus Rp, titik, dan karakter non-angka lainnya
+  }
+
   Future<void> saveProduct() async {
     if (_formKey.currentState!.validate()) {
       bool success;
+
+       String priceValue = _cleanCurrency(priceController.text);
 
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
           nameController.text,
-          priceController.text,
+          priceValue,
           _image,
           shortDescriptionController.text
         );
@@ -95,7 +103,7 @@ class _FormProductPageState extends State<FormProductPage> {
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
           nameController.text,
-          priceController.text,
+          priceValue,
           _image,
           shortDescriptionController.text
         );

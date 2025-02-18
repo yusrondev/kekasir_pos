@@ -65,6 +65,10 @@ class _AppLayoutState extends State<AppLayout> {
         padding: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20)
+          )
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -80,7 +84,7 @@ class _AppLayoutState extends State<AppLayout> {
                     width: 24,
                     height: 24,
                   ),
-                  const Gap(5),
+                  const Gap(2),
                   Text(
                     item['page_name'],
                     style: TextStyle(
