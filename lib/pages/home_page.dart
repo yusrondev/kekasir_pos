@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildBackground() {
     return Container(
-      height: 140,
+      height: 150,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
           },
           child: Image.asset(
             'assets/images/sample-profile.png',
-            width: 32,
+            width: 25,
           ),
         )
       ],

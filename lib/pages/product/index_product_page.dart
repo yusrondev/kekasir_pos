@@ -20,6 +20,7 @@ class IndexProductPage extends StatefulWidget {
 class _IndexProductPageState extends State<IndexProductPage> {
   ApiService apiService = ApiService();
   List<Product> products = [];
+  bool isLoading = true;
 
   TextEditingController searchField = TextEditingController();
 
@@ -39,6 +40,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
     if (!mounted) return; // Pastikan widget masih ada sebelum setState
     setState(() {
       products = data;
+      isLoading = false;
     });
   }
 
@@ -81,12 +83,12 @@ class _IndexProductPageState extends State<IndexProductPage> {
   }
 
   Widget buildProductList(){
-    return products.isEmpty ? Column(
+    return isLoading ? Column(
       children: [
         Gap(200),
-        Icon(Icons.production_quantity_limits, size: 30,),
-        Gap(10),
-        LabelSemiBold(text: "Belum ada produk di sini...",)
+        CircularProgressIndicator(color: primaryColor,),
+        Gap(20),
+        Label(text: "Tunggu Sebentar...",)
       ],
     ) : GridView.builder(
       padding: EdgeInsets.all(0),
@@ -126,10 +128,19 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          product.image,
-                          fit: BoxFit.fitWidth,
-                        )
+                        child: isLoading ? 
+                          Image.asset(
+                            'assets/images/empty.png', 
+                            width: 155,
+                            height: 155,
+                            fit: BoxFit.fitWidth
+                          )
+                          : Image.network(
+                            product.image,
+                            width: 155,
+                            height: 155,
+                            fit: BoxFit.fitWidth,
+                          )
                       ),
                     ),
                     StockBadge(availableStock: product.availableStock)
