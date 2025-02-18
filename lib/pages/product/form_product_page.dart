@@ -106,6 +106,11 @@ class _FormProductPageState extends State<FormProductPage> {
 
       String priceValue = _cleanCurrency(priceController.text);
 
+      if (nameController.text == "") {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan nama produk sudah terisi!')));
+        return;
+      }
+
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
@@ -162,7 +167,7 @@ class _FormProductPageState extends State<FormProductPage> {
               CustomTextField(
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
-                placeholder: "Misalnya Varian Pedas Banget...",
+                placeholder: "Misalnya Varian Pedas Banget (Opsional)...",
                 maxLine: 4,
               ),
               PriceField(
