@@ -124,53 +124,53 @@ class _FormProductPageState extends State<FormProductPage> {
         body: Form(
           key: _formKey,
           child: ListView(
-          padding: defaultPadding,
-          children: [
-            PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
-            Gap(10),
-            CustomTextField(
-              controller: nameController,
-              label: "Nama",
-              placeholder: "Misalnya Snack...",
-            ),
-            CustomTextField(
-              controller: shortDescriptionController,
-              label: "Deskripsi Singkat",
-              placeholder: "Misalnya Varian Pedas Banget...",
-              maxLine: 3,
-            ),
-            PriceField(
-              controller: priceController,
-              label: "Harga",
-              placeholder: "Misalnya 10.000...",
-            ),
-            LabelSemiBold(text: "Gambar Produk"),
-            Row(
-              children: [
-                TextButton.icon(
-                  icon: Icon(Icons.camera, color: primaryColor,),
-                  label: Text('Kamera', style: TextStyle(color: primaryColor),),
-                  onPressed: () => pickImage(ImageSource.camera),
-                ),
-                TextButton.icon(
-                  icon: Icon(Icons.image, color: primaryColor,),
-                  label: Text('Gallery', style: TextStyle(color: primaryColor),),
-                  onPressed: () => pickImage(ImageSource.gallery),
+            padding: defaultPadding,
+            children: [
+              PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
+              Gap(10),
+              CustomTextField(
+                controller: nameController,
+                label: "Nama",
+                placeholder: "Misalnya Snack...",
+              ),
+              CustomTextField(
+                controller: shortDescriptionController,
+                label: "Deskripsi Singkat",
+                placeholder: "Misalnya Varian Pedas Banget...",
+                maxLine: 3,
+              ),
+              PriceField(
+                controller: priceController,
+                label: "Harga",
+                placeholder: "Misalnya 10.000...",
+              ),
+              LabelSemiBold(text: "Gambar Produk"),
+              Row(
+                children: [
+                  TextButton.icon(
+                    icon: Icon(Icons.camera, color: primaryColor,),
+                    label: Text('Kamera', style: TextStyle(color: primaryColor),),
+                    onPressed: () => pickImage(ImageSource.camera),
+                  ),
+                  TextButton.icon(
+                    icon: Icon(Icons.image, color: primaryColor,),
+                    label: Text('Gallery', style: TextStyle(color: primaryColor),),
+                    onPressed: () => pickImage(ImageSource.gallery),
+                  ),
+                ],
+              ),
+              _image == null ? Text('') : ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(_image!)
+              ),
+              if(urlImage != null) ... [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(urlImage ?? "")
                 ),
               ],
-            ),
-            _image == null ? Text('') : ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.file(_image!)
-            ),
-            if(urlImage != null) ... [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(urlImage ?? "")
-              ),
             ],
-          ],
-                ),
+          ),
         ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
