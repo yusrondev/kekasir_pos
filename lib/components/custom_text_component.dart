@@ -37,17 +37,34 @@ class LabelSemiBold extends StatelessWidget {
 
 class PageTitle extends StatelessWidget {
   final String? text;
-  const PageTitle({super.key, this.text});
+  final bool back;
+  const PageTitle({
+    super.key, 
+    this.text, 
+    this.back = false
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text ?? "",
-      maxLines: 1,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w600
-      ),
+    return Row(
+      children: [
+        if(back == true) ... [
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back_ios, size: 18)
+          ),
+        ],
+        Text(
+          text ?? "",
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kekasir/apis/auth_service.dart';
@@ -6,6 +7,7 @@ import 'package:kekasir/models/product.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
+import 'package:kekasir/utils/colors.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -23,6 +25,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: primaryColor, // Warna status bar untuk halaman ini
+      statusBarIconBrightness: Brightness.light, // Ikon terang
+    ));
+
     return MaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xffEDF1F9),

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -127,7 +126,7 @@ class _FormProductPageState extends State<FormProductPage> {
           child: ListView(
           padding: defaultPadding,
           children: [
-            PageTitle(text: "Tambah Produk"),
+            PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
             Gap(10),
             CustomTextField(
               controller: nameController,
