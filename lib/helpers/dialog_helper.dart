@@ -4,13 +4,14 @@ class DialogHelper {
   static void showDeleteConfirmation({
     required BuildContext context,
     required VoidCallback onConfirm,
+    String? content
   }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin menghapus item ini?"),
+          content: Text("Apakah Anda yakin ingin menghapus item $content?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus

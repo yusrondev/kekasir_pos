@@ -145,7 +145,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     LabelSemiBold(text: formatRupiah(product.price),),
                     InkWell(
                       onTap: () {
-                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id));
+                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
                       },
                       child: Container(
                         padding: EdgeInsets.all(3),
