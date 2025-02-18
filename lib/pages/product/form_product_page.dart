@@ -182,7 +182,7 @@ class _FormProductPageState extends State<FormProductPage> {
             padding: defaultPadding,
             children: [
               PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
-              Gap(10),
+              Gap(20),
               Column(
                 children: [
                   SizedBox(
