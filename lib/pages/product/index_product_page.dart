@@ -52,9 +52,11 @@ class _IndexProductPageState extends State<IndexProductPage> {
   deleteProduct(id) async {
     final delete = await ApiService().deleteProduct(id);
     logger.i(delete);
-    setState(() {
-      fetchProducts(searchField.text);
-    });
+    if (mounted) {
+      setState(() {
+        fetchProducts(searchField.text);
+      });
+    }
   }
 
   @override
