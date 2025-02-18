@@ -51,7 +51,7 @@ class _FormProductPageState extends State<FormProductPage> {
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Sesuaikan Ukuran',
-            toolbarColor: Colors.deepOrange,
+            toolbarColor: primaryColor,
             toolbarWidgetColor: Colors.white,
             aspectRatioPresets: [
               CropAspectRatioPreset.original,
