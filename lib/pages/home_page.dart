@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kekasir/apis/auth_service.dart';
-import 'package:kekasir/pages/auth/login_page.dart';
+import 'package:gap/gap.dart';
+import 'package:kekasir/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,28 +10,120 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AuthService authService = AuthService();
-
-  void logout() async {
-    await AuthService().logout();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: InkWell(
-          onTap: () {
-            logout();
-          },
-          child: Text(
-            "Ini adalah home"
+      body: ListView(
+        padding: EdgeInsets.all(0),
+        children: [
+          Stack(
+            children: [
+              buildBackground(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Column(
+                  children: [
+                    Gap(44),
+                    buildLogo(),
+                    Gap(15),
+                    buildBalance(),
+                  ],
+                )
+              )
+            ],
           ),
+          // Gap(15),
+          // buildTransactionHistory(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBackground() {
+    return Container(
+      height: 140,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color(0xff344BBC),
+            Color(0xff344BBC),
+            Color(0xff273A99)
+          ]
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30)
+        )
+      ),
+    );
+  }
+
+  Widget buildLogo() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Image.asset(
+          'assets/images/kekasir.png',
+          width: 70,
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+          child: Image.asset(
+            'assets/images/sample-profile.png',
+            width: 32,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildBalance() {
+    return Container(
+      padding: EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15)
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Pendapatan Bulan Ini", style: TextStyle(
+                    fontSize: 13
+                  )),
+                  Text("Rp 549.000", style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20
+                  ))
+                ],
+              ),
+              Image.asset('assets/images/money.png',height: 28)
+            ],
+          ),
+          Gap(10),
+          Container(
+            padding: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: Color(0xFFF3F5FB),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Bulan Kemarin', style: TextStyle(color: primaryColor)),
+                Text('Rp 450.000', style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600))
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       if (mounted) { // Pastikan widget masih terpasang
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login gagal!')),
+          SnackBar(content: Text('Gagal Masuk!')),
         );
       }
     }
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
         child: InkWell(
           onTap: () { login(); },
           child: ButtonPrimary(
-            text: "Login",
+            text: "Masuk",
           ),
         ),
       ),
