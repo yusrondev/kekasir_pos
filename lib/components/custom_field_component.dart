@@ -45,22 +45,20 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
         ),
-        child: Expanded(
-          child: TextField(
-            cursorColor: Color(0xffB1B9C3),
-            maxLength: maxLength,
-            maxLines: maxLine,
-            controller: controller,
-            decoration: InputDecoration(
-              counterText: "",
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              hintText: placeholder ?? "Masukkan teks",
-              hintStyle: TextStyle(
-                color: Color(0xffB1B9C3), 
-                fontSize: 14
-                )
-              ),
+        child: TextField(
+          cursorColor: Color(0xffB1B9C3),
+          maxLength: maxLength,
+          maxLines: maxLine,
+          controller: controller,
+          decoration: InputDecoration(
+            counterText: "",
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            hintText: placeholder ?? "Masukkan teks",
+            hintStyle: TextStyle(
+              color: Color(0xffB1B9C3), 
+              fontSize: 14
+              )
             ),
           )
         ),
@@ -111,27 +109,25 @@ class CustomTextFieldNumber extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
         ),
-        child: Expanded(
-          child: TextField(
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(14),
-            ], 
-            cursorColor: Color(0xffB1B9C3),
-            maxLength: maxLength,
-            maxLines: maxLine,
-            controller: controller,
-            decoration: InputDecoration(
-              counterText: "",
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              hintText: placeholder ?? "Masukkan teks",
-              hintStyle: TextStyle(
-                color: Color(0xffB1B9C3), 
-                fontSize: 14
-                )
-              ),
+        child: TextField(
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(14),
+          ], 
+          cursorColor: Color(0xffB1B9C3),
+          maxLength: maxLength,
+          maxLines: maxLine,
+          controller: controller,
+          decoration: InputDecoration(
+            counterText: "",
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            hintText: placeholder ?? "Masukkan teks",
+            hintStyle: TextStyle(
+              color: Color(0xffB1B9C3), 
+              fontSize: 14
+              )
             ),
           )
         ),
@@ -192,35 +188,33 @@ class PriceField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
         ),
-        child: Expanded(
-          child: TextField(
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(8),
-            ], 
-            cursorColor: Color(0xffB1B9C3),
-            maxLength: maxLength,
-            maxLines: maxLine,
-            controller: controller,
-            decoration: InputDecoration(
-              counterText: "",
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              hintText: placeholder ?? "Masukkan teks",
-              hintStyle: TextStyle(
-                color: Color(0xffB1B9C3), 
-                fontSize: 14
-                )
-              ),
-              onChanged: (value) {
-                final formatted = _formatCurrency(value);
-                controller!.value = TextEditingValue(
-                  text: formatted,
-                  selection: TextSelection.collapsed(offset: formatted.length),
-                );
-              },
+        child: TextField(
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(8),
+          ], 
+          cursorColor: Color(0xffB1B9C3),
+          maxLength: maxLength,
+          maxLines: maxLine,
+          controller: controller,
+          decoration: InputDecoration(
+            counterText: "",
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            hintText: placeholder ?? "Masukkan teks",
+            hintStyle: TextStyle(
+              color: Color(0xffB1B9C3), 
+              fontSize: 14
+              )
             ),
+            onChanged: (value) {
+              final formatted = _formatCurrency(value);
+              controller!.value = TextEditingValue(
+                text: formatted,
+                selection: TextSelection.collapsed(offset: formatted.length),
+              );
+            },
           )
         ),
         Gap(10),
@@ -278,30 +272,28 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
         ),
-        child: Expanded(
-          child: TextField(
-            cursorColor: Color(0xffB1B9C3),
-            obscureText: _obscureText,
-            maxLength: widget.maxLength,
-            controller: widget.controller,
-            decoration: InputDecoration(
-              counterText: "",
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 13),
-              hintText: widget.placeholder ?? "Masukkan teks",
-              suffixIcon: IconButton(
-                icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, size: 20, color: Color(0xff747d8c)),
-                onPressed: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
-              ),
-              hintStyle: TextStyle(
-                color: Color(0xffB1B9C3), 
-                fontSize: 14
-                )
-              ),
+        child: TextField(
+          cursorColor: Color(0xffB1B9C3),
+          obscureText: _obscureText,
+          maxLength: widget.maxLength,
+          controller: widget.controller,
+          decoration: InputDecoration(
+            counterText: "",
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+            hintText: widget.placeholder ?? "Masukkan teks",
+            suffixIcon: IconButton(
+              icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, size: 20, color: Color(0xff747d8c)),
+              onPressed: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+            ),
+            hintStyle: TextStyle(
+              color: Color(0xffB1B9C3), 
+              fontSize: 14
+              )
             ),
           )
         ),

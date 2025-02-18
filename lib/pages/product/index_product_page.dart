@@ -9,6 +9,7 @@ import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:logger/logger.dart';
 
 class IndexProductPage extends StatefulWidget {
   const IndexProductPage({super.key});
@@ -21,6 +22,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
   ApiService apiService = ApiService();
   List<Product> products = [];
   bool isLoading = true;
+
+  var logger = Logger();
 
   TextEditingController searchField = TextEditingController();
 
@@ -37,6 +40,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
 
   Future<void> fetchProducts(String text) async {
     final data = await ApiService().fetchProducts(searchField.text);
+    logger.d(data);
     if (!mounted) return; // Pastikan widget masih ada sebelum setState
     setState(() {
       products = data;
@@ -45,7 +49,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
   }
 
   deleteProduct(id) async {
-    await ApiService().deleteProduct(id);
+    final delete = await ApiService().deleteProduct(id);
+    logger.i(delete);
     setState(() {
       fetchProducts(searchField.text);
     });

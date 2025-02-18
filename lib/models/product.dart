@@ -24,4 +24,9 @@ class Product {
       availableStock: json['available_stock'],
     );
   }
+
+  @override
+  String toString() {
+    return 'Product(id: $id, name: $name, price: $price)';
+  }
 }
