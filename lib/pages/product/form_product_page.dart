@@ -8,6 +8,7 @@ import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -242,7 +243,7 @@ class _FormProductPageState extends State<FormProductPage> {
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
         child: InkWell(
           onTap: () {
-            saveProduct();
+            DialogHelper.showCreateConfirmation(context: context, onConfirm: () => saveProduct());
           },
           child: ButtonPrimary(
             text: "Simpan",

@@ -197,7 +197,7 @@ class PriceField extends StatelessWidget {
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(14),
+              LengthLimitingTextInputFormatter(8),
             ], 
             cursorColor: Color(0xffB1B9C3),
             maxLength: maxLength,

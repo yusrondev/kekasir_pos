@@ -1,6 +1,7 @@
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -41,7 +42,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
     });
   }
 
-  Future<void> deleteProduct(id) async {
+  deleteProduct(id) async {
     await ApiService().deleteProduct(id);
     setState(() {
       fetchProducts(searchField.text);
@@ -144,7 +145,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     LabelSemiBold(text: formatRupiah(product.price),),
                     InkWell(
                       onTap: () {
-                        deleteProduct(product.id);
+                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id));
                       },
                       child: Container(
                         padding: EdgeInsets.all(3),

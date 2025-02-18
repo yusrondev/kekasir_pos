@@ -24,16 +24,18 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (success) {
-      Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => AppLayout()),
-      );
+      if (mounted) { // Pastikan widget masih terpasang
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AppLayout()),
+        );
+      }
     } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login gagal!')),
-      );
+      if (mounted) { // Pastikan widget masih terpasang
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login gagal!')),
+        );
+      }
     }
   }
 
