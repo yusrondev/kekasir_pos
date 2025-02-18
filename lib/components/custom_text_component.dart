@@ -35,6 +35,24 @@ class LabelSemiBold extends StatelessWidget {
   }
 }
 
+class LabelSemiBoldMD extends StatelessWidget {
+  final String? text;
+  const LabelSemiBoldMD({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text ?? "",
+      maxLines: 1,
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        overflow: TextOverflow.ellipsis
+      ),
+    );
+  }
+}
+
 class PageTitle extends StatelessWidget {
   final String? text;
   final bool back;

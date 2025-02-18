@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,8 +33,8 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           ),
-          // Gap(15),
-          // buildTransactionHistory(),
+          Gap(15),
+          buildSectionFeatures(),
         ],
       ),
     );
@@ -123,6 +124,79 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget buildSectionFeatures() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround ,
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/stock');
+            },
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/sections/stock.png',
+                    width: 55,
+                  ),
+                ),
+                Gap(5),
+                Text(
+                  "Mutasi Stok", 
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600
+                  )
+                )
+              ],
+            ),
+          ),
+          Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  'assets/sections/transaction.png',
+                  width: 55,
+                ),
+              ),
+              Gap(5),
+              Text(
+                "Mutasi Transaksi", 
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600
+                )
+              )
+            ],
+          ),
+          Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  'assets/sections/report.png',
+                  width: 55,
+                ),
+              ),
+              Gap(5),
+              Text(
+                "Laporan", 
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600
+                )
+              )
+            ],
+          ),
         ],
       ),
     );

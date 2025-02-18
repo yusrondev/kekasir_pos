@@ -8,6 +8,8 @@ import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
+import 'package:kekasir/pages/stock/detail_stock_page.dart';
+import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/utils/colors.dart';
 
 Future<void> main() async {
@@ -53,7 +55,9 @@ class MainApp extends StatelessWidget {
           final product = ModalRoute.of(context)!.settings.arguments as Product;
           return FormProductPage(product: product);
         },
-        '/profile' : (context) => IndexProfilePage()
+        '/profile' : (context) => IndexProfilePage(),
+        '/stock' : (context) => IndexStockPage(),
+        '/stock-detail' : (context) => DetailStockPage(),
       },
     );
   }

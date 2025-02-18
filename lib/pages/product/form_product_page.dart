@@ -15,6 +15,7 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:logger/logger.dart';
 
 class FormProductPage extends StatefulWidget {
   final Product? product;
@@ -32,6 +33,7 @@ class _FormProductPageState extends State<FormProductPage> {
   TextEditingController priceController = TextEditingController();
   TextEditingController shortDescriptionController = TextEditingController();
   TextEditingController quantity = TextEditingController();
+  TextEditingController description = TextEditingController();
 
   File? _image;
   String? urlImage;
@@ -41,6 +43,7 @@ class _FormProductPageState extends State<FormProductPage> {
   bool isEdit = false;
   String? selectedValue;
   int availableStock = 0;
+  bool hasBeenChange = false;
 
   @override
   void initState() {
@@ -93,6 +96,7 @@ class _FormProductPageState extends State<FormProductPage> {
         setState(() {
           urlImage = null;
           _image = File(croppedFile.path);
+          hasBeenChange = true;
         });
       }
     }
@@ -133,7 +137,8 @@ class _FormProductPageState extends State<FormProductPage> {
           _image,
           shortDescriptionController.text,
           "Masuk",
-          quantity.text
+          quantity.text,
+          description.text
         );
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
@@ -150,7 +155,8 @@ class _FormProductPageState extends State<FormProductPage> {
           _image,
           shortDescriptionController.text,
           selectedValue.toString(),
-          quantity.text
+          quantity.text,
+          description.text
         );
       }
 
@@ -168,6 +174,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    Logger().d(urlImage);
     return Scaffold(
         body: Form(
           key: _formKey,
@@ -176,6 +183,49 @@ class _FormProductPageState extends State<FormProductPage> {
             children: [
               PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
               Gap(10),
+              Column(
+                children: [
+                  SizedBox(
+                    width: 160,
+                    height: 160,
+                    child: Row(
+                      children: [
+                        _image == null ? Gap(0) : ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(_image!)
+                        ),
+                        if(urlImage != null) ... [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(urlImage ?? "")
+                          ),
+                        ],
+                        if(hasBeenChange == false && urlImage == null) ... [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset("assets/images/empty.png")
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton.icon(
+                        icon: Icon(Icons.camera, color: primaryColor,),
+                        label: Text('Kamera', style: TextStyle(color: primaryColor),),
+                        onPressed: () => pickImage(ImageSource.camera),
+                      ),
+                      TextButton.icon(
+                        icon: Icon(Icons.image, color: primaryColor,),
+                        label: Text('Gallery', style: TextStyle(color: primaryColor),),
+                        onPressed: () => pickImage(ImageSource.gallery),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               CustomTextField(
                 controller: nameController,
                 label: "Nama",
@@ -192,33 +242,6 @@ class _FormProductPageState extends State<FormProductPage> {
                 label: "Harga",
                 placeholder: "Misalnya 10.000...",
               ),
-              LabelSemiBold(text: "Gambar Produk"),
-              Row(
-                children: [
-                  TextButton.icon(
-                    icon: Icon(Icons.camera, color: primaryColor,),
-                    label: Text('Kamera', style: TextStyle(color: primaryColor),),
-                    onPressed: () => pickImage(ImageSource.camera),
-                  ),
-                  TextButton.icon(
-                    icon: Icon(Icons.image, color: primaryColor,),
-                    label: Text('Gallery', style: TextStyle(color: primaryColor),),
-                    onPressed: () => pickImage(ImageSource.gallery),
-                  ),
-                ],
-              ),
-
-              _image == null ? Gap(0) : ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(_image!)
-              ),
-              if(urlImage != null) ... [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(urlImage ?? "")
-                ),
-              ],
-
               // adjust stock
               Line(),
               LabelSemiBold(text: labelStock),
@@ -262,6 +285,12 @@ class _FormProductPageState extends State<FormProductPage> {
                 label: "Jumlah",
                 shortDescription: "Jumlah penyesuaian stok",
                 placeholder: "Misalnya 20...",
+              ),
+              CustomTextField(
+                maxLine: 3,
+                controller: description,
+                label: "Deskripsi",
+                placeholder: "Misalnya karena barang rusak (Opsional)",
               )
             ],
           ),

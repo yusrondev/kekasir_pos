@@ -2,6 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/utils/colors.dart';
 
+class LineSM extends StatelessWidget {
+  const LineSM({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Gap(7),
+        Container(
+          height: 1,
+          width: double.infinity,
+          color: Color(0xffdfe4ea),
+        ),
+        Gap(7),
+      ],
+    );
+  }
+}
+
 class Line extends StatelessWidget {
   const Line({super.key});
 
