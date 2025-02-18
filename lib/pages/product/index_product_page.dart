@@ -20,14 +20,21 @@ class _IndexProductPageState extends State<IndexProductPage> {
   ApiService apiService = ApiService();
   List<Product> products = [];
 
+  TextEditingController searchField = TextEditingController();
+
   @override
   void initState(){
     super.initState();
-    fetchProducts();
+    fetchProducts(searchField.text);
+
+    searchField.addListener(() {
+      // Jika teks berubah, panggil fetchProducts
+      fetchProducts(searchField.text);
+    });
   }
 
-  Future<void> fetchProducts() async {
-    final data = await ApiService().fetchProducts();
+  Future<void> fetchProducts(String text) async {
+    final data = await ApiService().fetchProducts(searchField.text);
     if (!mounted) return; // Pastikan widget masih ada sebelum setState
     setState(() {
       products = data;
@@ -37,7 +44,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
   Future<void> deleteProduct(id) async {
     await ApiService().deleteProduct(id);
     setState(() {
-      fetchProducts();
+      fetchProducts(searchField.text);
     });
   }
 
@@ -55,7 +62,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                 onTap: () {
                   Navigator.pushNamed(context, '/create-product').then((value){
                     if (value == true) {
-                      fetchProducts();
+                      fetchProducts(searchField.text);
                     }
                   });
                 },
@@ -64,7 +71,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
             ],
           ),
           Gap(10),
-          SearchTextField(),
+          SearchTextField(controller: searchField, placeholder: "Cari nama produk...",),
           Gap(14),
           buildProductList()
         ],
@@ -98,7 +105,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
             Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
               if (value == true) {
                 setState(() {
-                  fetchProducts();
+                  fetchProducts(searchField.text);
                 });
               }
             });

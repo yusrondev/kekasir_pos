@@ -70,6 +70,77 @@ class CustomTextField extends StatelessWidget {
   }
 }
 
+class CustomTextFieldNumber extends StatelessWidget {
+  final TextEditingController? controller;
+  final String? label;
+  final String? placeholder;
+  final String? shortDescription;
+  final int? maxLength;
+  final int? maxLine;
+
+  const CustomTextFieldNumber({
+    super.key,
+    this.label,
+    this.maxLength,
+    this.shortDescription,
+    this.controller,
+    this.placeholder,
+    this.maxLine,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if(label != null) ... [
+          Text(label ?? "", style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14
+          )),
+        ],
+        if(shortDescription != null) ... [
+          Text(shortDescription ?? "", style: TextStyle(
+            fontSize: 12,
+            color: Color(0xff747d8c)
+          ),),
+        ],
+        Gap(5),
+        Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white
+        ),
+        child: Expanded(
+          child: TextField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(14),
+            ], 
+            cursorColor: Color(0xffB1B9C3),
+            maxLength: maxLength,
+            maxLines: maxLine,
+            controller: controller,
+            decoration: InputDecoration(
+              counterText: "",
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              hintText: placeholder ?? "Masukkan teks",
+              hintStyle: TextStyle(
+                color: Color(0xffB1B9C3), 
+                fontSize: 14
+                )
+              ),
+            ),
+          )
+        ),
+        Gap(10),
+      ],
+    );
+  }
+}
+
 class PriceField extends StatelessWidget {
   final TextEditingController? controller;
   final String? label;

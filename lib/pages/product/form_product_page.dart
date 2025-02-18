@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/models/product.dart';
@@ -23,12 +25,20 @@ class FormProductPage extends StatefulWidget {
 
 class _FormProductPageState extends State<FormProductPage> {
   final _formKey = GlobalKey<FormState>();
+
+  // controllers field
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController shortDescriptionController = TextEditingController();
+  TextEditingController quantity = TextEditingController();
+
   File? _image;
   String? urlImage;
   ApiService apiService = ApiService();
+  String labelStock = "Sesuaikan Stok";
+  bool isEdit = false;
+  String? selectedValue;
+  int availableStock = 0;
 
   @override
   void initState() {
@@ -38,6 +48,11 @@ class _FormProductPageState extends State<FormProductPage> {
       priceController.text = formatRupiah(widget.product!.price);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
+      labelStock = "Butuh Penyesuaian Stok?";
+      setState(() {
+        isEdit = true;
+        availableStock = widget.product!.availableStock;
+      });
     }
   }
   
@@ -95,7 +110,9 @@ class _FormProductPageState extends State<FormProductPage> {
           nameController.text,
           priceValue,
           _image,
-          shortDescriptionController.text
+          shortDescriptionController.text,
+          "Masuk",
+          quantity.text
         );
       } else {
         // Jika produk sudah ada, update produk
@@ -104,7 +121,9 @@ class _FormProductPageState extends State<FormProductPage> {
           nameController.text,
           priceValue,
           _image,
-          shortDescriptionController.text
+          shortDescriptionController.text,
+          selectedValue.toString(),
+          quantity.text
         );
       }
 
@@ -159,7 +178,8 @@ class _FormProductPageState extends State<FormProductPage> {
                   ),
                 ],
               ),
-              _image == null ? Text('') : ClipRRect(
+
+              _image == null ? Gap(0) : ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.file(_image!)
               ),
@@ -169,6 +189,51 @@ class _FormProductPageState extends State<FormProductPage> {
                   child: Image.network(urlImage ?? "")
                 ),
               ],
+
+              // adjust stock
+              Line(),
+              LabelSemiBold(text: labelStock),
+              ShortDesc(text: "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya", maxline: 2,),
+              
+              if(isEdit == true) ... [
+                Gap(10),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: availableStock > 5 ? bgSuccess : bgDanger,
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Tersisa $availableStock untuk produk ini",
+                      style: TextStyle(
+                        color: availableStock > 5 ? successColor : dangerColor,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                  ),
+                ),
+                Gap(10),
+                CustomDropdownField(
+                  shortDescription: "Sesuaikan untuk tipe stok masuk atau keluar",
+                  label: "Tipe",
+                  hint: "Pilih salah satu",
+                  items: ["Masuk", "Keluar"],
+                  selectedValue: selectedValue,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedValue = newValue;
+                    });
+                  },
+                ),
+              ],
+              isEdit == false ? Gap(10) : Gap(0),
+              CustomTextFieldNumber(
+                controller: quantity,
+                label: "Jumlah",
+                shortDescription: "Jumlah penyesuaian stok",
+                placeholder: "Misalnya 20...",
+              )
             ],
           ),
         ),

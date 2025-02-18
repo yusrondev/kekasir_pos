@@ -89,13 +89,18 @@ class ProductName extends StatelessWidget {
 
 class ShortDesc extends StatelessWidget {
   final String? text;
-  const ShortDesc({super.key, this.text});
+  final int maxline;
+  const ShortDesc({
+    super.key, 
+    this.text,
+    this.maxline = 1
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? "",
-      maxLines: 1,
+      maxLines: maxline,
       style: TextStyle(
         fontSize: 13,
         color: Color(0xff747d8c),

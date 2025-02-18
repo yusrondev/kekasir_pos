@@ -24,8 +24,8 @@ class ApiService {
     return prefs.getString('access_token');
   }
 
-  Future<List<Product>> fetchProducts() async {
-    final response = await http.get(Uri.parse('$apiUrl/products'), headers: await _headers);
+  Future<List<Product>> fetchProducts(String keyword) async {
+    final response = await http.get(Uri.parse('$apiUrl/products?keyword=$keyword'), headers: await _headers);
 
     if (response.statusCode == 200) {
       List data = json.decode(response.body)['products'];
@@ -34,12 +34,14 @@ class ApiService {
     return [];
   }
 
-  Future<bool> _sendProductRequest(String url, {String? name, String? price, String? shortDescription, File? imageFile}) async {
+  Future<bool> _sendProductRequest(String url, {String? name, String? price, String? shortDescription, File? imageFile, String? type, String? quantity}) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll(await _headers);
     request.fields['name'] = name!;
     request.fields['price'] = price!;
     request.fields['short_description'] = shortDescription!;
+    request.fields['type'] = type!;
+    request.fields['quantity'] = quantity!;
 
     if (imageFile != null) {
       request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
@@ -49,12 +51,12 @@ class ApiService {
     return response.statusCode == 200;
   }
 
-  Future<bool> createProduct(String name, String price, File? imageFile, String shortDescription) async {
-    return _sendProductRequest('$apiUrl/product', name: name, price: price, shortDescription: shortDescription, imageFile: imageFile);
+  Future<bool> createProduct(String name, String price, File? imageFile, String shortDescription, String? type, String? quantity) async {
+    return _sendProductRequest('$apiUrl/product', name: name, price: price, shortDescription: shortDescription, imageFile: imageFile, type: type, quantity: quantity);
   }
 
-  Future<bool> updateProduct(int id, String name, String price, File? imageFile, String shortDescription) async {
-    return _sendProductRequest('$apiUrl/product/$id', name: name, price: price, shortDescription: shortDescription, imageFile: imageFile);
+  Future<bool> updateProduct(int id, String name, String price, File? imageFile, String shortDescription, String? type, String? quantity) async {
+    return _sendProductRequest('$apiUrl/product/$id', name: name, price: price, shortDescription: shortDescription, imageFile: imageFile, type: type, quantity: quantity);
   }
 
   Future<bool> deleteProduct(int id) async {
