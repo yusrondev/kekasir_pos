@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,6 +35,7 @@ class _FormProductPageState extends State<FormProductPage> {
   String? urlImage;
   ApiService apiService = ApiService();
   String labelStock = "Sesuaikan Stok";
+  String descStock= "Tentukan jumlah stok pertama untuk produk ini";
   bool isEdit = false;
   String? selectedValue;
   int availableStock = 0;
@@ -48,10 +48,11 @@ class _FormProductPageState extends State<FormProductPage> {
       priceController.text = formatRupiah(widget.product!.price);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
-      labelStock = "Butuh Penyesuaian Stok?";
       setState(() {
         isEdit = true;
         availableStock = widget.product!.availableStock;
+        labelStock = "Butuh Penyesuaian Stok?";
+        descStock = "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya";
       });
     }
   }
@@ -156,7 +157,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
                 placeholder: "Misalnya Varian Pedas Banget...",
-                maxLine: 3,
+                maxLine: 4,
               ),
               PriceField(
                 controller: priceController,
@@ -193,7 +194,7 @@ class _FormProductPageState extends State<FormProductPage> {
               // adjust stock
               Line(),
               LabelSemiBold(text: labelStock),
-              ShortDesc(text: "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya", maxline: 2,),
+              ShortDesc(text: descStock, maxline: 2,),
               
               if(isEdit == true) ... [
                 Gap(10),
@@ -205,7 +206,7 @@ class _FormProductPageState extends State<FormProductPage> {
                   ),
                   child: Center(
                     child: Text(
-                      "Tersisa $availableStock untuk produk ini",
+                      "Tersisa $availableStock untuk produk ini ${availableStock < 5 ? '(Hampir Habis)' : ''}",
                       style: TextStyle(
                         color: availableStock > 5 ? successColor : dangerColor,
                         fontWeight: FontWeight.w600
