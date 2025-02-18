@@ -82,6 +82,7 @@ class _FormProductPageState extends State<FormProductPage> {
             ],
           ),
           WebUiSettings(
+            // ignore: use_build_context_synchronously
             context: context,
           ),
         ],
