@@ -24,8 +24,8 @@ class ApiService {
     return prefs.getString('access_token');
   }
 
-  Future<List<Product>> fetchProducts(String keyword) async {
-    final response = await http.get(Uri.parse('$apiUrl/products?keyword=$keyword'), headers: await _headers);
+  Future<List<Product>> fetchProducts(String keyword, [String? sort]) async {
+    final response = await http.get(Uri.parse('$apiUrl/products?keyword=$keyword&sort_qty=$sort'), headers: await _headers);
 
     if (response.statusCode == 200) {
       List data = json.decode(response.body)['products'];

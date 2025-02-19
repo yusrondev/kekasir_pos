@@ -41,13 +41,15 @@ class _DetailStockPageState extends State<DetailStockPage> {
 
   Future<void> fetchMutation(int productId) async {
     final data = await ApiServiceStock().fetchMutation(productId);
-    setState(() {
-      stocks = data.stockList;
-      totalStockIn = data.totalStockIn;
-      totalStockOut = data.totalStockOut;
-      isLoading = false;
-      availableStock = (totalStockIn! - totalStockOut!) as int?;
-    });
+    if (mounted) {
+      setState(() {
+        stocks = data.stockList;
+        totalStockIn = data.totalStockIn;
+        totalStockOut = data.totalStockOut;
+        isLoading = false;
+        availableStock = (totalStockIn! - totalStockOut!) as int?;
+      }); 
+    }
   }
 
   @override

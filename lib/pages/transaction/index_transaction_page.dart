@@ -37,14 +37,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   void initState() {
     super.initState();
     if (mounted) {
-      fetchProducts(keyword.text);
+      fetchProducts(keyword.text, 'true');
       fetchCart();
     }
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 500), () {
-        fetchProducts(keyword.text);
+        fetchProducts(keyword.text, 'true');
         fetchCart();
       });
     });
@@ -57,8 +57,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.dispose();
   }
 
-  Future<void> fetchProducts(String keyword) async {
-    final data = await ApiService().fetchProducts(keyword);
+  Future<void> fetchProducts(String keyword, String sort) async {
+    print(sort);
+    final data = await ApiService().fetchProducts(keyword, sort);
     if (mounted) {  
       setState(() {
         products = data;
@@ -160,7 +161,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          await fetchProducts(keyword.text);
+          await fetchProducts(keyword.text, 'true');
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -175,7 +176,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   onTap: () {
                     DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){});
                   },
-                  child: Icon(Icons.production_quantity_limits, size: 25, color: dangerColor,),
+                  child: Image.asset(
+                    'assets/icons/empty-cart.png',
+                    width: 30,
+                  ),
                 )
               ],
             ),
@@ -262,57 +266,66 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               // Bagian Quantity (Plus Minus)
               Column(
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: lightColor,
-                        radius: 15,
-                        child: IconButton(
-                          iconSize: 15,
-                          highlightColor: lightColor,
-                          icon: Icon(Icons.remove, color: primaryColor),
-                          onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                        child: TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          controller: TextEditingController(text: quantities[index].toString()),
-                          decoration: InputDecoration(
-                            counterText: "",
-                            border: InputBorder.none,
-                            // contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                            hintStyle: TextStyle(
-                            color: Color(0xffB1B9C3), 
-                            fontSize: 16,
-                            )
+                  Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Color(0xffF2F4F8),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: IconButton(
+                            iconSize: 15,
+                            highlightColor: Colors.white,
+                            icon: Icon(Icons.remove, color: Colors.black),
+                            onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              int? val = int.tryParse(value);
-                              if (val == null || val < 0) {
-                                quantities[index] = 0; // Minimal 0
-                              } else {
-                                quantities[index] = val;
-                              }
-                            });
-                          },
                         ),
-                      ),
-                      CircleAvatar(
-                        backgroundColor: lightColor,
-                        radius: 15,
-                        child: IconButton(
-                          iconSize: 15,
-                          icon: Icon(Icons.add, color: primaryColor),
-                          onPressed: () => _increment(index),
+                        SizedBox(
+                          width: 40,
+                          height: 20,
+                          child: TextField(
+                            readOnly: true,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            controller: TextEditingController(text: quantities[index].toString()),
+                            decoration: InputDecoration(
+                              counterText: "",
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(vertical: 11),
+                              hintStyle: TextStyle(
+                              color: Color(0xffB1B9C3), 
+                              fontSize: 16,
+                              )
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                int? val = int.tryParse(value);
+                                if (val == null || val < 0) {
+                                  quantities[index] = 0; // Minimal 0
+                                } else {
+                                  quantities[index] = val;
+                                }
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: IconButton(
+                            iconSize: 15,
+                            icon: Icon(Icons.add, color: Colors.black),
+                            onPressed: () => _increment(index),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  Gap(5),
                   LabelSemiBold(text: formatRupiah(product.price * quantities[index])),
                 ],
               ),
@@ -330,7 +343,15 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         child: Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: primaryColor,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xff344BBC),
+                Color(0xff344BBC),
+                Color(0xff273A99)
+              ]
+            ),
             borderRadius: BorderRadius.circular(10)
           ),
           child: Row(
@@ -360,7 +381,13 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/checkout');
+                  Navigator.pushNamed(context, '/checkout').then((value){
+                    if (value == true) {
+                      setState(() {
+                        fetchProducts(keyword.text, 'true');
+                      });
+                    }
+                  });
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

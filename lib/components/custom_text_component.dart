@@ -20,7 +20,8 @@ class Label extends StatelessWidget {
 
 class LabelSemiBold extends StatelessWidget {
   final String? text;
-  const LabelSemiBold({super.key, this.text});
+  final bool primary;
+  const LabelSemiBold({super.key, this.text, this.primary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class LabelSemiBold extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        overflow: TextOverflow.ellipsis
+        overflow: TextOverflow.ellipsis,
+        color: primary == true ? primaryColor : Colors.black
       ),
     );
   }
@@ -38,7 +40,8 @@ class LabelSemiBold extends StatelessWidget {
 
 class LabelSemiBoldMD extends StatelessWidget {
   final String? text;
-  const LabelSemiBoldMD({super.key, this.text});
+  final bool primary;
+  const LabelSemiBoldMD({super.key, this.text, this.primary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,8 @@ class LabelSemiBoldMD extends StatelessWidget {
       style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w600,
-        overflow: TextOverflow.ellipsis
+        overflow: TextOverflow.ellipsis,
+        color: primary == true ? primaryColor : Colors.black
       ),
     );
   }
@@ -70,9 +74,22 @@ class PageTitle extends StatelessWidget {
         if(back == true) ... [
           InkWell(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             },
-            child: Icon(Icons.arrow_back_ios, size: 18)
+            child: Container(
+              margin: EdgeInsets.only(right: 15),
+              width: 30,
+              height: 30,
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(100)
+              ),
+              child: Container(
+                margin: EdgeInsets.only(left: 5),
+                child: Icon(Icons.arrow_back_ios, size: 15)
+              ),
+            )
           ),
         ],
         Text(
@@ -121,8 +138,8 @@ class ShortDesc extends StatelessWidget {
       text ?? "",
       maxLines: maxline,
       style: TextStyle(
-        fontSize: 13,
-        color: Color(0xff747d8c),
+        fontSize: 12,
+        color: Color(0xff898F9F),
         overflow: TextOverflow.ellipsis
       ),
     );

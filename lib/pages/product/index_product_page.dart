@@ -98,7 +98,14 @@ class _IndexProductPageState extends State<IndexProductPage> {
                       }
                     });
                   },
-                  child: Icon(Icons.add_box_rounded, color: primaryColor,size: 30),
+                  child: Container(
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:BorderRadius.circular(100) 
+                    ),
+                    child: Icon(Icons.add, color: Colors.black,size: 24)
+                  ),
                 )
               ],
             ),
@@ -127,7 +134,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        mainAxisExtent: 248
+        mainAxisExtent: 185
       ), 
       itemBuilder: (context, index){
         final product = products[index];
@@ -154,7 +161,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                 Center(
                   child: SizedBox(
                     width: 160,
-                    height: 160,
+                    height: 100,
                     child: Stack(
                       children: [
                         Center(
@@ -187,7 +194,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    LabelSemiBold(text: formatRupiah(product.price),),
+                    LabelSemiBold(text: formatRupiah(product.price), primary: true,),
                     InkWell(
                       onTap: () {
                         DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
@@ -195,13 +202,13 @@ class _IndexProductPageState extends State<IndexProductPage> {
                       child: Container(
                         padding: EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                          color: dangerColor,
-                          borderRadius: BorderRadius.circular(5)
+                          color: Color(0xffF2F4F8),
+                          borderRadius: BorderRadius.circular(20)
                         ),
                         child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 15,
+                          Icons.close_rounded,
+                          color: Colors.black,
+                          size: 17,
                         ),
                       ),
                     )
