@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:kekasir/models/cart_summary.dart';
+import 'package:logger/web.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,12 +39,16 @@ class ApiServiceCart {
     }
   }
   
-  Future<String> totalPrice() async {
+  Future<CartSummary> fetchCartSummary() async {
     final response = await http.get(Uri.parse('$apiUrl/cart/total-price'), headers: await _headers);
+
     if (response.statusCode == 200) {
-      final data = json.decode(response.body)['total_price'];
-      return data;
+      Logger().d(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
+      return CartSummary.fromJson(data);
+    } else {
+      return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
     }
-    return "0";
   }
+
 }

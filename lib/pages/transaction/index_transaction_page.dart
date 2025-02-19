@@ -10,7 +10,6 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/logger.dart';
 
 class IndexTransactionPage extends StatefulWidget {
   const IndexTransactionPage({super.key});
@@ -26,6 +25,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   List<Product> products = [];
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
   String grandTotal = "Rp 0";
+  int totalItem = 0;
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
@@ -57,13 +57,13 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   Future<void> totalPrice() async {
     await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
 
-    final totalPrice = await ApiServiceCart().totalPrice();
+    final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
 
     if (mounted) {
       setState(() {
-        grandTotal = totalPrice;
+        grandTotal = fetchCartSummary.totalPrice;
+        totalItem = fetchCartSummary.totalQuantity;
       });
-      Logger().d('Total Price: $totalPrice');
     }
   }
 
@@ -257,54 +257,58 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   Widget buildGrandtotal() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(10)
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Total Harga",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12
+    if (grandTotal != "Rp 0") {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Total : $totalItem item",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14
+                    ),
                   ),
-                ),
-                Text(
-                  '$grandTotal',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18
+                  Text(
+                    grandTotal,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
+                ],
               ),
-              child: Text("Checkout", style: TextStyle(
-                fontSize: 12,
-                color: primaryColor,
-                fontWeight: FontWeight.w600
-              ),),
-            )
-          ],
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text("Checkout", style: TextStyle(
+                  fontSize: 12,
+                  color: primaryColor,
+                  fontWeight: FontWeight.w600
+                ),),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      ); 
+    }else{
+      return SizedBox.shrink();
+    }
   }
 }
