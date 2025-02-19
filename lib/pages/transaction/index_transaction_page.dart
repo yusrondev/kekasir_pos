@@ -174,7 +174,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   },
                 ),
               ),
-              Gap(5),
+              Gap(10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
