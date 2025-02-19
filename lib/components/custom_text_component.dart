@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kekasir/utils/colors.dart';
 
 class Label extends StatelessWidget {
   final String? text;
@@ -123,6 +124,60 @@ class ShortDesc extends StatelessWidget {
         fontSize: 13,
         color: Color(0xff747d8c),
         overflow: TextOverflow.ellipsis
+      ),
+    );
+  }
+}
+
+class PriceTag extends StatelessWidget {
+  final String? text;
+  const PriceTag({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: BoxDecoration(
+        color: bgSuccess,
+        borderRadius: BorderRadius.circular(5)
+      ),
+      child: Text(
+        text ?? "",
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+          color: successColor
+        ),
+      ),
+    );
+  }
+}
+
+class StockTag extends StatelessWidget {
+  final String? text;
+  const StockTag({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: BoxDecoration(
+        color: lightColor,
+        borderRadius: BorderRadius.circular(5)
+      ),
+      child: Text(
+        text ?? "",
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+          color: primaryColor
+        ),
       ),
     );
   }

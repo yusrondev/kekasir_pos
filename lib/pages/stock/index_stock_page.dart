@@ -104,7 +104,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
             margin: EdgeInsets.only(bottom: 10),
             padding: EdgeInsets.all(7),
             decoration: BoxDecoration(
-              border: Border.all(color: secondaryColor),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10)
             ),
             child: Row(

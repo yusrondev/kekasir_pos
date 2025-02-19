@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/pages/home_page.dart';
 import 'package:kekasir/pages/product/index_product_page.dart';
+import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
 
 class AppLayout extends StatefulWidget {
@@ -25,9 +26,7 @@ class _AppLayoutState extends State<AppLayout> {
       "icon": "assets/icons/ic_transaction_inactive.png",
       "icon_active": "assets/icons/ic_transaction_active.png",
       "page_name": "Transaksi",
-      "fragment": Center(
-        child: Text("Ini Halaman Transaksi"),
-      )
+      "fragment": IndexTransactionPage()
     },
     {
       "icon": "assets/icons/ic_product_inactive.png",

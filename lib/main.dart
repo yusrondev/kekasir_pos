@@ -10,6 +10,7 @@ import 'package:kekasir/pages/product/form_product_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
 import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
+import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
 
 Future<void> main() async {
@@ -58,6 +59,7 @@ class MainApp extends StatelessWidget {
         '/profile' : (context) => IndexProfilePage(),
         '/stock' : (context) => IndexStockPage(),
         '/stock-detail' : (context) => DetailStockPage(),
+        '/transaction' : (context) => IndexTransactionPage()
       },
     );
   }
