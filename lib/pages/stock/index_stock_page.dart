@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
@@ -22,18 +24,28 @@ class _IndexStockPageState extends State<IndexStockPage> {
   TextEditingController keyword = TextEditingController();
   bool isLoading = true;
 
+  Timer? _debounce;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     if (mounted) {
       fetchProducts(keyword.text);
+    }
 
-      keyword.addListener(() {
-        // Jika teks berubah, panggil fetchProducts
+    keyword.addListener(() {
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(Duration(milliseconds: 500), () {
         fetchProducts(keyword.text);
       });
+    });
+  }
 
-    }
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    keyword.dispose();
+    super.dispose();
   }
 
   Future<void> fetchProducts(String keyword) async {
@@ -102,7 +114,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.black.withValues(alpha: 0.5)
+                            color: Colors.black.withValues(alpha: 0.3)
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

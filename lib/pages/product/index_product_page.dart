@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -28,15 +30,28 @@ class _IndexProductPageState extends State<IndexProductPage> {
 
   TextEditingController searchField = TextEditingController();
 
+  Timer? _debounce;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    fetchProducts(searchField.text);
+    if (mounted) {
+      fetchProducts(searchField.text);
+    }
 
     searchField.addListener(() {
-      // Jika teks berubah, panggil fetchProducts
-      fetchProducts(searchField.text);
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(Duration(milliseconds: 500), () {
+        fetchProducts(searchField.text);
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchField.dispose();
+    super.dispose();
   }
 
   Future<void> fetchProducts(String text) async {

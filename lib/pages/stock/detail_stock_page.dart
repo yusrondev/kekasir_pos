@@ -21,6 +21,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
   List<Stock> stocks = [];
   int? productId;
   bool isLoading = true;
+  int? totalStockIn = 0;
+  int? totalStockOut = 0;
 
   @override
   void initState() {
@@ -40,7 +42,9 @@ class _DetailStockPageState extends State<DetailStockPage> {
   Future<void> fetchMutation(int productId) async {
     final data = await ApiServiceStock().fetchMutation(productId);
     setState(() {
-      stocks = data;
+      stocks = data.stockList;
+      totalStockIn = data.totalStockIn;
+      totalStockOut = data.totalStockOut;
       isLoading = false;
     });
   }
@@ -75,13 +79,13 @@ class _DetailStockPageState extends State<DetailStockPage> {
             ),
             child: Column(
               children: [
-                Text("Stok Masuk", style: TextStyle(
+                Text("Total Stok Masuk", style: TextStyle(
                     color: successColor,
                     fontWeight: FontWeight.w600,
-                    fontSize: 15
+                    fontSize: 13
                   )
                 ),
-                Text("68", style: TextStyle(
+                Text("$totalStockIn", style: TextStyle(
                     color: successColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 25
@@ -102,13 +106,13 @@ class _DetailStockPageState extends State<DetailStockPage> {
             ),
             child: Column(
               children: [
-                Text("Stok Masuk", style: TextStyle(
+                Text("Total Stok Keluar", style: TextStyle(
                     color: dangerColor,
                     fontWeight: FontWeight.w600,
-                    fontSize: 15
+                    fontSize: 13
                   )
                 ),
-                Text("68", style: TextStyle(
+                Text("$totalStockOut", style: TextStyle(
                     color: dangerColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 25

@@ -29,3 +29,28 @@ class Stock {
     return 'id : $id, productId : $productId, userId : $userId, quantity : $quantity, description : $description, type : $type, created_at : $createdAt';
   }
 }
+
+class StockData {
+  final List<Stock> stockList;
+  final int totalStockIn;
+  final int totalStockOut;
+
+  StockData({
+    required this.stockList,
+    required this.totalStockIn,
+    required this.totalStockOut,
+  });
+
+  factory StockData.fromJson(Map<String, dynamic> json) {
+    return StockData(
+      stockList: (json['stock'] as List).map((data) => Stock.fromJson(data)).toList(),
+      totalStockIn: json['total_stock']['in'],
+      totalStockOut: json['total_stock']['out'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Total Stock In: $totalStockIn, Total Stock Out: $totalStockOut, Stock List: $stockList';
+  }
+}
