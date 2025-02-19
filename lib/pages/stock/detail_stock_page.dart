@@ -21,8 +21,9 @@ class _DetailStockPageState extends State<DetailStockPage> {
   List<Stock> stocks = [];
   int? productId;
   bool isLoading = true;
-  int? totalStockIn = 0;
-  int? totalStockOut = 0;
+  num? totalStockIn = 0;
+  num? totalStockOut = 0;
+  int? availableStock = 0;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
       totalStockIn = data.totalStockIn;
       totalStockOut = data.totalStockOut;
       isLoading = false;
+      availableStock = (totalStockIn! - totalStockOut!) as int?;
     });
   }
 
@@ -121,6 +123,33 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Text("$totalStockOut", style: TextStyle(
                     color: dangerColor,
                     fontWeight: FontWeight.w600,
+                    fontSize: 25
+                  )
+                ),
+              ],
+            ),
+          ),
+        ),
+        Gap(10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryColor,
+              border: Border.all(color: primaryColor),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Column(
+              children: [
+                Text("Tersisa", style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 13
+                  )
+                ),
+                Text("$availableStock", style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                     fontSize: 25
                   )
                 ),

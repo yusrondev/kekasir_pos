@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:kekasir/utils/colors.dart';
 
 // TextField biasa
 class CustomTextField extends StatelessWidget {
@@ -46,7 +47,7 @@ class CustomTextField extends StatelessWidget {
           color: Colors.white
         ),
         child: TextField(
-          cursorColor: Color(0xffB1B9C3),
+          cursorColor: primaryColor,
           maxLength: maxLength,
           maxLines: maxLine,
           controller: controller,
@@ -110,12 +111,12 @@ class CustomTextFieldNumber extends StatelessWidget {
           color: Colors.white
         ),
         child: TextField(
+          cursorColor: primaryColor,
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(14),
           ], 
-          cursorColor: Color(0xffB1B9C3),
           maxLength: maxLength,
           maxLines: maxLine,
           controller: controller,
@@ -189,12 +190,12 @@ class PriceField extends StatelessWidget {
           color: Colors.white
         ),
         child: TextField(
+          cursorColor: primaryColor,
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(8),
           ], 
-          cursorColor: Color(0xffB1B9C3),
           maxLength: maxLength,
           maxLines: maxLine,
           controller: controller,
@@ -273,7 +274,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           color: Colors.white
         ),
         child: TextField(
-          cursorColor: Color(0xffB1B9C3),
+          cursorColor: primaryColor,
           obscureText: _obscureText,
           maxLength: widget.maxLength,
           controller: widget.controller,
@@ -322,7 +323,7 @@ class SearchTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(10)
       ),
       child: TextField(
-        cursorColor: Color(0xffB1B9C3),
+        cursorColor: primaryColor,
         controller: controller,
         style: TextStyle(
           fontSize: 14

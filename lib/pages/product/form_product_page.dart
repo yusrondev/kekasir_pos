@@ -287,7 +287,7 @@ class _FormProductPageState extends State<FormProductPage> {
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           decoration: BoxDecoration(
-                            color: successColor,
+                            color: availableStock > 5 ? successColor : dangerColor,
                             borderRadius: BorderRadius.circular(5)
                           ),
                           child: Text("Detail mutasi ›" , style: TextStyle(
