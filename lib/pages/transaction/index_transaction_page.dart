@@ -6,6 +6,7 @@ import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -23,6 +24,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
   List<Product> products = [];
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
+  int grandTotal = 0;
+
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
 
@@ -53,9 +56,19 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     if (mounted) {  
       setState(() {
         products = data;
-        quantities = List.generate(products.length, (index) => 0); // Default jumlah 0
+        quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
       });
+      _calculateGrandTotal();
     }
+  }
+
+  void _calculateGrandTotal() {
+    setState(() {
+      grandTotal = 0;
+      for (int i = 0; i < products.length; i++) {
+        grandTotal += (products[i].price * quantities[i]).toInt();
+      }
+    });
   }
 
   void _updateCart(int index, int quantity) async {
@@ -75,6 +88,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       }
     });
     _updateCart(index, quantities[index]);
+    _calculateGrandTotal();
   }
 
   void _decrement(int index) {
@@ -84,6 +98,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       }
     });
     _updateCart(index, quantities[index]);
+    _calculateGrandTotal();
   }
 
   @override
@@ -106,10 +121,19 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           ],
         ),
       ),
+      bottomNavigationBar: buildGrandtotal(),
     );
   }
 
   Widget buildProductList() {
+    if (products.isEmpty) {
+      return Column(
+        children: [
+          Gap(100),
+          CustomLoader.showCustomLoader(),
+        ],
+      );
+    }
     return ListView.builder(
       padding: EdgeInsets.all(0),
       physics: NeverScrollableScrollPhysics(),
@@ -202,6 +226,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                 quantities[index] = val;
                               }
                             });
+                            _calculateGrandTotal();
                           },
                         ),
                       ),
@@ -223,6 +248,58 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget buildGrandtotal() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: primaryColor,
+          borderRadius: BorderRadius.circular(10)
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Total Harga",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12
+                  ),
+                ),
+                Text(
+                  formatRupiah(grandTotal.toDouble()),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Text("Checkout", style: TextStyle(
+                fontSize: 12,
+                color: primaryColor,
+                fontWeight: FontWeight.w600
+              ),),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
