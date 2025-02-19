@@ -38,10 +38,12 @@ class _IndexStockPageState extends State<IndexStockPage> {
 
   Future<void> fetchProducts(String keyword) async {
     final data = await ApiService().fetchProducts(keyword);
-    setState(() {
-      products = data;
-      isLoading = false;
-    });
+    if(mounted){
+      setState(() {
+        products = data;
+        isLoading = false;
+      });
+    }
   }
 
   @override
