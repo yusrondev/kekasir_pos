@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
+import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
@@ -18,6 +19,8 @@ class IndexTransactionPage extends StatefulWidget {
 
 class _IndexTransactionPageState extends State<IndexTransactionPage> {
   ApiService apiService = ApiService();
+  ApiServiceCart apiServiceCart = ApiServiceCart();
+
   List<Product> products = [];
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
   TextEditingController keyword = TextEditingController();
@@ -55,12 +58,23 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     }
   }
 
+  void _updateCart(int index, int quantity) async {
+    try {
+      await ApiServiceCart().updateCart(products[index].id, quantity);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
   void _increment(int index) {
     setState(() {
       if (quantities[index] < products[index].availableStock) {
         quantities[index]++;
       }
     });
+    _updateCart(index, quantities[index]);
   }
 
   void _decrement(int index) {
@@ -69,6 +83,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         quantities[index]--;
       }
     });
+    _updateCart(index, quantities[index]);
   }
 
   @override
