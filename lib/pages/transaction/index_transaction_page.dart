@@ -54,6 +54,16 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.dispose();
   }
 
+  Future<void> fetchProducts(String keyword) async {
+    final data = await ApiService().fetchProducts(keyword);
+    if (mounted) {  
+      setState(() {
+        products = data;
+        quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
+      });
+    }
+  }
+
   Future<void> totalPrice() async {
     await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
 
@@ -67,16 +77,6 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     }
   }
 
-  Future<void> fetchProducts(String keyword) async {
-    final data = await ApiService().fetchProducts(keyword);
-    if (mounted) {  
-      setState(() {
-        products = data;
-        quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
-      });
-    }
-  }
-
   void _updateCart(int index, int quantity) async {
     try {
       await ApiServiceCart().updateCart(products[index].id, quantity);
@@ -86,15 +86,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       );
     }
   }
-
+  
   void _increment(int index) {
     setState(() {
       if (quantities[index] < products[index].availableStock) {
         quantities[index]++;
       }
     });
-    _updateCart(index, quantities[index]);
-    totalPrice();
+    _debounceUpdateCart(index);
   }
 
   void _decrement(int index) {
@@ -103,8 +102,18 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         quantities[index]--;
       }
     });
-    _updateCart(index, quantities[index]);
-    totalPrice();
+    _debounceUpdateCart(index);
+  }
+
+  void _debounceUpdateCart(int index) {
+    // Batalkan debounce sebelumnya jika ada
+    _debounce?.cancel();
+
+    // Buat debounce baru dengan delay 500ms
+    _debounce = Timer(Duration(milliseconds: 500), () {
+      _updateCart(index, quantities[index]); // Update ke backend setelah delay
+      totalPrice(); // Hitung ulang total harga setelah update berhasil
+    });
   }
 
   @override
