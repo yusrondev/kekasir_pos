@@ -54,9 +54,71 @@ class _DetailStockPageState extends State<DetailStockPage> {
         children: [
           PageTitle(text: "Detail Mutasi", back: true),
           Gap(15),
+          buildCounting(),
+          Gap(15),
           buildListDetailMutation(),
         ],
       ),
+    );
+  }
+
+  Widget buildCounting(){
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: bgSuccess,
+              border: Border.all(color: successColor),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Column(
+              children: [
+                Text("Stok Masuk", style: TextStyle(
+                    color: successColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15
+                  )
+                ),
+                Text("68", style: TextStyle(
+                    color: successColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25
+                  )
+                ),
+              ],
+            ),
+          ),
+        ),
+        Gap(10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: bgDanger,
+              border: Border.all(color: dangerColor),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Column(
+              children: [
+                Text("Stok Masuk", style: TextStyle(
+                    color: dangerColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15
+                  )
+                ),
+                Text("68", style: TextStyle(
+                    color: dangerColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25
+                  )
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 

@@ -44,6 +44,7 @@ class _FormProductPageState extends State<FormProductPage> {
   String? selectedValue;
   int availableStock = 0;
   bool hasBeenChange = false;
+  int productId = 0;
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _FormProductPageState extends State<FormProductPage> {
       urlImage = widget.product!.image;
       setState(() {
         isEdit = true;
+        productId = widget.product!.id;
         availableStock = widget.product!.availableStock;
         labelStock = "Butuh Penyesuaian Stok?";
         descStock = "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya";
@@ -255,14 +257,32 @@ class _FormProductPageState extends State<FormProductPage> {
                     color: availableStock > 5 ? bgSuccess : bgDanger,
                     borderRadius: BorderRadius.circular(5)
                   ),
-                  child: Center(
-                    child: Text(
-                      "Tersisa $availableStock untuk produk ini ${availableStock < 5 ? '(Hampir Habis)' : ''}",
-                      style: TextStyle(
-                        color: availableStock > 5 ? successColor : dangerColor,
-                        fontWeight: FontWeight.w600
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Tersisa $availableStock untuk produk ini ${availableStock < 5 ? '(Hampir Habis)' : ''}",
+                        style: TextStyle(
+                          color: availableStock > 5 ? successColor : dangerColor,
+                          fontWeight: FontWeight.w600
+                        ),
                       ),
-                    ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/stock-detail', arguments: productId);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: successColor,
+                            borderRadius: BorderRadius.circular(5)
+                          ),
+                          child: Text("Detail mutasi ›" , style: TextStyle(
+                            color: Colors.white
+                          )),
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Gap(10),
