@@ -77,30 +77,37 @@ class _IndexProductPageState extends State<IndexProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: defaultPadding,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              PageTitle(text: "Data Produk"),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/create-product').then((value){
-                    if (value == true) {
-                      fetchProducts(searchField.text);
-                    }
-                  });
-                },
-                child: Icon(Icons.add_box_rounded, color: primaryColor,size: 30),
-              )
-            ],
-          ),
-          Gap(10),
-          SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
-          Gap(14),
-          buildProductList()
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          fetchProducts(searchField.text);
+        },
+        color: primaryColor,
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: defaultPadding,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                PageTitle(text: "Data Produk"),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/create-product').then((value){
+                      if (value == true) {
+                        fetchProducts(searchField.text);
+                      }
+                    });
+                  },
+                  child: Icon(Icons.add_box_rounded, color: primaryColor,size: 30),
+                )
+              ],
+            ),
+            Gap(10),
+            SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
+            Gap(14),
+            buildProductList()
+          ],
+        ),
       )
     );
   }
@@ -149,19 +156,20 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     Center(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: isLoading ? 
-                          Image.asset(
-                            'assets/images/empty.png', 
-                            width: 155,
-                            height: 155,
-                            fit: BoxFit.fitWidth
-                          )
-                          : Image.network(
-                            product.image,
-                            width: 155,
-                            height: 155,
-                            fit: BoxFit.fitWidth,
-                          )
+                        child: Image.network(
+                          product.image,
+                          width: 155,
+                          height: 155,
+                          fit: BoxFit.fitWidth,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/empty.png', 
+                              width: 155,
+                              height: 155,
+                              fit: BoxFit.fitWidth
+                            );
+                          },
+                        )
                       ),
                     ),
                     StockBadge(availableStock: product.availableStock)

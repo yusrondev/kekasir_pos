@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,28 +13,37 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.all(0),
-        children: [
-          Stack(
-            children: [
-              buildBackground(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: Column(
-                  children: [
-                    Gap(44),
-                    buildLogo(),
-                    Gap(15),
-                    buildBalance(),
-                  ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            
+          });
+        },
+        color: primaryColor,
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: EdgeInsets.all(0),
+          children: [
+            Stack(
+              children: [
+                buildBackground(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 14),
+                  child: Column(
+                    children: [
+                      Gap(44),
+                      buildLogo(),
+                      Gap(15),
+                      buildBalance(),
+                    ],
+                  )
                 )
-              )
-            ],
-          ),
-          Gap(15),
-          buildSectionFeatures(),
-        ],
+              ],
+            ),
+            Gap(15),
+            buildSectionFeatures(),
+          ],
+        ),
       ),
     );
   }

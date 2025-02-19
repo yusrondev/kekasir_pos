@@ -199,7 +199,20 @@ class _FormProductPageState extends State<FormProductPage> {
                         if(urlImage != null) ... [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.network(urlImage ?? "")
+                            child: Image.network(
+                              urlImage ?? "",
+                              width: 155,
+                              height: 155,
+                              fit: BoxFit.fitWidth,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/empty.png', 
+                                  width: 155,
+                                  height: 155,
+                                  fit: BoxFit.fitWidth
+                                );
+                              },
+                            )
                           ),
                         ],
                         if(hasBeenChange == false && urlImage == null) ... [

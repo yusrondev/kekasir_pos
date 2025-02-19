@@ -51,17 +51,23 @@ class _DetailStockPageState extends State<DetailStockPage> {
 
   @override
   Widget build(BuildContext context) {
-    Logger().i(stocks);
     return Scaffold(
-      body: ListView(
-        padding: defaultPadding,
-        children: [
-          PageTitle(text: "Detail Mutasi", back: true),
-          Gap(15),
-          buildCounting(),
-          Gap(15),
-          buildListDetailMutation(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          fetchMutation(productId!);
+        },
+        color: primaryColor,
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: defaultPadding,
+          children: [
+            PageTitle(text: "Detail Mutasi", back: true),
+            Gap(15),
+            buildCounting(),
+            Gap(15),
+            buildListDetailMutation(),
+          ],
+        ),
       ),
     );
   }
