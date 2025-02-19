@@ -140,7 +140,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
             ),
             child: Column(
               children: [
-                Text("Tersisa", style: TextStyle(
+                Text("Total Tersisa", style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                     fontSize: 13

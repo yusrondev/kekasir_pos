@@ -6,6 +6,7 @@ import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -26,6 +27,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
   String grandTotal = "Rp 0";
   int totalItem = 0;
+  bool isLoadCart = false;
+  BuildContext? _dialogContext;
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
@@ -35,14 +38,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.initState();
     if (mounted) {
       fetchProducts(keyword.text);
-      totalPrice();
+      fetchCart();
     }
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 500), () {
         fetchProducts(keyword.text);
-        totalPrice();
+        fetchCart();
       });
     });
   }
@@ -64,8 +67,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     }
   }
 
-  Future<void> totalPrice() async {
-    await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
+  Future<void> fetchCart() async {
 
     final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
 
@@ -73,13 +75,17 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       setState(() {
         grandTotal = fetchCartSummary.totalPrice;
         totalItem = fetchCartSummary.totalQuantity;
+        isLoadCart = false;
+        closeLoadingDialog();
       });
     }
   }
 
   void _updateCart(int index, int quantity) async {
+    // Tampilkan Lottie loading animation
     try {
       await ApiServiceCart().updateCart(products[index].id, quantity);
+      fetchCart();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
@@ -88,8 +94,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
   
   void _increment(int index) {
+    showLoadingDialog(context);
     setState(() {
       if (quantities[index] < products[index].availableStock) {
+        isLoadCart = true;
         quantities[index]++;
       }
     });
@@ -97,8 +105,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   void _decrement(int index) {
+    showLoadingDialog(context);
     setState(() {
       if (quantities[index] != 0) {
+        isLoadCart = true;
         quantities[index]--;
       }
     });
@@ -109,11 +119,40 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     // Batalkan debounce sebelumnya jika ada
     _debounce?.cancel();
 
-    // Buat debounce baru dengan delay 500ms
-    _debounce = Timer(Duration(milliseconds: 500), () {
+    // Buat debounce baru dengan delay 300ms
+    _debounce = Timer(Duration(milliseconds: 300), () {
       _updateCart(index, quantities[index]); // Update ke backend setelah delay
-      totalPrice(); // Hitung ulang total harga setelah update berhasil
     });
+  }
+
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.white.withOpacity(0.8),
+      builder: (BuildContext dialogContext) {
+        return Align(
+          alignment: Alignment.center,
+          child: Material( // Tambahkan Material agar terlihat jelas
+            color: Colors.transparent,
+            child: SizedBox(
+              width: 150,
+              height: 150,
+              child: CustomLoader.showCustomLoader(),
+            ),
+          ),
+        );
+      },
+    );
+
+    _dialogContext = context; // Simpan context
+  }
+
+  void closeLoadingDialog() {
+    if (_dialogContext != null) {
+      Navigator.pop(_dialogContext!);
+      _dialogContext = null; // Reset setelah ditutup
+    }
   }
 
   @override
@@ -128,10 +167,22 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         child: ListView(
           padding: defaultPadding,
           children: [
-            PageTitle(text: "Tambah Transaksi"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                PageTitle(text: "Tambah Transaksi"),
+                InkWell(
+                  onTap: () {
+                    DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){});
+                  },
+                  child: Icon(Icons.production_quantity_limits, size: 25, color: dangerColor,),
+                )
+              ],
+            ),
             Gap(10),
             SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
             Gap(10),
+            // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
             buildProductList(),
           ],
         ),
@@ -158,47 +209,53 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         final product = products[index];
 
         return Container(
+          padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
           margin: EdgeInsets.only(bottom: 10),
-          padding: EdgeInsets.all(7),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  product.image,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.fitWidth,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/images/empty.png', 
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.fitWidth,
-                    );
-                  },
+              Align(
+                alignment: Alignment.center,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    product.image,
+                    width: 65,
+                    height: 65,
+                    fit: BoxFit.fitWidth,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/empty.png', 
+                        width: 65,
+                        height: 65,
+                        fit: BoxFit.fitWidth,
+                      );
+                    },
+                  ),
                 ),
               ),
               Gap(10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LabelSemiBoldMD(text: product.name),
-                    ShortDesc(text: product.shortDescription, maxline: 2),
-                    Row(
-                      children: [
-                        PriceTag(text: formatRupiah(product.price)),
-                        Gap(5),
-                        StockTag(text: 'Stok : ${product.availableStock.toString()}'),
-                      ],
-                    ),
-                    Gap(5),
-                  ],
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSemiBoldMD(text: product.name),
+                      ShortDesc(text: product.shortDescription, maxline: 2),
+                      Row(
+                        children: [
+                          PriceTag(text: formatRupiah(product.price)),
+                          Gap(5),
+                          StockTag(text: 'Stok : ${product.availableStock.toString()}'),
+                        ],
+                      ),
+                      Gap(5),
+                    ],
+                  ),
                 ),
               ),
               Gap(5),
@@ -209,24 +266,25 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     children: [
                       CircleAvatar(
                         backgroundColor: lightColor,
-                        radius: 20,
+                        radius: 15,
                         child: IconButton(
                           iconSize: 15,
                           highlightColor: lightColor,
                           icon: Icon(Icons.remove, color: primaryColor),
-                          onPressed: () => _decrement(index),
+                          onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
                         ),
                       ),
                       SizedBox(
-                        width: 50,
+                        width: 40,
                         child: TextField(
+                          readOnly: true,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
                           controller: TextEditingController(text: quantities[index].toString()),
                           decoration: InputDecoration(
                             counterText: "",
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            // contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             hintStyle: TextStyle(
                             color: Color(0xffB1B9C3), 
                             fontSize: 16,
@@ -246,7 +304,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       ),
                       CircleAvatar(
                         backgroundColor: lightColor,
-                        radius: 20,
+                        radius: 15,
                         child: IconButton(
                           iconSize: 15,
                           icon: Icon(Icons.add, color: primaryColor),
@@ -300,17 +358,22 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   ),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/checkout');
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Text("Checkout", style: TextStyle(
+                    fontSize: 12,
+                    color: primaryColor,
+                    fontWeight: FontWeight.w600
+                  ),),
                 ),
-                child: Text("Checkout", style: TextStyle(
-                  fontSize: 12,
-                  color: primaryColor,
-                  fontWeight: FontWeight.w600
-                ),),
               )
             ],
           ),

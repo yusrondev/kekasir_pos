@@ -151,31 +151,36 @@ class _IndexProductPageState extends State<IndexProductPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Gap(10),
-                Stack(
-                  children: [
-                    Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          product.image,
-                          width: 155,
-                          height: 155,
-                          fit: BoxFit.fitWidth,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              'assets/images/empty.png', 
-                              width: 155,
-                              height: 155,
-                              fit: BoxFit.fitWidth
-                            );
-                          },
-                        )
-                      ),
+                Center(
+                  child: SizedBox(
+                    width: 160,
+                    height: 160,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              product.image,
+                              width: 160,
+                              height: 160,
+                              fit: BoxFit.fitWidth,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/empty.png', 
+                                  width: 155,
+                                  height: 155,
+                                  fit: BoxFit.fitWidth
+                                );
+                              },
+                            )
+                          ),
+                        ),
+                        StockBadge(availableStock: product.availableStock)
+                      ],
                     ),
-                    StockBadge(availableStock: product.availableStock)
-                  ],
+                  ),
                 ),
-                Gap(8),
                 ProductName(text: product.name),
                 ShortDesc(text: product.shortDescription),
                 Gap(5),

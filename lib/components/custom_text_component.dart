@@ -46,7 +46,7 @@ class LabelSemiBoldMD extends StatelessWidget {
       text ?? "",
       maxLines: 1,
       style: TextStyle(
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: FontWeight.w600,
         overflow: TextOverflow.ellipsis
       ),
