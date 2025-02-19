@@ -75,8 +75,8 @@ class _HomePageState extends State<HomePage> {
             Navigator.pushNamed(context, '/profile');
           },
           child: Image.asset(
-            'assets/images/sample-profile.png',
-            width: 25,
+            'assets/icons/menu.png',
+            width: 23,
           ),
         )
       ],
