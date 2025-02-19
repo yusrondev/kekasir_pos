@@ -10,6 +10,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/logger.dart';
 
 class IndexTransactionPage extends StatefulWidget {
   const IndexTransactionPage({super.key});
@@ -24,7 +25,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
   List<Product> products = [];
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
-  int grandTotal = 0;
+  String grandTotal = "Rp 0";
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
@@ -34,12 +35,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.initState();
     if (mounted) {
       fetchProducts(keyword.text);
+      totalPrice();
     }
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 500), () {
         fetchProducts(keyword.text);
+        totalPrice();
       });
     });
   }
@@ -51,6 +54,19 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.dispose();
   }
 
+  Future<void> totalPrice() async {
+    await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
+
+    final totalPrice = await ApiServiceCart().totalPrice();
+
+    if (mounted) {
+      setState(() {
+        grandTotal = totalPrice;
+      });
+      Logger().d('Total Price: $totalPrice');
+    }
+  }
+
   Future<void> fetchProducts(String keyword) async {
     final data = await ApiService().fetchProducts(keyword);
     if (mounted) {  
@@ -58,17 +74,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         products = data;
         quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
       });
-      _calculateGrandTotal();
     }
-  }
-
-  void _calculateGrandTotal() {
-    setState(() {
-      grandTotal = 0;
-      for (int i = 0; i < products.length; i++) {
-        grandTotal += (products[i].price * quantities[i]).toInt();
-      }
-    });
   }
 
   void _updateCart(int index, int quantity) async {
@@ -88,7 +94,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       }
     });
     _updateCart(index, quantities[index]);
-    _calculateGrandTotal();
+    totalPrice();
   }
 
   void _decrement(int index) {
@@ -98,7 +104,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       }
     });
     _updateCart(index, quantities[index]);
-    _calculateGrandTotal();
+    totalPrice();
   }
 
   @override
@@ -226,7 +232,6 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                 quantities[index] = val;
                               }
                             });
-                            _calculateGrandTotal();
                           },
                         ),
                       ),
@@ -276,7 +281,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   ),
                 ),
                 Text(
-                  formatRupiah(grandTotal.toDouble()),
+                  '$grandTotal',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

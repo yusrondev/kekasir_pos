@@ -7,7 +7,6 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/stock.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/logger.dart';
 
 class DetailStockPage extends StatefulWidget {
   const DetailStockPage({super.key});
