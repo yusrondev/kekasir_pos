@@ -51,4 +51,15 @@ class ApiServiceCart {
     }
   }
 
+  Future<void> clearCart() async {
+    var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/cart/clear'));
+    request.headers.addAll(await _headers);
+
+    var response = await request.send();
+
+    if (response.statusCode != 200) {
+      throw Exception('Gagal memperbarui keranjang');
+    }
+  }
+
 }

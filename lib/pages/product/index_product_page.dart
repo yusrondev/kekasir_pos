@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -134,7 +135,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        mainAxisExtent: 185
+        mainAxisExtent: 190
       ), 
       itemBuilder: (context, index){
         final product = products[index];

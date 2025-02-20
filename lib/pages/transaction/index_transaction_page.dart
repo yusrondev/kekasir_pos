@@ -156,6 +156,20 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     }
   }
 
+  void clearCart() async {
+    showLoadingDialog(context);
+    try {
+      await ApiServiceCart().clearCart();
+      fetchCart();
+      fetchProducts(keyword.text, 'true');
+      closeLoadingDialog();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,10 +188,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 PageTitle(text: "Tambah Transaksi"),
                 InkWell(
                   onTap: () {
-                    DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){});
+                    if (grandTotal != "Rp 0") {
+                      DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
+                        clearCart();
+                      });
+                    }
                   },
                   child: Image.asset(
-                    'assets/icons/empty-cart.png',
+                    grandTotal != "Rp 0" ? 'assets/icons/empty-cart-active.png' : 'assets/icons/empty-cart.png',
                     width: 30,
                   ),
                 )

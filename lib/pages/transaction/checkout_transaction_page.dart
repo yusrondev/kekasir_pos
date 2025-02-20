@@ -108,7 +108,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
   Widget buildListCart() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(left: 10, top: 10, right: 10),
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: ligthSky,
@@ -132,7 +132,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                 padding: EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: secondaryColor.withValues(alpha: 0.3), width: 1),
+                  border: Border.all(color: secondaryColor.withValues(alpha: 0.4), width: 1),
                   borderRadius: BorderRadius.circular(10)
                 ),
                 child: Row(

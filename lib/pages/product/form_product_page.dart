@@ -280,7 +280,7 @@ class _FormProductPageState extends State<FormProductPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tersisa $availableStock untuk produk ini ${availableStock < 5 ? '(Hampir Habis)' : ''}",
+                        "Tersisa $availableStock untuk produk ini",
                         style: TextStyle(
                           color: availableStock > 5 ? successColor : dangerColor,
                           fontWeight: FontWeight.w600
@@ -296,7 +296,7 @@ class _FormProductPageState extends State<FormProductPage> {
                             color: availableStock > 5 ? successColor : dangerColor,
                             borderRadius: BorderRadius.circular(5)
                           ),
-                          child: Text("Detail mutasi ›" , style: TextStyle(
+                          child: Text("Mutasi ›" , style: TextStyle(
                             color: Colors.white
                           )),
                         ),
