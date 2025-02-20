@@ -61,7 +61,7 @@ class _AppLayoutState extends State<AppLayout> {
         child: menu[_selectedIndex]['fragment'],
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 17),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
