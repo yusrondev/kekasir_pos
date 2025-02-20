@@ -155,7 +155,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                       ),
                     ),
                     Gap(10),
-                    Expanded( // Expanded membungkus Column untuk mengisi sisa ruang
+                    SizedBox(
+                      width: 130,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -175,7 +176,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                       ),
                     ),
                     Gap(25),
-                    SizedBox( // Pastikan subtotal punya lebar tetap
+                    Expanded( // Pastikan subtotal punya lebar tetap
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: LabelSemiBoldMD(text: cartItem.subtotal),
@@ -289,34 +290,37 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: 300,
+                            width: 200,
                             child: PriceField(
                               label: "Nominal Pelanggan",
                               controller: nominalCustomer,
                               placeholder: "Nominal...",
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 15),
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  transactionProccess = true;
-                                });
-                                saveTransaction();
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Bayar",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                          Gap(10),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 15),
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    transactionProccess = true;
+                                  });
+                                  saveTransaction();
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "Bayar",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
