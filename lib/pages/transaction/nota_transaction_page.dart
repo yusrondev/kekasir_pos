@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/logger.dart';
 
@@ -46,54 +47,64 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
 
     Logger().d(details[0]['product']['name']);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: ListView(
-        padding: defaultPadding,
-        children: [
-          Column(
-            children: [
-              Image.asset(
-                'assets/images/kekasir-black.png',
-                width: 60,
-              ),
-              Gap(13),
-              Label(text: data['code'],)
-            ],
-          ),
-          Line(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LabelSemiBold(text: data['merchant_name']),
-                      ShortDesc(text: "Alamat Toko",)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      LabelSemiBold(text: formattedDate),
-                      ShortDesc(text: formattedTime)
-                    ],
-                  ),
-                ],
-              ),
-              Line(),
-              Label(text: "Daftar Pesanan",),
-              buildProductList(),
-              Line(),
-              Label(text: "Detail Pembayaran",),
-              Gap(10),
-              buildpaymentSummary()
-            ],
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AppLayout()),
+          (route) => false, // Menghapus semua route yang ada
+        );
+        return true; // Tambahkan ini untuk menghindari error
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: ListView(
+          padding: defaultPadding,
+          children: [
+            Column(
+              children: [
+                Image.asset(
+                  'assets/images/kekasir-black.png',
+                  width: 60,
+                ),
+                Gap(13),
+                Label(text: data['code'],)
+              ],
+            ),
+            Line(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelSemiBold(text: data['merchant_name']),
+                        ShortDesc(text: "Alamat Toko",)
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        LabelSemiBold(text: formattedDate),
+                        ShortDesc(text: formattedTime)
+                      ],
+                    ),
+                  ],
+                ),
+                Line(),
+                Label(text: "Daftar Pesanan",),
+                buildProductList(),
+                Line(),
+                Label(text: "Detail Pembayaran",),
+                Gap(10),
+                buildpaymentSummary()
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
