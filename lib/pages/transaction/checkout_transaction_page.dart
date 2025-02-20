@@ -4,7 +4,6 @@ import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
-import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -474,7 +473,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                   child: Center(
                     child: Image.asset(
                       'assets/images/qr-code.png',
-                      width: 23,
+                      width: 18,
                     )
                   ),
                 ),
