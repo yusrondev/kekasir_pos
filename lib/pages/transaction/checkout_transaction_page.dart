@@ -165,7 +165,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 30, // Ganti Expanded dengan SizedBox untuk jumlah item
+                    Gap(5),
+                    SizedBox( // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
                         child: LabelSemiBoldMD(
@@ -173,7 +174,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 100, // Pastikan subtotal punya lebar tetap
+                    Gap(25),
+                    SizedBox( // Pastikan subtotal punya lebar tetap
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: LabelSemiBoldMD(text: cartItem.subtotal),
