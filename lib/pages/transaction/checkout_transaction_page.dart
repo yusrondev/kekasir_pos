@@ -238,174 +238,184 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
         onTap: () {
           cartItems.isEmpty ? Navigator.pop(context, true) : 
           showModalBottomSheet(
-            backgroundColor: secondaryColor,
             context: context,
+            isScrollControlled: true, // Tambahkan ini!
+            backgroundColor: secondaryColor,
             builder: (context) {
-              return Container(
-                padding: EdgeInsets.all(16.0),
-                height: 800,
-                width: double.infinity,
-                child: ListView(
-                  children: [
-                    Column(
-                      children: [
-                        Container(
+              return FractionallySizedBox(
+                heightFactor: 0.8, // Mengatur tinggi menjadi full screen
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
                           height: 5,
                           width: 50,
                           decoration: BoxDecoration(
                             color: Color(0xffced6e0),
-                            borderRadius: BorderRadius.circular(10)
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        Gap(10),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Grand Total',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                grandTotal,
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Gap(5),
-                        PriceField(
-                          label: "Nominal Pelanggan",
-                          controller: nominalCustomer,
-                          placeholder: "Nominal...",
-                        ),
-                        Row(
+                      ),
+                      Gap(30),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  nominalCustomer.text = grandTotal;
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(5)
-                                ),
-                                child: Center(
-                                  child: Text("Uang Pas", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600
-                                  )),
-                                ),
+                            Text(
+                              'Grand Total',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Gap(10),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  nominalCustomer.text = 'Rp 5.000';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(5)
-                                ),
-                                child: Center(
-                                  child: Text("Rp 5.000", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600
-                                  )),
-                                ),
-                              ),
-                            ),
-                            Gap(10),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  nominalCustomer.text = 'Rp 10.000';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(5)
-                                ),
-                                child: Center(
-                                  child: Text("Rp 10.000", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600
-                                  )),
-                                ),
-                              ),
-                            ),
-                            Gap(10),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  nominalCustomer.text = 'Rp 15.000';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(5)
-                                ),
-                                child: Center(
-                                  child: Text("Rp 15.000", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600
-                                  )),
-                                ),
+                            Text(
+                              grandTotal,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
-                        Gap(screenHeight * 0.25),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              transactionProccess = true;
-                            });
-                            saveTransaction();
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            width: double.infinity,
+                      ),
+                      Gap(5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 300,
+                            child: PriceField(
+                              label: "Nominal Pelanggan",
+                              controller: nominalCustomer,
+                              placeholder: "Nominal...",
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 15),
                             padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
                               color: primaryColor,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                            child: Text(
-                              "Bayar",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  transactionProccess = true;
+                                });
+                                saveTransaction();
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Bayar",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      LabelSemiBold(text: "Nominal Pecahan"),
+                      Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                nominalCustomer.text = grandTotal;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: bgSuccess,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              child: Center(
+                                child: Text("Uang Pas", style: TextStyle(
+                                  color: successColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                                )),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                nominalCustomer.text = 'Rp 5.000';
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: bgSuccess,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              child: Center(
+                                child: Text("Rp 5.000", style: TextStyle(
+                                  color: successColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                                )),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                nominalCustomer.text = 'Rp 10.000';
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: bgSuccess,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              child: Center(
+                                child: Text("Rp 10.000", style: TextStyle(
+                                  color: successColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                                )),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                nominalCustomer.text = 'Rp 15.000';
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: bgSuccess,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              child: Center(
+                                child: Text("Rp 15.000", style: TextStyle(
+                                  color: successColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                                )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
