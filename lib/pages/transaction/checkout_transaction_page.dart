@@ -29,6 +29,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   String grandTotal = "Rp 0";
   int totalItem = 0;
   bool isLoader = true;
+  bool transactionProccess = false;
 
   @override
   void initState() {
@@ -54,11 +55,21 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   Future<void> saveTransaction() async {
     try {
       final paid = nominalCustomer.text.replaceAll(RegExp(r'[^0-9]'), '');
-      await ApiServiceTransaction().saveTransaction(paid);
+      final transactionData = await ApiServiceTransaction().saveTransaction(paid);
+
+      setState(() {
+        transactionProccess = false;
+      });
+
+      if (context.mounted) {
+        Navigator.pushNamed(context, '/nota', arguments: transactionData);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 
@@ -76,7 +87,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
         body: isLoader == true ?
           Center(child: CustomLoader.showCustomLoader()) : cartItems.isEmpty ? Center(
             child: LabelSemiBold(text: "Hemmm, belum ada item nih...",),
-          ) : ListView(
+          ) : transactionProccess == true ? Center(child: CustomLoader.showCustomLoader()) : ListView(
           padding: defaultPadding,
           children: [
             PageTitle(text: "Checkout", back: true),
@@ -217,8 +228,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   }
 
   Widget buildFinishTransaction(screenHeight) {
-    Logger().d(screenHeight);
-    return isLoader == false ? Padding(
+    return isLoader == false && transactionProccess != true ? Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
       child: InkWell(
         onTap: () {
@@ -366,6 +376,9 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         Gap(screenHeight * 0.25),
                         InkWell(
                           onTap: () {
+                            setState(() {
+                              transactionProccess = true;
+                            });
                             saveTransaction();
                           },
                           child: Container(
@@ -413,96 +426,97 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   }
 
   Widget buildPaymentMethod() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: ligthSky,
-        borderRadius: BorderRadius.circular(10)
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LabelSemiBold(text: "Metode Pembayaran"),
-          ShortDesc(text: "Pilih salah satu metode"),
-          Gap(5),
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 35,
-                      height: 35,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: lightColor,
-                        borderRadius: BorderRadius.circular(100)
+    return transactionProccess != true ?
+       Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: ligthSky,
+          borderRadius: BorderRadius.circular(10)
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LabelSemiBold(text: "Metode Pembayaran"),
+            ShortDesc(text: "Pilih salah satu metode"),
+            Gap(5),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 35,
+                        height: 35,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: lightColor,
+                          borderRadius: BorderRadius.circular(100)
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/cash.png',
+                            width: 23,
+                          )
+                        ),
                       ),
-                      child: Center(
-                        child: Image.asset(
-                          'assets/images/cash.png',
-                          width: 23,
-                        )
-                      ),
+                      Gap(10),
+                      LabelSemiBold(text: "Tunai",)
+                    ],
+                  ),
+                  Container(
+                    width: 25,
+                    height: 25,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: bgSuccess,
+                      borderRadius: BorderRadius.circular(100)
                     ),
-                    Gap(10),
-                    LabelSemiBold(text: "Tunai",)
-                  ],
-                ),
-                Container(
-                  width: 25,
-                  height: 25,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: bgSuccess,
-                    borderRadius: BorderRadius.circular(100)
+                    child: Center(
+                      child: Icon(Icons.check, size: 15, color: successColor,)
+                    ),
                   ),
-                  child: Center(
-                    child: Icon(Icons.check, size: 15, color: successColor,)
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 5),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: secondaryColor,
-              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 35,
-                  height: 35,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: lightColor,
-                    borderRadius: BorderRadius.circular(100)
+            Container(
+              margin: EdgeInsets.only(top: 5),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: secondaryColor,
+                border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 35,
+                    height: 35,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: lightColor,
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/qr-code.png',
+                        width: 18,
+                      )
+                    ),
                   ),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/qr-code.png',
-                      width: 18,
-                    )
-                  ),
-                ),
-                Gap(10),
-                LabelSemiBold(text: "QRIS",)
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
+                  Gap(10),
+                  LabelSemiBold(text: "QRIS",)
+                ],
+              ),
+            )
+          ],
+        ),
+      ) : SizedBox.shrink();
+    }
 }

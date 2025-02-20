@@ -58,13 +58,13 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   Future<void> fetchProducts(String keyword, String sort) async {
-    print(sort);
     final data = await ApiService().fetchProducts(keyword, sort);
     if (mounted) {  
       setState(() {
         products = data;
         quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
       });
+      fetchCart();
     }
   }
 
@@ -330,7 +330,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           child: IconButton(
                             iconSize: 15,
                             icon: Icon(Icons.add, color: Colors.black),
-                            onPressed: () => _increment(index),
+                            onPressed: () => product.availableStock != 0 ? _increment(index) : null,
                           ),
                         ),
                       ],

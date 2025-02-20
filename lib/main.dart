@@ -12,10 +12,14 @@ import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
+import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Tambahkan ini
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized(); // Pastikan Flutter terinisialisasi
+  await initializeDateFormatting('id_ID', null); // Inisialisasi data lokal
   runApp(MainApp());
 }
 
@@ -62,6 +66,7 @@ class MainApp extends StatelessWidget {
         '/stock-detail' : (context) => DetailStockPage(),
         '/transaction' : (context) => IndexTransactionPage(),
         '/checkout' : (context) => CheckoutTransactionPage(),
+        '/nota' : (context) => NotaTransactionPage(),
       },
     );
   }
