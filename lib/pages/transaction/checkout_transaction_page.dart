@@ -54,6 +54,22 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   Future<void> saveTransaction() async {
     try {
       final paid = nominalCustomer.text.replaceAll(RegExp(r'[^0-9]'), '');
+      final gt = grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+
+      final paidNominal = int.tryParse(paid) ?? 0; // Konversi ke int, jika gagal jadi 0
+      final gtFinal = int.tryParse(gt) ?? 0; // Konversi ke int, jika gagal jadi 0
+
+      if (paidNominal < gtFinal) { 
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Nominal pembayaran harus lebih dari grand total!")),
+          );
+        }
+        return; // Hentikan proses jika paid tidak valid
+      }
+
+      transactionProccess = true;
+      Navigator.pop(context);
       final transactionData = await ApiServiceTransaction().saveTransaction(paid);
 
       setState(() {
@@ -308,11 +324,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  setState(() {
-                                    transactionProccess = true;
-                                  });
                                   saveTransaction();
-                                  Navigator.pop(context);
                                 },
                                 child: Text(
                                   "Bayar",
