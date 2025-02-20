@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
+import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
@@ -19,6 +20,8 @@ class CheckoutTransactionPage extends StatefulWidget {
 
 class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   ApiServiceCart apiServiceCart = ApiServiceCart();
+  ApiServiceTransaction apiServiceTransaction = ApiServiceTransaction();
+
   List<CartItem> cartItems = [];
 
   TextEditingController nominalCustomer = TextEditingController();
@@ -45,6 +48,17 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
         cartItems = fetchCartSummary.items;
         isLoader = false;
       });
+    }
+  }
+
+  Future<void> saveTransaction() async {
+    try {
+      final paid = nominalCustomer.text.replaceAll(RegExp(r'[^0-9]'), '');
+      await ApiServiceTransaction().saveTransaction(paid);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
     }
   }
 
@@ -350,19 +364,24 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                           ],
                         ),
                         Gap(screenHeight * 0.25),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            "Bayar",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                        InkWell(
+                          onTap: () {
+                            saveTransaction();
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              "Bayar",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
