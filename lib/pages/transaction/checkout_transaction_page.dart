@@ -107,78 +107,86 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   }
 
   Widget buildListCart() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LabelSemiBold(text: "Daftar Pesanan"),
-        Gap(5),
-        ListView.builder(
-          padding: EdgeInsets.all(0),
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cartItems[index];
-    
-            return Container(
-              margin: EdgeInsets.only(bottom: 5),
-              padding: EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: secondaryColor.withValues(alpha: 0.7), width: 1),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      cartItem.productImage,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.fitWidth,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/empty.png',
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.fitWidth,
-                        );
-                      },
-                    ),
-                  ),
-                  Gap(10),
-                  Expanded( // Expanded membungkus Column untuk mengisi sisa ruang
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LabelSemiBoldMD(text: cartItem.productName),
-                        ShortDesc(text: cartItem.productShortDescription,),
-                        LabelSemiBold(text: cartItem.unitPrice),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 50, // Ganti Expanded dengan SizedBox untuk jumlah item
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: LabelSemiBoldMD(
-                        text: '${cartItem.quantity}x'
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: ligthSky,
+        borderRadius: BorderRadius.circular(10)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LabelSemiBold(text: "Daftar Pesanan"),
+          Gap(5),
+          ListView.builder(
+            padding: EdgeInsets.all(0),
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: cartItems.length,
+            itemBuilder: (context, index) {
+              final cartItem = cartItems[index];
+      
+              return Container(
+                margin: EdgeInsets.only(bottom: 5),
+                padding: EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: secondaryColor.withValues(alpha: 0.3), width: 1),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        cartItem.productImage,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.fitWidth,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/empty.png',
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.fitWidth,
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  SizedBox(width: 100, // Pastikan subtotal punya lebar tetap
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: LabelSemiBoldMD(text: cartItem.subtotal),
+                    Gap(10),
+                    Expanded( // Expanded membungkus Column untuk mengisi sisa ruang
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LabelSemiBoldMD(text: cartItem.productName),
+                          ShortDesc(text: cartItem.productShortDescription,),
+                          LabelSemiBold(text: cartItem.unitPrice),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        Gap(5),
-      ],
+                    SizedBox(width: 50, // Ganti Expanded dengan SizedBox untuk jumlah item
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: LabelSemiBoldMD(
+                          text: '${cartItem.quantity}x'
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 100, // Pastikan subtotal punya lebar tetap
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: LabelSemiBoldMD(text: cartItem.subtotal),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          Gap(5),
+        ],
+      ),
     );
   }
 

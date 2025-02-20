@@ -12,6 +12,7 @@ import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
+import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Tambahkan ini
@@ -65,6 +66,7 @@ class MainApp extends StatelessWidget {
         '/stock' : (context) => IndexStockPage(),
         '/stock-detail' : (context) => DetailStockPage(),
         '/transaction' : (context) => IndexTransactionPage(),
+        '/transaction/mutation' : (context) => MutationTransactionPage(),
         '/checkout' : (context) => CheckoutTransactionPage(),
         '/nota' : (context) => NotaTransactionPage(),
       },

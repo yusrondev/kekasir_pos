@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/utils/colors.dart';
 
@@ -12,6 +13,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: primaryColor, // Warna status bar untuk halaman ini
+      statusBarIconBrightness: Brightness.light, // Ikon terang
+    ));
+
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -168,24 +175,29 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  'assets/sections/transaction.png',
-                  width: 55,
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/transaction/mutation');
+            },
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/sections/transaction.png',
+                    width: 55,
+                  ),
                 ),
-              ),
-              Gap(5),
-              Text(
-                "Mutasi Transaksi", 
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600
+                Gap(5),
+                Text(
+                  "Mutasi Transaksi", 
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600
+                  )
                 )
-              )
-            ],
+              ],
+            ),
           ),
           Column(
             children: [
