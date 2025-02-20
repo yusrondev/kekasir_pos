@@ -9,6 +9,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 
 class CheckoutTransactionPage extends StatefulWidget {
   const CheckoutTransactionPage({super.key});
@@ -50,6 +51,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return WillPopScope(
       onWillPop: () async {
         // Kembalikan data saat pengguna swipe back
@@ -69,12 +71,14 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
               children: [
                 Gap(15),
                 buildListCart(),
-                buildPayment()
+                buildPayment(),
+                Gap(10),
+                buildPaymentMethod(),
               ],
             )
           ],
         ),
-        bottomNavigationBar: buildFinishTransaction(),
+        bottomNavigationBar: buildFinishTransaction(screenHeight),
       ),
     );
   }
@@ -98,7 +102,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
               padding: EdgeInsets.all(7),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Color(0xffF5F7FB), width: 1),
+                border: Border.all(color: secondaryColor.withValues(alpha: 0.7), width: 1),
                 borderRadius: BorderRadius.circular(10)
               ),
               child: Row(
@@ -171,14 +175,14 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Label(text: "Sub Total",),
-              LabelSemiBold(text: grandTotal),
+              LabelSemiBoldMD(text: grandTotal),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Label(text: "Diskon",),
-              LabelSemiBold(text: "- Rp 0"),
+              LabelSemiBoldMD(text: "- Rp 0"),
             ],
           ),
           Line(),
@@ -186,7 +190,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LabelSemiBold(text: 'Grand Total'),
-              LabelSemiBold(text: grandTotal),
+              LabelSemiBoldMD(text: grandTotal, primary: true,),
             ],
           )
           // PriceField(
@@ -199,12 +203,177 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
     );
   }
 
-  Widget buildFinishTransaction() {
+  Widget buildFinishTransaction(screenHeight) {
+    Logger().d(screenHeight);
     return isLoader == false ? Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
       child: InkWell(
         onTap: () {
-          cartItems.isEmpty ? Navigator.pop(context, true) : DialogHelper.showCreateConfirmation(context: context, onConfirm: () => {});
+          cartItems.isEmpty ? Navigator.pop(context, true) : 
+          showModalBottomSheet(
+            backgroundColor: secondaryColor,
+            context: context,
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(16.0),
+                height: 800,
+                width: double.infinity,
+                child: ListView(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          height: 5,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Color(0xffced6e0),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                        ),
+                        Gap(10),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Grand Total',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                grandTotal,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Gap(5),
+                        PriceField(
+                          label: "Nominal Pelanggan",
+                          controller: nominalCustomer,
+                          placeholder: "Nominal...",
+                        ),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  nominalCustomer.text = grandTotal;
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Center(
+                                  child: Text("Uang Pas", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Gap(10),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  nominalCustomer.text = 'Rp 5.000';
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Center(
+                                  child: Text("Rp 5.000", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Gap(10),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  nominalCustomer.text = 'Rp 10.000';
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Center(
+                                  child: Text("Rp 10.000", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Gap(10),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  nominalCustomer.text = 'Rp 15.000';
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Center(
+                                  child: Text("Rp 15.000", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600
+                                  )),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Gap(screenHeight * 0.25),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            "Bayar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         },
         child: Container(
           padding: EdgeInsets.all(15),
@@ -223,5 +392,99 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
         ),
       ),
     ) : SizedBox.shrink();
+  }
+
+  Widget buildPaymentMethod() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: ligthSky,
+        borderRadius: BorderRadius.circular(10)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LabelSemiBold(text: "Metode Pembayaran"),
+          ShortDesc(text: "Pilih salah satu metode"),
+          Gap(5),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 35,
+                      height: 35,
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: lightColor,
+                        borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          'assets/images/cash.png',
+                          width: 23,
+                        )
+                      ),
+                    ),
+                    Gap(10),
+                    LabelSemiBold(text: "Tunai",)
+                  ],
+                ),
+                Container(
+                  width: 25,
+                  height: 25,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: bgSuccess,
+                    borderRadius: BorderRadius.circular(100)
+                  ),
+                  child: Center(
+                    child: Icon(Icons.check, size: 15, color: successColor,)
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: secondaryColor,
+              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 35,
+                  height: 35,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: lightColor,
+                    borderRadius: BorderRadius.circular(100)
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/qr-code.png',
+                      width: 23,
+                    )
+                  ),
+                ),
+                Gap(10),
+                LabelSemiBold(text: "QRIS",)
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

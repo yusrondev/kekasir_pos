@@ -221,23 +221,34 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           ),
           child: Row(
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    product.image,
-                    width: 65,
-                    height: 65,
-                    fit: BoxFit.fitWidth,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        'assets/images/empty.png', 
-                        width: 65,
-                        height: 65,
-                        fit: BoxFit.fitWidth,
-                      );
-                    },
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
+                    if (value == true) {
+                      setState(() {
+                        fetchProducts(keyword.text, 'true');
+                      });
+                    }
+                  });
+                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      product.image,
+                      width: 65,
+                      height: 65,
+                      fit: BoxFit.fitWidth,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/empty.png', 
+                          width: 65,
+                          height: 65,
+                          fit: BoxFit.fitWidth,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

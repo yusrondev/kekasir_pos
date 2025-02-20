@@ -149,6 +149,12 @@ class _FormProductPageState extends State<FormProductPage> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Jumlah melebihi stok yang tersedia!')));
           return;
         }
+
+        if (quantity.text.isNotEmpty && selectedValue == null) {
+          Navigator.pop(context); 
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan tipe penyesuaian sudah terpilih!')));
+          return;
+        }
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate

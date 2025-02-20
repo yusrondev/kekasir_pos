@@ -188,6 +188,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     ),
                   ),
                 ),
+                Gap(3),
                 ProductName(text: product.name),
                 ShortDesc(text: product.shortDescription),
                 Gap(5),
