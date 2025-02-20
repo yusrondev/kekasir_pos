@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 
 class DialogHelper {
   static void showDeleteConfirmation({
@@ -10,21 +12,43 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin menghapus item $content?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus
-              child: Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                onConfirm(); // Panggil fungsi yang diberikan
-              },
-              child: Text("Yakin", style: TextStyle(color: Colors.red)),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Apakah Anda yakin ingin menghapus item $content?"),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
         );
       },
     );
@@ -38,21 +62,43 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin menyimpan data ini?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus
-              child: Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                onConfirm(); // Panggil fungsi yang diberikan
-              },
-              child: Text("Yakin", style: TextStyle(color: Colors.red)),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Apakah Anda yakin ingin menyimpan data ini?"),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
         );
       },
     );
@@ -66,21 +112,43 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin keluar?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus
-              child: Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                onConfirm(); // Panggil fungsi yang diberikan
-              },
-              child: Text("Yakin", style: TextStyle(color: Colors.red)),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Apakah Anda yakin ingin keluar?"),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
         );
       },
     );
@@ -94,21 +162,43 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin menyelesaikan pembayaran ini?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus
-              child: Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                onConfirm(); // Panggil fungsi yang diberikan
-              },
-              child: Text("Yakin", style: TextStyle(color: Colors.red)),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Apakah Anda yakin ingin menyelesaikan pembayaran ini?"),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
         );
       },
     );
@@ -122,21 +212,43 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text("Konfirmasi"),
-          content: Text("Apakah Anda yakin ingin menghapus semua data keranjang?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Tutup dialog tanpa hapus
-              child: Text("Batal"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                onConfirm(); // Panggil fungsi yang diberikan
-              },
-              child: Text("Yakin", style: TextStyle(color: Colors.red)),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Apakah Anda yakin ingin menghapus semua data keranjang?"),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
         );
       },
     );
