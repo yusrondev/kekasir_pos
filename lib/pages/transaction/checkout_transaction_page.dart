@@ -165,7 +165,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 50, // Ganti Expanded dengan SizedBox untuk jumlah item
+                    SizedBox(width: 30, // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
                         child: LabelSemiBoldMD(
