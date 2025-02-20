@@ -224,11 +224,6 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
               LabelSemiBoldMD(text: grandTotal, primary: true,),
             ],
           )
-          // PriceField(
-          //   controller: nominalCustomer,
-          //   label: "Nominal Bayar",
-          //   placeholder: "Masukkan Nominal...",
-          // )
         ],
       ),
     );
@@ -387,6 +382,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               transactionProccess = true;
                             });
                             saveTransaction();
+                            Navigator.pop(context);
                           },
                           child: Container(
                             width: double.infinity,

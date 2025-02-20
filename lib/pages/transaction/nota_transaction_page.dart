@@ -44,9 +44,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       change = data['change'];
       details = data['details'];
     });
-
-    Logger().d(details[0]['product']['name']);
-
+    
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushAndRemoveUntil(
