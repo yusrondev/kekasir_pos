@@ -348,7 +348,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           child: IconButton(
                             iconSize: 15,
                             icon: Icon(Icons.add, color: Colors.black),
-                            onPressed: () => product.availableStock != 0 ? _increment(index) : null,
+                            onPressed: () => product.availableStock != 0 && quantities[index] != product.availableStock ? _increment(index) : null,
                           ),
                         ),
                       ],
