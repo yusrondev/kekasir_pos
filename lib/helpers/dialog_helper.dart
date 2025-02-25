@@ -41,7 +41,7 @@ class DialogHelper {
                         onConfirm();
                       },
                       child: ButtonPrimary(
-                        text: "Simpan",
+                        text: "Yakin",
                       ),
                     )
                   ),
@@ -91,7 +91,7 @@ class DialogHelper {
                         onConfirm();
                       },
                       child: ButtonPrimary(
-                        text: "Simpan",
+                        text: "Yakin",
                       ),
                     )
                   ),
@@ -141,7 +141,7 @@ class DialogHelper {
                         onConfirm();
                       },
                       child: ButtonPrimary(
-                        text: "Simpan",
+                        text: "Yakin",
                       ),
                     )
                   ),
@@ -191,7 +191,7 @@ class DialogHelper {
                         onConfirm();
                       },
                       child: ButtonPrimary(
-                        text: "Simpan",
+                        text: "Yakin",
                       ),
                     )
                   ),
@@ -241,7 +241,7 @@ class DialogHelper {
                         onConfirm();
                       },
                       child: ButtonPrimary(
-                        text: "Simpan",
+                        text: "Yakin",
                       ),
                     )
                   ),
