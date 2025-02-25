@@ -40,6 +40,25 @@ class Line extends StatelessWidget {
   }
 }
 
+class LineXM extends StatelessWidget {
+  const LineXM({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Gap(10),
+        Container(
+          height: 1,
+          width: double.infinity,
+          color: Color(0xffE7E7E7),
+        ),
+        Gap(10),
+      ],
+    );
+  }
+}
+
 class StockBadge extends StatefulWidget {
   final int availableStock;
 

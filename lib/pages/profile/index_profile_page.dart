@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
+import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 
 class IndexProfilePage extends StatefulWidget {
   const IndexProfilePage({super.key});
@@ -17,8 +22,17 @@ class IndexProfilePage extends StatefulWidget {
 
 class _IndexProfilePageState extends State<IndexProfilePage> {
 
+  Map<String, dynamic>? dataMe;
+
   AuthService authService = AuthService();
   final String? version = dotenv.env['APP_VERSION'];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    me();
+  }
 
   void logout() async {
     await AuthService().logout();
@@ -29,9 +43,20 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
     );
   }
 
+  Future<void> me() async {
+    final data = await authService.fetchUser();
+    if (data != null) {
+      setState(() {
+        dataMe = data;
+        Logger().d(dataMe?['name']);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -52,61 +77,148 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           PageTitle(text: "", back: true,),
 
           Gap(18),
-          
-          Row(
+
+          Column(
             children: [
-              Icon(Icons.account_circle, size: 20,),
-              Gap(8),
-              LabelSemiBold(text: "Profil Saya"),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.asset('assets/images/empty.png', width: 70,)
+              ),
+              Gap(10),
+              LabelSemiBold(
+                text: dataMe?['name'],
+              ),
+              Label(
+                text: dataMe?['email'],
+              ),
+              Gap(10),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(15)
+                ),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  "Edit Profile",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                )
+              )
             ],
           ),
 
-          Line(),
+          Gap(30),
 
-          Row(
-            children: [
-              Icon(Icons.star, size: 20,),
-              Gap(8),
-              LabelSemiBold(text: "Informasi Paket"),
-            ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Text("Utama", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
           ),
 
-          Line(),
+          Gap(5),
 
-          Row(
-            children: [
-              Icon(Icons.notifications, size: 20,),
-              Gap(8),
-              LabelSemiBold(text: "Notifikasi"),
-            ],
-          ),
-
-          Line(),
-          
-          Row(
-            children: [
-              Icon(Icons.help, size: 20,),
-              Gap(8),
-              LabelSemiBold(text: "Bantuan"),
-            ],
-          ),
-
-          Line(),
-
-          InkWell(
-            onTap: () {
-              DialogHelper.showLogoutConfirmation(context: context, onConfirm: () => logout());
-            },
-            child: Row(
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              border: Border.all(color: Color(0xffE7E7E7)),
+              color: Color(0xffF3F3F3),
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.logout, size: 20,),
-                Gap(8),
-                LabelSemiBold(text: "Keluar"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/package.png',
+                          width: 20,
+                        ),
+                        Gap(10),
+                        Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
+                      ],
+                    ),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  ],
+                ),
+                LineXM(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/notification.png',
+                          width: 20,
+                        ),
+                        Gap(10),
+                        Text("Notifikasi Sistem", style: TextStyle(fontWeight: FontWeight.w600),),
+                      ],
+                    ),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  ],
+                ),
+                LineXM(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/help-assistance.png',
+                          width: 20,
+                        ),
+                        Gap(10),
+                        Text("Bantuan", style: TextStyle(fontWeight: FontWeight.w600),),
+                      ],
+                    ),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  ],
+                ),
               ],
             ),
           ),
 
-          Line(),
+          Gap(20),
+
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Text("Preferensi", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
+          ),
+
+          Gap(5),
+
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              border: Border.all(color: Color(0xffE7E7E7)),
+              color: Color(0xffF3F3F3),
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    DialogHelper.showLogoutConfirmation(context: context, onConfirm: () => logout());
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/icons/logout.png',
+                        width: 17,
+                      ),
+                      Gap(10),
+                      Text("Keluar", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           
         ]
       ),
