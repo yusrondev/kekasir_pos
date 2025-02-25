@@ -12,6 +12,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 
 class IndexTransactionPage extends StatefulWidget {
   const IndexTransactionPage({super.key});
@@ -29,6 +30,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   String grandTotal = "Rp 0";
   int totalItem = 0;
   bool isLoadCart = false;
+  bool isLoadProduct = true;
   BuildContext? _dialogContext;
 
   TextEditingController keyword = TextEditingController();
@@ -60,8 +62,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
   Future<void> fetchProducts(String keyword, String sort) async {
     final data = await ApiService().fetchProducts(keyword, sort);
+    Logger().d(data);
     if (mounted) {  
       setState(() {
+        isLoadProduct = false;
         products = data;
         quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
       });
@@ -215,7 +219,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Masukkan angka",
+                    hintText: "Masukkan jumlah...",
                   ),
                   onSubmitted: (value) {
                     int? val = int.tryParse(value);
@@ -315,12 +319,18 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   Widget buildProductList() {
-    if (products.isEmpty) {
+    if (isLoadProduct == true) {
       return Column(
         children: [
           Gap(100),
           CustomLoader.showCustomLoader(),
         ],
+      );
+    }
+
+    if (isLoadProduct == false && products.isEmpty) {
+      return Center(
+        child: Label(text: "Data produk tidak ditemukan",),
       );
     }
     return ListView.builder(
@@ -331,138 +341,163 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       itemBuilder: (context, index) {
         final product = products[index];
 
-        return InkWell(
-          onTap: () => showInputDialog(index, product.availableStock),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-            margin: EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
-                      if (value == true) {
-                        setState(() {
-                          fetchProducts(keyword.text, 'true');
-                        });
-                      }
-                    });
-                  },
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        product.image,
-                        width: 65,
-                        height: 65,
-                        fit: BoxFit.fitWidth,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/images/empty.png', 
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+          margin: EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
+                    if (value == true) {
+                      setState(() {
+                        fetchProducts(keyword.text, 'true');
+                      });
+                    }
+                  });
+                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () {
+                      showInputDialog(index, product.availableStock);
+                    },
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            product.image,
                             width: 65,
                             height: 65,
                             fit: BoxFit.fitWidth,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Gap(10),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LabelSemiBoldMD(text: product.name),
-                        ShortDesc(text: product.shortDescription, maxline: 2),
-                        Row(
-                          children: [
-                            PriceTag(text: formatRupiah(product.price)),
-                            Gap(5),
-                            StockTag(text: 'Stok : ${product.availableStock.toString()}'),
-                          ],
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/empty.png', 
+                                width: 65,
+                                height: 65,
+                                fit: BoxFit.fitWidth,
+                              );
+                            },
+                          ),
                         ),
-                        Gap(5),
+                        Container(
+                          width: 65,
+                          height: 65,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 65,
+                          height: 65,
+                          child: Center(
+                            child: Image.asset(
+                              'assets/icons/pen.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
                 ),
-                Gap(5),
-                // Bagian Quantity (Plus Minus)
-                Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Color(0xffF2F4F8),
-                        borderRadius: BorderRadius.circular(100)
-                      ),
-                      child: Row(
+              ),
+              Gap(10),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSemiBoldMD(text: product.name),
+                      ShortDesc(text: product.shortDescription, maxline: 2),
+                      Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 15,
-                            child: IconButton(
-                              iconSize: 15,
-                              highlightColor: Colors.white,
-                              icon: Icon(Icons.remove, color: Colors.black),
-                              onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                            height: 20,
-                            child: TextField(
-                              readOnly: true,
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              controller: TextEditingController(text: quantities[index].toString()),
-                              decoration: InputDecoration(
-                                counterText: "",
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(vertical: 11),
-                                hintStyle: TextStyle(
-                                color: Color(0xffB1B9C3), 
-                                fontSize: 16,
-                                )
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  int? val = int.tryParse(value);
-                                  if (val == null || val < 0) {
-                                    quantities[index] = 0; // Minimal 0
-                                  } else {
-                                    quantities[index] = val;
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 15,
-                            child: IconButton(
-                              iconSize: 15,
-                              icon: Icon(Icons.add, color: Colors.black),
-                              onPressed: () => product.availableStock != 0 && quantities[index] != product.availableStock ? _increment(index) : null,
-                            ),
-                          ),
+                          PriceTag(text: formatRupiah(product.price)),
+                          Gap(5),
+                          StockTag(text: 'Stok : ${product.availableStock.toString()}'),
                         ],
                       ),
-                    ),
-                    Gap(5),
-                    LabelSemiBold(text: formatRupiah(product.price * quantities[index])),
-                  ],
+                      Gap(5),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Gap(5),
+              // Bagian Quantity (Plus Minus)
+              Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Color(0xffF2F4F8),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: IconButton(
+                            iconSize: 15,
+                            highlightColor: Colors.white,
+                            icon: Icon(Icons.remove, color: Colors.black),
+                            onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40,
+                          height: 20,
+                          child: TextField(
+                            readOnly: true,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            controller: TextEditingController(text: quantities[index].toString()),
+                            decoration: InputDecoration(
+                              counterText: "",
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(vertical: 11),
+                              hintStyle: TextStyle(
+                              color: Color(0xffB1B9C3), 
+                              fontSize: 16,
+                              )
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                int? val = int.tryParse(value);
+                                if (val == null || val < 0) {
+                                  quantities[index] = 0; // Minimal 0
+                                } else {
+                                  quantities[index] = val;
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: IconButton(
+                            iconSize: 15,
+                            icon: Icon(Icons.add, color: Colors.black),
+                            onPressed: () => product.availableStock != 0 && quantities[index] != product.availableStock ? _increment(index) : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Gap(5),
+                  LabelSemiBold(text: formatRupiah(product.price * quantities[index])),
+                ],
+              ),
+            ],
           ),
         );
       },
