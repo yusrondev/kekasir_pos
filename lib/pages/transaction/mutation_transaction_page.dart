@@ -37,12 +37,6 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Tabel dengan Header Tetap'),
-        centerTitle: true,
-        backgroundColor: _appBarColor, // Warna berubah saat scroll
-        elevation: 0,
-      ),
       body: Column(
         children: [
           Container(

@@ -134,7 +134,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                     Row(
                       children: [
                         Image.asset(
-                          'assets/icons/package.png',
+                          'assets/icons/sparkles.png',
                           width: 20,
                         ),
                         Gap(10),
