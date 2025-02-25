@@ -19,7 +19,7 @@ class DialogHelper {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Apakah Anda yakin ingin menghapus item $content?"),
-              Gap(10),
+              Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -69,7 +69,7 @@ class DialogHelper {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Apakah Anda yakin ingin menyimpan data ini?"),
-              Gap(10),
+              Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -119,7 +119,7 @@ class DialogHelper {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Apakah Anda yakin ingin keluar?"),
-              Gap(10),
+              Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -169,7 +169,7 @@ class DialogHelper {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Apakah Anda yakin ingin menyelesaikan pembayaran ini?"),
-              Gap(10),
+              Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -219,7 +219,7 @@ class DialogHelper {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Apakah Anda yakin ingin menghapus semua data keranjang?"),
-              Gap(10),
+              Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
