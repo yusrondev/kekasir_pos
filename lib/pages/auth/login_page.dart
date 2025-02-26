@@ -53,8 +53,9 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: isLoading ? Center(
           child:CustomLoader.showCustomLoader(),
-        ) : ListView(
+        ) : Column(
         children: [
+          Gap(25),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 15),
             width: MediaQuery.of(context).size.width,
