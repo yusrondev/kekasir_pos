@@ -5,6 +5,7 @@ import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
+import 'package:kekasir/utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -54,24 +55,45 @@ class _LoginPageState extends State<LoginPage> {
           child:CustomLoader.showCustomLoader(),
         ) : ListView(
         children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: primaryColor
+            ),
+            child : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Masuk", style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    fontSize: 25
+                  )
+                ),
+                Gap(2),
+                Text("Silahkan lengkapi data berikut untuk melanjutkan", style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13
+                  )
+                )
+              ],
+            )
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             child: Column(
               children: [
-                
-                const Gap(90),
-                Image.asset('assets/images/logo-blue.png', width: 45),
-                const Gap(65),
-
                 CustomTextField(
                   label: "Email",
+                  shortDescription: "Masukkan alamat email Anda yang sudah terdaftar di Kekasir",
                   placeholder: "Misalnya kekasir@gmail.com...",
                   controller: emailController,
                 ),
 
                 PasswordTextField(
                   label: "Password",
-                  placeholder: "Password Anda...",
+                  shortDescription: "Masukkan password Anda",
+                  placeholder: "******",
                   controller: passwordController,
                 ),
               ],
