@@ -21,7 +21,14 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Pastikan Flutter terinisialisasi
   await initializeDateFormatting('id_ID', null); // Inisialisasi data lokal
-  runApp(MainApp());
+
+  WidgetsFlutterBinding.ensureInitialized(); // untuk disable rotasi
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(MainApp());
+  });
 }
 
 class MainApp extends StatelessWidget {
