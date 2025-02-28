@@ -39,4 +39,19 @@ class ApiServiceTransaction {
     var responseData = await response.stream.bytesToString();
     return jsonDecode(responseData);
   }
+
+  Future<Map<String, dynamic>?> getRevenue() async {
+    final url = Uri.parse("$apiUrl/transaction/revenue");
+
+    final response = await http.get(
+      url,
+      headers: await _headers
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Gagal mengambil data pendapatan");
+    }
+  }
 }

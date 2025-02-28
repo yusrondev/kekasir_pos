@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,6 +12,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ApiServiceTransaction apiServiceTransaction = ApiServiceTransaction();
+
+  String thisMonthRevenue = "";
+  String lastMonthRevenue = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getRevenue();
+  }
+
+  Future<void> getRevenue() async {
+    final data = await ApiServiceTransaction().getRevenue();
+    if (mounted) {
+      setState(() {
+        thisMonthRevenue = data!['data']['this_month'];
+        lastMonthRevenue = data['data']['last_month'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -23,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
-            
+            getRevenue();
           });
         },
         color: primaryColor,
@@ -116,10 +138,17 @@ class _HomePageState extends State<HomePage> {
                   Text("Pendapatan Bulan Ini", style: TextStyle(
                     fontSize: 13
                   )),
-                  Text("Rp 549.000", style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20
-                  ))
+                  thisMonthRevenue == ""
+                  ? Container(
+                      margin: EdgeInsets.only(top: 10),
+                      width: 15,
+                      height: 15,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: primaryColor),
+                    )
+                  : Text(
+                      thisMonthRevenue,
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                    )
                 ],
               ),
               Image.asset('assets/images/money.png',height: 28)
@@ -136,7 +165,12 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Bulan Kemarin', style: TextStyle(color: primaryColor)),
-                Text('Rp 450.000', style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600))
+                lastMonthRevenue == "" ? SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: primaryColor),
+                ) :
+                Text(lastMonthRevenue, style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600))
               ],
             ),
           )
