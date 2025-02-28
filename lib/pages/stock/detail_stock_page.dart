@@ -116,19 +116,25 @@ class _DetailStockPageState extends State<DetailStockPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("$totalStockIn", style: TextStyle(
+                Text("$totalStockIn", 
+                  maxLines: 1,
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 25,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Stok Masuk", style: TextStyle(
+                    Text("Stok Masuk", 
+                      maxLines: 1,
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
-                        fontSize: 13
+                        fontSize: 13,
+                        overflow: TextOverflow.ellipsis,
                       )
                     ),
                     Icon(Icons.arrow_downward_rounded, color: Colors.white, size: 15,)
@@ -149,10 +155,13 @@ class _DetailStockPageState extends State<DetailStockPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("$totalStockOut", style: TextStyle(
+                Text("$totalStockOut", 
+                  maxLines: 1,
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
-                    fontSize: 25
+                    fontSize: 25,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ),
                 Row(
@@ -182,10 +191,13 @@ class _DetailStockPageState extends State<DetailStockPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("$availableStock", style: TextStyle(
+                Text("$availableStock", 
+                  maxLines: 1,
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    fontSize: 25
+                    fontSize: 25,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ),
                 Row(
