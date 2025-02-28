@@ -146,6 +146,30 @@ class ShortDesc extends StatelessWidget {
   }
 }
 
+class ShortDescSM extends StatelessWidget {
+  final String? text;
+  final int maxline;
+  const ShortDescSM({
+    super.key, 
+    this.text,
+    this.maxline = 1
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text ?? "",
+      maxLines: maxline,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Color(0xff898F9F),
+        overflow: TextOverflow.ellipsis
+      ),
+    );
+  }
+}
+
 class PriceTag extends StatelessWidget {
   final String? text;
   const PriceTag({super.key, this.text});

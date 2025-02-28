@@ -133,7 +133,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LabelSemiBold(text: "Daftar Pesanan"),
+          LabelSemiBoldMD(text: "Daftar Pesanan"),
           Gap(5),
           ListView.builder(
             padding: EdgeInsets.all(0),
@@ -176,7 +176,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LabelSemiBoldMD(text: cartItem.productName),
+                          LabelSemiBold(text: cartItem.productName),
                           ShortDesc(text: cartItem.productShortDescription,),
                           LabelSemiBold(text: cartItem.unitPrice),
                         ],
@@ -219,7 +219,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LabelSemiBold(text: "Ringkasan Pembayaran"),
+          LabelSemiBoldMD(text: "Ringkasan Pembayaran"),
           Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -467,7 +467,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LabelSemiBold(text: "Metode Pembayaran"),
+            LabelSemiBoldMD(text: "Metode Pembayaran"),
             ShortDesc(text: "Pilih salah satu metode"),
             Gap(5),
             Container(

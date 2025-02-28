@@ -66,9 +66,37 @@ class _DetailStockPageState extends State<DetailStockPage> {
           children: [
             PageTitle(text: "Detail Mutasi", back: true),
             Gap(15),
-            buildCounting(),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: ligthSky
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LabelSemiBold(text: "Total Perhitungan"),
+                  Gap(8),
+                  buildCounting(),
+                ],
+              )
+            ),
             Gap(15),
-            buildListDetailMutation(),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: ligthSky
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LabelSemiBold(text: "Daftar Mutasi"),
+                  Gap(8),
+                  buildListDetailMutation(),
+                ],
+              )
+            ),
           ],
         ),
       ),
@@ -82,77 +110,95 @@ class _DetailStockPageState extends State<DetailStockPage> {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: bgSuccess,
-              border: Border.all(color: successColor),
-              borderRadius: BorderRadius.circular(10)
+              color: Color(0xff4A92A9),
+              borderRadius: BorderRadius.circular(8)
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Total Stok Masuk", style: TextStyle(
-                    color: successColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13
-                  )
-                ),
                 Text("$totalStockIn", style: TextStyle(
-                    color: successColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25
-                  )
-                ),
-              ],
-            ),
-          ),
-        ),
-        Gap(10),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: bgDanger,
-              border: Border.all(color: dangerColor),
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: Column(
-              children: [
-                Text("Total Stok Keluar", style: TextStyle(
-                    color: dangerColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13
-                  )
-                ),
-                Text("$totalStockOut", style: TextStyle(
-                    color: dangerColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25
-                  )
-                ),
-              ],
-            ),
-          ),
-        ),
-        Gap(10),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: primaryColor,
-              border: Border.all(color: primaryColor),
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: Column(
-              children: [
-                Text("Total Tersisa", style: TextStyle(
-                    fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    fontSize: 13
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25,
                   )
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Stok Masuk", style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13
+                      )
+                    ),
+                    Icon(Icons.arrow_downward_rounded, color: Colors.white, size: 15,)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Gap(10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Color(0xfffc5c65),
+              borderRadius: BorderRadius.circular(8)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("$totalStockOut", style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25
+                  )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Stok Keluar", style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13
+                      )
+                    ),
+                    Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 15,)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Gap(10),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Color(0xff26de81),
+              borderRadius: BorderRadius.circular(8)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text("$availableStock", style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                     fontSize: 25
                   )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Tersisa", style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontSize: 13
+                      )
+                    ),
+                    Icon(Icons.check, color: Colors.white, size: 15,)
+                  ],
                 ),
               ],
             ),
@@ -163,11 +209,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
   }
 
   Widget buildListDetailMutation() {
-    return isLoading ? Column(
-        children: [
-          Gap(100),
-          CustomLoader.showCustomLoader(),
-        ],
+    return isLoading ? Center(
+        child: CustomLoader.showCustomLoader(),
       ) : ListView.builder(
       padding: EdgeInsets.all(0),
       physics: NeverScrollableScrollPhysics(),
@@ -181,7 +224,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
           padding: EdgeInsets.all(7),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white
+            color: Colors.white,
+            border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,12 +240,12 @@ class _DetailStockPageState extends State<DetailStockPage> {
                         padding: EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: stock.type == "in" ? bgSuccess : bgDanger,
+                          color: stock.type == "in" ? Color(0xff4A92A9) : Color(0xfffc5c65),
                         ),
                         child: Center(
                           child: Text(stock.type == "in" ? "Masuk" : "Keluar", 
                             style: TextStyle(
-                              color: stock.type == "in" ? successColor : dangerColor,
+                              color: Colors.white,
                               fontWeight: FontWeight.w600,
                               fontSize: 14
                             )
@@ -210,7 +254,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
                       ),
                       Gap(10),
                       Center(
-                        child: Text(stock.quantity.toString(), 
+                        child: Text('${stock.quantity.toString()} pcs', 
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 14
@@ -224,7 +268,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
               ),
               if(stock.description != '') ... [
                 LineSM(),
-                ShortDesc(text : stock.description, maxline: 5),
+                ShortDescSM(text : stock.description, maxline: 5,),
               ]
             ],
           ),

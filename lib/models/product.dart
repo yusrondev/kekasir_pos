@@ -18,11 +18,11 @@ class Product {
     return Product(
       id: json['id'],
       code: json['code'],
-      name: json['name'],
-      shortDescription: json['short_description'],
-      image: json['image'],
-      price: double.parse(json['price']),
-      availableStock: json['available_stock'],
+      name: json['name'] ?? "",
+      shortDescription: json['short_description'] ?? "",
+      image: json['image'] ?? "",
+      price: double.parse(json['price'] ?? 0),
+      availableStock: json['available_stock'] ?? 0,
       quantity: json['quantity'] ?? 0,
     );
   }
