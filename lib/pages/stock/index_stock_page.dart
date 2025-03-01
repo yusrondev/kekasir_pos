@@ -146,8 +146,9 @@ class _IndexStockPageState extends State<IndexStockPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Tersisa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
-                              Text("${product.availableStock}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20)),
+                              Text("Tersisa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 11)),
+                              Text("${product.availableStock}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23)),
+                              Text("PCS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 11)),
                             ],
                           ),
                         ),

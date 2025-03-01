@@ -207,7 +207,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   LabelSemiBold(
-                    text: "Sesuaikan Quantity",
+                    text: "Jumlah Pembelian",
                   ),
                   StockTag(text: 'Tersedia : ${availableStock.toString()}')
                 ],
@@ -258,11 +258,13 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                         int? val = int.tryParse(controller.text);
                         if (val != null) {
                           Navigator.pop(context);
-                          showLoadingDialog(context);
-                          setState(() {
-                            quantities[index] = val.clamp(0, availableStock);
-                            _updateCart(index, quantities[index]);
-                          });
+                          if (val != quantities[index]) {  
+                            showLoadingDialog(context);
+                            setState(() {
+                              quantities[index] = val.clamp(0, availableStock);
+                              _updateCart(index, quantities[index]);
+                            });
+                          }
                         }
                       },
                       child: ButtonPrimary(
@@ -394,7 +396,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           width: 65,
                           height: 65,
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.2),
+                            color: Colors.black.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),

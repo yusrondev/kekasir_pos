@@ -200,7 +200,7 @@ class _FormProductPageState extends State<FormProductPage> {
             padding: defaultPadding,
             children: [
               PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
-              Gap(15),
+              Gap(10),
               Column(
                 children: [
                   SizedBox(
@@ -267,7 +267,7 @@ class _FormProductPageState extends State<FormProductPage> {
                               border: Border.all(color: secondaryColor)
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.camera_alt_rounded, color: Color(0xff747d8c)),
+                              icon: Icon(Icons.camera_alt_rounded, color: Color(0xff747d8c), size: 20,),
                               onPressed: () => pickImage(ImageSource.camera),
                             ),
                           ),
@@ -278,7 +278,7 @@ class _FormProductPageState extends State<FormProductPage> {
                               border: Border.all(color: secondaryColor)
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.image_rounded, color: Color(0xff747d8c)),
+                              icon: Icon(Icons.image_rounded, color: Color(0xff747d8c), size: 20,),
                               onPressed: () => pickImage(ImageSource.gallery),
                             ),
                           ),
@@ -292,17 +292,19 @@ class _FormProductPageState extends State<FormProductPage> {
                 controller: nameController,
                 label: "Nama *",
                 placeholder: "Misalnya Snack...",
+                maxLine: 1,
               ),
               CustomTextField(
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
-                placeholder: "Misalnya Varian Pedas Banget (Opsional)...",
+                placeholder: "Misalnya Varian Pedas Banget (Tidak Wajib)...",
                 maxLine: 4,
               ),
               PriceField(
                 controller: priceController,
                 label: "Harga *",
                 placeholder: "Misalnya 10.000...",
+                maxLine: 1,
               ),
               // adjust stock
               LineSM(),
@@ -316,7 +318,8 @@ class _FormProductPageState extends State<FormProductPage> {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: availableStock > 5 ? bgSuccess : bgDanger,
-                    borderRadius: BorderRadius.circular(5)
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: availableStock > 5 ?successColor : dangerColor, width: 0.7)
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -373,7 +376,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 maxLength: 150,
                 controller: description,
                 label: "Deskripsi",
-                placeholder: "Misalnya karena barang rusak (Opsional)",
+                placeholder: "Misalnya karena barang rusak / stok awal (Tidak Wajib)",
               )
             ],
           ),
@@ -382,6 +385,15 @@ class _FormProductPageState extends State<FormProductPage> {
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
         child: GestureDetector(
           onTap: () {
+            if (nameController.text == "") {
+              showErrorSnackbar(context, 'Pastikan nama produk sudah terisi!');
+              return;
+            }
+
+            if (priceController.text == "") {
+              showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
+              return;
+            }
             DialogHelper.showCreateConfirmation(context: context, onConfirm: () => saveProduct());
           },
           child: ButtonPrimary(

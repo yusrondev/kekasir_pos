@@ -217,6 +217,23 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/icons/settings.png',
+                        width: 20,
+                      ),
+                      Gap(10),
+                      Text("Pengaturan", style: TextStyle(fontWeight: FontWeight.w600),),
+                    ],
+                  ),
+                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                ],
+              ),
+              LineXM(),
               GestureDetector(
                 onTap: () {
                   DialogHelper.showLogoutConfirmation(context: context, onConfirm: () => logout());

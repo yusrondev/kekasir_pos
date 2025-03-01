@@ -208,7 +208,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Tersedia", style: TextStyle(
+                    Text("Tersisa", style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                         fontSize: 13
