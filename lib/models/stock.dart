@@ -1,4 +1,5 @@
 class Stock {
+  final int? transactionId;
   final int id, productId, userId, quantity;
   final String? description, type, createdAt;
 
@@ -8,6 +9,7 @@ class Stock {
     required this.userId, 
     required this.quantity, 
     this.description, 
+    this.transactionId,
     this.createdAt, 
     required this.type
   });
@@ -17,6 +19,7 @@ class Stock {
       id: json['id'],
       productId : json['product_id'],
       userId : json['user_id'],
+      transactionId : json['transaction_id'],
       quantity : json['quantity'],
       description : json['description'] ?? "",
       type : json['type'],

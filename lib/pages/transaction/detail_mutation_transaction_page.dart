@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
-import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/utils/colors.dart';

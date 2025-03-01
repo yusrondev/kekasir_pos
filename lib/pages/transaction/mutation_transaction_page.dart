@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -22,8 +24,11 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
 
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
 
   List<Transaction> transactions = [];
+
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -36,10 +41,24 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     _startDateController.text = today;
     _endDateController.text = today;
 
-    fetchMutation(_startDateController.text, _endDateController.text);
+    fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
 
     _startDateController.addListener(_validateDates);
     _endDateController.addListener(_validateDates);
+
+    _codeController.addListener(() {
+      setState(() {
+        _codeController.value = _codeController.value.copyWith(
+          text: _codeController.text.toUpperCase(),
+          selection: TextSelection.collapsed(offset: _codeController.text.length),
+        );
+      });
+
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(Duration(milliseconds: 500), () {
+        fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
+      });
+    });
   }
 
   void _validateDates() {
@@ -52,7 +71,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
         _endDateController.text = _startDateController.text; // Reset ke start date
       }
       
-      fetchMutation(_startDateController.text, _endDateController.text);
+      fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
     }
   }
 
@@ -74,11 +93,12 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   void dispose() {
     _startDateController.dispose();
     _endDateController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 
-  Future<void> fetchMutation(String startDate, String endDate) async {
-    final data = await ApiServiceTransaction().fetchMutation(startDate, endDate);
+  Future<void> fetchMutation(String startDate, String endDate, String code) async {
+    final data = await ApiServiceTransaction().fetchMutation(startDate, endDate, code);
     if (mounted) {
       setState(() {
         transactions = data;
@@ -91,7 +111,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          await fetchMutation(_startDateController.text, _endDateController.text);
+          await fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -100,6 +120,8 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
           children: [
             PageTitle(text: "Mutasi Transaksi", back: true),
             Gap(15),
+            SearchTextField(placeholder: "Cari berdasarkan kode", controller: _codeController,),
+            Gap(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -132,7 +154,6 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
 
         return InkWell(
           onTap: () {
-            Logger().d(transaction);
             Navigator.pushNamed(
               context,
               '/transaction/detail',
@@ -164,7 +185,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         PriceTag(text: '+ ${transaction.grandTotal}'),
-                        StockTag(text: '${transaction.paymentMethod}')
+                        StockTag(text: transaction.paymentMethod)
                       ],
                     ),
                     Gap(10),

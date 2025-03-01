@@ -75,7 +75,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LabelSemiBold(text: "Total Perhitungan"),
+                  LabelSemiBold(text: "Total Perhitungan Stok"),
                   Gap(8),
                   buildCounting(),
                 ],
@@ -185,8 +185,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Color(0xff26de81),
-              borderRadius: BorderRadius.circular(8)
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,13 +203,13 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Tersisa", style: TextStyle(
+                    Text("Tersedia", style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                         fontSize: 13
                       )
                     ),
-                    Icon(Icons.check, color: Colors.white, size: 15,)
+                    Icon(Icons.check, color: kekasirColor, size: 15,)
                   ],
                 ),
               ],
@@ -231,58 +231,69 @@ class _DetailStockPageState extends State<DetailStockPage> {
       itemBuilder: (context, index){
         final stock = stocks[index];
 
-        return Container(
-          margin: EdgeInsets.only(bottom: 10),
-          padding: EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 60,
-                        padding: EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: stock.type == "in" ? Color(0xff4A92A9) : Color(0xfffc5c65),
+        return InkWell(
+          onTap: () {
+            if (stock.transactionId != null) {
+              Navigator.pushNamed(
+                context,
+                '/transaction/detail',
+                arguments: stock.transactionId
+              );
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          padding: EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: stock.type == "in" ? Color(0xff4A92A9) : Color(0xfffc5c65),
+                          ),
+                          child: Center(
+                            child: Text(stock.type == "in" ? "Masuk" : "Keluar", 
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14
+                              )
+                            ),
+                          )
                         ),
-                        child: Center(
-                          child: Text(stock.type == "in" ? "Masuk" : "Keluar", 
+                        Gap(10),
+                        Center(
+                          child: Text('${stock.quantity.toString()} pcs', 
                             style: TextStyle(
-                              color: Colors.white,
                               fontWeight: FontWeight.w600,
                               fontSize: 14
                             )
                           ),
-                        )
-                      ),
-                      Gap(10),
-                      Center(
-                        child: Text('${stock.quantity.toString()} pcs', 
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14
-                          )
                         ),
-                      ),
-                    ],
-                  ),
-                  Label(text: stock.createdAt)
-                ],
-              ),
-              if(stock.description != '') ... [
-                LineSM(),
-                ShortDescSM(text : stock.description, maxline: 5,),
-              ]
-            ],
+                      ],
+                    ),
+                    Label(text: stock.createdAt)
+                  ],
+                ),
+                if(stock.description != '') ... [
+                  LineSM(),
+                  ShortDescSM(text : stock.description, maxline: 5,),
+                ]
+              ],
+            ),
           ),
         );
       }

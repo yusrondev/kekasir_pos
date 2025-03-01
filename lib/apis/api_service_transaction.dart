@@ -57,8 +57,8 @@ class ApiServiceTransaction {
     }
   }
 
-  Future<List<Transaction>> fetchMutation(String startDate, String endDate) async {
-    final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?start_date=$startDate&end_date=$endDate'), headers: await _headers);
+  Future<List<Transaction>> fetchMutation(String startDate, String endDate, String code) async {
+    final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?start_date=$startDate&end_date=$endDate&code=$code'), headers: await _headers);
 
     if (response.statusCode == 200) {
       List data = json.decode(response.body)['data'];
