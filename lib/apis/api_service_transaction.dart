@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kekasir/models/transaction.dart';
+import 'package:logger/web.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,4 +66,44 @@ class ApiServiceTransaction {
     }
     return [];
   }
+
+  Future<Map<String, dynamic>?> detailTransaction(int id) async {
+    try {
+      String? token = await getToken();
+      if (token == null) {
+        Logger().e("Token tidak ditemukan!");
+        return null;
+      }
+
+      final response = await http.get(
+        Uri.parse('$apiUrl/transaction/detail/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'X-API-TOKEN': apiToken ?? '', // Hindari apiToken! untuk mencegah null
+        },
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map<String, dynamic> && data.containsKey('data')) {
+            // Ambil elemen pertama dari array 'data'
+            final transaction = (data['data'] as List).isNotEmpty ? data['data'][0] : null;
+            return transaction;
+          }
+          return null;
+        } catch (e) {
+          Logger().e("Gagal decode JSON: $e");
+          return null;
+        }
+      } else {
+        Logger().e("Request gagal dengan status: ${response.statusCode}, body: ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      Logger().e("Terjadi kesalahan: $e");
+      return null;
+    }
+  }
+
 }

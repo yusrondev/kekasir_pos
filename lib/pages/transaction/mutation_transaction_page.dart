@@ -135,8 +135,8 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
             Logger().d(transaction);
             Navigator.pushNamed(
               context,
-              '/nota',
-              arguments: transaction.toMap(), // Ubah jadi Map
+              '/transaction/detail',
+              arguments: transaction.id
             );
           },
           child: Container(
@@ -164,7 +164,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         PriceTag(text: '+ ${transaction.grandTotal}'),
-                        transaction.paymentMethod == 1 ? StockTag(text: "Tunai") : StockTag(text: "?")
+                        StockTag(text: '${transaction.paymentMethod}')
                       ],
                     ),
                     Gap(10),

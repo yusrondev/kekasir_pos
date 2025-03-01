@@ -7,7 +7,7 @@ class Transaction {
   final String discount;
   final String paid;
   final String change;
-  final int paymentMethod;
+  final String paymentMethod;
   final int status;
   final String merchantName;
   final String createdAt;

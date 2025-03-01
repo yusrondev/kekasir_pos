@@ -433,7 +433,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime(2000),
+      firstDate: widget.minDate ?? DateTime(2000), // Terapkan batasan minDate
       lastDate: DateTime(2100),
     );
 
@@ -482,7 +482,6 @@ class _DatePickerFieldState extends State<DatePickerField> {
     );
   }
 }
-
 
 class ThousandsFormatter extends TextInputFormatter {
   final NumberFormat _formatter = NumberFormat("#,###", "id_ID");

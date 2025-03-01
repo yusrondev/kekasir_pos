@@ -11,6 +11,7 @@ import 'package:kekasir/pages/profile/index_profile_page.dart';
 import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
+import 'package:kekasir/pages/transaction/detail_mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
@@ -74,6 +75,10 @@ class MainApp extends StatelessWidget {
         '/stock-detail' : (context) => DetailStockPage(),
         '/transaction' : (context) => IndexTransactionPage(),
         '/transaction/mutation' : (context) => MutationTransactionPage(),
+        '/transaction/detail' : (context) {
+          final id = ModalRoute.of(context)!.settings.arguments;
+          return DetailMutationTransactionPage(id : id);
+        },
         '/checkout' : (context) => CheckoutTransactionPage(),
         '/nota' : (context) => NotaTransactionPage(),
       },

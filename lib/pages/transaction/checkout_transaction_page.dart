@@ -232,7 +232,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Label(text: "Diskon",),
-              LabelSemiBoldMD(text: "- Rp 0"),
+              LabelSemiBoldMD(text: "Rp 0"),
             ],
           ),
           Line(),
