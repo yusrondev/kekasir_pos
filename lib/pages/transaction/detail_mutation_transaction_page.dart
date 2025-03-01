@@ -101,7 +101,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        cartItem['product']['image'],
+                        cartItem['product']['image'] ?? "",
                         width: 60,
                         height: 60,
                         fit: BoxFit.fitWidth,
@@ -123,7 +123,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                         children: [
                           LabelSemiBold(text: cartItem['product']['name']),
                           ShortDesc(text: cartItem['product']['short_description'],),
-                          LabelSemiBold(text: cartItem['price'].toString()),
+                          Label(text: cartItem['price'].toString()),
                         ],
                       ),
                     ),
@@ -131,7 +131,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                     SizedBox( // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: LabelSemiBoldMD(
+                        child: LabelSemiBold(
                           text: '${cartItem['quantity']}x'
                         ),
                       ),
@@ -140,7 +140,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                     Expanded( // Pastikan subtotal punya lebar tetap
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: LabelSemiBoldMD(text: cartItem['sub_total']),
+                        child: LabelSemiBold(text: cartItem['sub_total']),
                       ),
                     ),
                   ],

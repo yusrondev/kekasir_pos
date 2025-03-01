@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
             Gap(20),
             Column(
               children: [
-                Text("Hallo!", style: TextStyle(
+                Text("Selamat Datang!", style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 20
                   )

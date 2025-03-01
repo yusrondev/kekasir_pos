@@ -183,7 +183,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                           ]else ... [
                             Gap(2)
                           ],
-                          LabelSemiBold(text: cartItem.unitPrice),
+                          Label(text: cartItem.unitPrice),
                         ],
                       ),
                     ),
@@ -191,7 +191,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     SizedBox( // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: LabelSemiBoldMD(
+                        child: LabelSemiBold(
                           text: '${cartItem.quantity}x'
                         ),
                       ),
@@ -200,7 +200,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     Expanded( // Pastikan subtotal punya lebar tetap
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: LabelSemiBoldMD(text: cartItem.subtotal),
+                        child: LabelSemiBold(text: cartItem.subtotal),
                       ),
                     ),
                   ],
