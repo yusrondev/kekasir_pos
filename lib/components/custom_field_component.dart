@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 
 // TextField biasa
@@ -406,6 +407,82 @@ class CustomDropdownField extends StatelessWidget {
     );
   }
 }
+
+class DatePickerField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  final bool enabled;
+  final DateTime? minDate; // Tambahkan batas minimal tanggal
+
+  const DatePickerField({
+    super.key,
+    required this.label,
+    required this.controller,
+    this.enabled = true,
+    this.minDate, // Tambahkan parameter ini
+  });
+
+  @override
+  State<DatePickerField> createState() => _DatePickerFieldState();
+}
+
+class _DatePickerFieldState extends State<DatePickerField> {
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime initialDate = _getDateFromText(widget.controller.text) ?? DateTime.now();
+
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        widget.controller.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
+    }
+  }
+
+  // Fungsi untuk mengonversi teks ke DateTime
+  DateTime? _getDateFromText(String dateText) {
+    try {
+      return DateFormat('dd-MM-yyyy').parse(dateText);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.label, style: TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            color: widget.enabled ? Colors.white : Colors.grey[300],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextFormField(
+            controller: widget.controller,
+            decoration: InputDecoration(
+              suffixIcon: Icon(Icons.calendar_today, size: 20, color: darkColor),
+              hintText: "tanggal-bulan-tahun",
+              hintStyle: TextStyle(fontSize: 13, color: darkColor),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            ),
+            readOnly: true,
+            onTap: widget.enabled ? () => _selectDate(context) : null,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 
 class ThousandsFormatter extends TextInputFormatter {
   final NumberFormat _formatter = NumberFormat("#,###", "id_ID");

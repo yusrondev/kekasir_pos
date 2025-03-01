@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,12 +25,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getRevenue() async {
+    try {
     final data = await ApiServiceTransaction().getRevenue();
     if (mounted) {
       setState(() {
         thisMonthRevenue = data!['data']['this_month'];
         lastMonthRevenue = data['data']['last_month'];
       });
+    }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -151,7 +156,10 @@ class _HomePageState extends State<HomePage> {
                     )
                 ],
               ),
-              Image.asset('assets/images/money.png',height: 28)
+              InkWell(
+                onTap: () => Navigator.pushNamed(context, '/transaction/mutation'),
+                child: Image.asset('assets/images/money.png',height: 28)
+              )
             ],
           ),
           Gap(10),

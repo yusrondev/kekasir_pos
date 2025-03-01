@@ -1,5 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:kekasir/models/transaction.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,5 +54,15 @@ class ApiServiceTransaction {
     } else {
       throw Exception("Gagal mengambil data pendapatan");
     }
+  }
+
+  Future<List<Transaction>> fetchMutation(String startDate, String endDate) async {
+    final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?start_date=$startDate&end_date=$endDate'), headers: await _headers);
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((json) => Transaction.fromJson(json)).toList();
+    }
+    return [];
   }
 }
