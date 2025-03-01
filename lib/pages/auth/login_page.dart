@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
-      throw 'Tidak bisa membuka WhatsApp';
+      showErrorSnackbar(context, 'Tidak dapat membuka Whatsapp');
     }
   }
 
