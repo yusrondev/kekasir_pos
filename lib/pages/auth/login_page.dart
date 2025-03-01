@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,12 +24,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     if (emailController.text == "") {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan email sudah terisi!')));
+      showErrorSnackbar(context, 'Pastikan email sudah terisi!');
       return;
     }
 
     if (passwordController.text == "") {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan password sudah terisi!')));
+      showErrorSnackbar(context, 'Pastikan password sudah terisi!');
       return;
     }
 
@@ -56,9 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal Masuk!')),
-        );
+        showErrorSnackbar(context, 'Ada yang salah...');
       }
     }
   }

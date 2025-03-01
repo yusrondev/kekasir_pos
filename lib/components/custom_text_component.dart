@@ -181,7 +181,6 @@ class PriceTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
         color: bgSuccess,
-        border: Border.all(color: successColor, width: 0.6),
         borderRadius: BorderRadius.circular(5)
       ),
       child: Text(
@@ -209,7 +208,6 @@ class StockTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
         color: lightColor,
-        border: Border.all(color: primaryColor, width: 0.6),
         borderRadius: BorderRadius.circular(5)
       ),
       child: Text(

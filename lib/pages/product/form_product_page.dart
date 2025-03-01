@@ -10,6 +10,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -114,12 +115,12 @@ class _FormProductPageState extends State<FormProductPage> {
       String priceValue = _cleanCurrency(priceController.text);
 
       if (nameController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan nama produk sudah terisi!')));
+        showErrorSnackbar(context, 'Pastikan nama produk sudah terisi!');
         return;
       }
 
       if (priceController.text == "") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan harga produk sudah terisi!')));
+        showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
         return;
       }      
 
@@ -137,18 +138,18 @@ class _FormProductPageState extends State<FormProductPage> {
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Jumlah melebihi stok yang tersedia!')));
+          showErrorSnackbar(context, 'Jumlah melebihi stok yang tersedia!');
           return;
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan tipe penyesuaian sudah terpilih!')));
+          showErrorSnackbar(context, 'Pastikan tipe penyesuaian sudah terpilih!');
           return;
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan jumlah stok produk sudah terisi!')));
+            showErrorSnackbar(context, 'Pastikan jumlah stok produk sudah terisi!');
             return;
           }
         }
@@ -185,7 +186,7 @@ class _FormProductPageState extends State<FormProductPage> {
         Navigator.pop(context, true);
       } else {
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to create product')));
+        showErrorSnackbar(context, 'Ada yang salah...');
       }
     }
   }  
@@ -199,7 +200,7 @@ class _FormProductPageState extends State<FormProductPage> {
             padding: defaultPadding,
             children: [
               PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
-              Gap(20),
+              Gap(15),
               Column(
                 children: [
                   SizedBox(
@@ -209,20 +210,24 @@ class _FormProductPageState extends State<FormProductPage> {
                       children: [
                         _image == null ? Gap(0) : ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_image!)
+                          child: Image.file(_image!, 
+                            width: 170,
+                            height: 155,
+                            fit: BoxFit.fitWidth
+                          )
                         ),
                         if(urlImage != null) ... [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
                               urlImage ?? "",
-                              width: 155,
+                              width: 170,
                               height: 155,
                               fit: BoxFit.fitWidth,
                               errorBuilder: (context, error, stackTrace) {
                                 return Image.asset(
                                   'assets/images/empty.png', 
-                                  width: 155,
+                                  width: 170,
                                   height: 155,
                                   fit: BoxFit.fitWidth
                                 );
@@ -233,26 +238,53 @@ class _FormProductPageState extends State<FormProductPage> {
                         if(hasBeenChange == false && urlImage == null) ... [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.asset("assets/images/empty.png")
+                            child: Image.asset("assets/images/empty.png",
+                              width: 170,
+                              height: 155,
+                              fit: BoxFit.fitWidth
+                            )
                           ),
                         ]
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton.icon(
-                        icon: Icon(Icons.camera, color: primaryColor,),
-                        label: Text('Kamera', style: TextStyle(color: primaryColor),),
-                        onPressed: () => pickImage(ImageSource.camera),
+                  SizedBox(
+                    width: 125,
+                    child: Container(
+                      padding: EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        color: ligthSky,
+                        border: Border.all(color: secondaryColor),
+                        borderRadius: BorderRadius.circular(20)
                       ),
-                      TextButton.icon(
-                        icon: Icon(Icons.image, color: primaryColor,),
-                        label: Text('Gallery', style: TextStyle(color: primaryColor),),
-                        onPressed: () => pickImage(ImageSource.gallery),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: secondaryColor)
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.camera_alt_rounded, color: Color(0xff747d8c)),
+                              onPressed: () => pickImage(ImageSource.camera),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: secondaryColor)
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.image_rounded, color: Color(0xff747d8c)),
+                              onPressed: () => pickImage(ImageSource.gallery),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   )
                 ],
               ),
@@ -273,7 +305,8 @@ class _FormProductPageState extends State<FormProductPage> {
                 placeholder: "Misalnya 10.000...",
               ),
               // adjust stock
-              Line(),
+              LineSM(),
+              Gap(5),
               LabelSemiBold(text: labelStock),
               ShortDesc(text: descStock, maxline: 2,),
               
@@ -333,6 +366,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 label: "Jumlah",
                 shortDescription: "Jumlah penyesuaian stok",
                 placeholder: "Misalnya 20...",
+                maxLength: 5,
               ),
               CustomTextField(
                 maxLine: 3,

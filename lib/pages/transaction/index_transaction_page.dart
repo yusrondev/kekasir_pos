@@ -9,6 +9,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -99,9 +100,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       await ApiServiceCart().updateCart(products[index].id, quantity);
       fetchCart();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      showErrorSnackbar(context, e.toString());
     }
   }
   
@@ -174,9 +173,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       fetchProducts(keyword.text, 'true');
       closeLoadingDialog();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      showErrorSnackbar(context, e.toString());
     }
   }
 
@@ -197,6 +194,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
     showDialog(
       context: context,
+      barrierColor: Colors.black54, // Agar tetap fokus ke dialog
+      useSafeArea: false, // Menghindari batas layar
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
@@ -463,7 +462,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           ),
                         ),
                         SizedBox(
-                          width: 40,
+                          width: 50,
                           height: 20,
                           child: TextField(
                             readOnly: true,
