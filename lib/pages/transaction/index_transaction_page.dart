@@ -11,6 +11,7 @@ import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 
@@ -63,13 +64,17 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   Future<void> fetchProducts(String keyword, String sort) async {
     final data = await ApiService().fetchProducts(keyword, sort);
     Logger().d(data);
-    if (mounted) {  
-      setState(() {
-        isLoadProduct = false;
-        products = data;
-        quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
-      });
-      fetchCart();
+    try {
+      if (mounted) {  
+        setState(() {
+          isLoadProduct = false;
+          products = data;
+          quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
+        });
+        fetchCart();
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -237,7 +242,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -248,7 +253,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         int? val = int.tryParse(controller.text);
                         if (val != null) {
@@ -291,7 +296,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PageTitle(text: "Tambah Transaksi"),
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     if (grandTotal != "Rp 0") {
                       DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
@@ -350,7 +355,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           ),
           child: Row(
             children: [
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
                     if (value == true) {
@@ -362,7 +367,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 },
                 child: Align(
                   alignment: Alignment.center,
-                  child: InkWell(
+                  child: GestureDetector(
                     onTap: () {
                       showInputDialog(index, product.availableStock);
                     },
@@ -547,7 +552,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   ),
                 ],
               ),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/checkout').then((value){
                     if (value == true) {

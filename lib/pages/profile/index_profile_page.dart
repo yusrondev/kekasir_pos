@@ -8,6 +8,7 @@ import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class IndexProfilePage extends StatefulWidget {
@@ -44,10 +45,16 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   Future<void> me() async {
     final data = await authService.fetchUser();
     if (data != null) {
-      setState(() {
-        dataMe = data;
-        isLoading = false;
-      });
+      try {
+        if (mounted) {
+          setState(() {
+            dataMe = data;
+            isLoading = false;
+          });
+        }
+      } catch (e) {
+        showErrorBottomSheet(context, e.toString());
+      }
     }
   }
 
@@ -210,7 +217,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   DialogHelper.showLogoutConfirmation(context: context, onConfirm: () => logout());
                 },

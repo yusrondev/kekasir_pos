@@ -182,7 +182,6 @@ class _FormProductPageState extends State<FormProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    Logger().d(urlImage);
     return Scaffold(
         body: Form(
           key: _formKey,
@@ -286,7 +285,7 @@ class _FormProductPageState extends State<FormProductPage> {
                           fontWeight: FontWeight.w600
                         ),
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, '/stock-detail', arguments: productId);
                         },
@@ -336,7 +335,7 @@ class _FormProductPageState extends State<FormProductPage> {
         ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-        child: InkWell(
+        child: GestureDetector(
           onTap: () {
             DialogHelper.showCreateConfirmation(context: context, onConfirm: () => saveProduct());
           },

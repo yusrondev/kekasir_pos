@@ -8,6 +8,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class CheckoutTransactionPage extends StatefulWidget {
@@ -38,16 +39,18 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
   Future<void> fetchCart() async {
     await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
-
     final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
-
-    if (mounted) {
-      setState(() {
-        grandTotal = fetchCartSummary.totalPrice;
-        totalItem = fetchCartSummary.totalQuantity;
-        cartItems = fetchCartSummary.items;
-        isLoader = false;
-      });
+    try {
+      if (mounted) {
+        setState(() {
+          grandTotal = fetchCartSummary.totalPrice;
+          totalItem = fetchCartSummary.totalQuantity;
+          cartItems = fetchCartSummary.items;
+          isLoader = false;
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -251,7 +254,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   Widget buildFinishTransaction(screenHeight) {
     return isLoader == false && transactionProccess != true ? Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           cartItems.isEmpty ? Navigator.pop(context, true) : 
           showModalBottomSheet(
@@ -322,7 +325,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                 color: primaryColor,
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              child: InkWell(
+                              child: GestureDetector(
                                 onTap: () {
                                   saveTransaction();
                                 },
@@ -344,7 +347,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 nominalCustomer.text = grandTotal;
@@ -365,7 +368,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               ),
                             ),
                           ),
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 nominalCustomer.text = 'Rp 5.000';
@@ -386,7 +389,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               ),
                             ),
                           ),
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 nominalCustomer.text = 'Rp 10.000';
@@ -407,7 +410,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               ),
                             ),
                           ),
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 nominalCustomer.text = 'Rp 15.000';

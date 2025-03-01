@@ -24,7 +24,7 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -35,7 +35,7 @@ class DialogHelper {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         onConfirm();
@@ -74,7 +74,7 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -85,7 +85,7 @@ class DialogHelper {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         onConfirm();
@@ -124,7 +124,7 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -135,7 +135,7 @@ class DialogHelper {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         onConfirm();
@@ -174,7 +174,7 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -185,7 +185,7 @@ class DialogHelper {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         onConfirm();
@@ -224,7 +224,7 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -235,7 +235,7 @@ class DialogHelper {
                   ),
                   Gap(5),
                   Expanded(
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
                         onConfirm();

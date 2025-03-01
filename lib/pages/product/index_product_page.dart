@@ -8,6 +8,7 @@ import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
@@ -59,19 +60,27 @@ class _IndexProductPageState extends State<IndexProductPage> {
     final data = await ApiService().fetchProducts(searchField.text);
     logger.d(data);
     if (!mounted) return; // Pastikan widget masih ada sebelum setState
-    setState(() {
-      products = data;
-      isLoading = false;
-    });
+    try {
+      setState(() {
+        products = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
+    }
   }
 
   deleteProduct(id) async {
     final delete = await ApiService().deleteProduct(id);
     logger.i(delete);
-    if (mounted) {
-      setState(() {
-        fetchProducts(searchField.text);
-      });
+    try {
+      if (mounted) {
+        setState(() {
+          fetchProducts(searchField.text);
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -91,7 +100,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PageTitle(text: "Data Produk"),
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, '/create-product').then((value){
                       if (value == true) {
@@ -139,7 +148,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
       ), 
       itemBuilder: (context, index){
         final product = products[index];
-        return InkWell(
+        return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
               if (value == true) {
@@ -197,7 +206,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     LabelSemiBold(text: formatRupiah(product.price), primary: true,),
-                    InkWell(
+                    GestureDetector(
                       onTap: () {
                         DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
                       },

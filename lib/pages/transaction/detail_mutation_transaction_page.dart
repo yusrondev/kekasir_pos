@@ -4,8 +4,8 @@ import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/web.dart';
 
 class DetailMutationTransactionPage extends StatefulWidget {
   final dynamic id;
@@ -29,13 +29,16 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
   Future<void> detailTransaction() async {
     final data = await ApiServiceTransaction().detailTransaction(widget.id);
-    if (mounted) {
-      setState(() {
-        transaction = data;
-        isLoader = false;
-      });
+    try {
+      if (mounted) {
+        setState(() {
+          transaction = data;
+          isLoader = false;
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
-    Logger().d(transaction['details']);
   }
 
   @override

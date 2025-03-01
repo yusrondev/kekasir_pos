@@ -6,10 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/web.dart';
 
 class MutationTransactionPage extends StatefulWidget {
   const MutationTransactionPage({super.key});
@@ -29,6 +30,8 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   List<Transaction> transactions = [];
 
   Timer? _debounce;
+
+  bool loading = true;
 
   @override
   void initState() {
@@ -99,17 +102,22 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
 
   Future<void> fetchMutation(String startDate, String endDate, String code) async {
     final data = await ApiServiceTransaction().fetchMutation(startDate, endDate, code);
-    if (mounted) {
-      setState(() {
-        transactions = data;
-      });
+    try {
+      if (mounted) {
+        setState(() {
+          transactions = data;
+          loading = false;
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
+      body: loading == true ? Center(child: CustomLoader.showCustomLoader()) : RefreshIndicator(
         onRefresh: () async {
           await fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
         },
@@ -152,7 +160,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
         
         final transaction = transactions[index];
 
-        return InkWell(
+        return GestureDetector(
           onTap: () {
             Navigator.pushNamed(
               context,

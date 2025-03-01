@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
           'assets/images/kekasir.png',
           width: 70,
         ),
-        InkWell(
+        GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, '/profile');
           },
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                     )
                 ],
               ),
-              InkWell(
+              GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/transaction/mutation'),
                 child: Image.asset('assets/images/money.png',height: 28)
               )
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround ,
         children: [
-          InkWell(
+          GestureDetector(
             onTap: () {
               Navigator.pushNamed(context, '/stock');
             },
@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          InkWell(
+          GestureDetector(
             onTap: () {
               Navigator.pushNamed(context, '/transaction/mutation');
             },

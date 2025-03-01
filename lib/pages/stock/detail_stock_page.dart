@@ -6,6 +6,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/stock.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class DetailStockPage extends StatefulWidget {
@@ -40,15 +41,19 @@ class _DetailStockPageState extends State<DetailStockPage> {
   }
 
   Future<void> fetchMutation(int productId) async {
-    final data = await ApiServiceStock().fetchMutation(productId);
-    if (mounted) {
-      setState(() {
-        stocks = data.stockList;
-        totalStockIn = data.totalStockIn;
-        totalStockOut = data.totalStockOut;
-        isLoading = false;
-        availableStock = (totalStockIn! - totalStockOut!) as int?;
-      }); 
+    final data = await ApiServiceStock().fetchMutation(productId);    
+    try {
+      if (mounted) {
+        setState(() {
+          stocks = data.stockList;
+          totalStockIn = data.totalStockIn;
+          totalStockOut = data.totalStockOut;
+          isLoading = false;
+          availableStock = (totalStockIn! - totalStockOut!) as int?;
+        }); 
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -231,7 +236,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
       itemBuilder: (context, index){
         final stock = stocks[index];
 
-        return InkWell(
+        return GestureDetector(
           onTap: () {
             if (stock.transactionId != null) {
               Navigator.pushNamed(

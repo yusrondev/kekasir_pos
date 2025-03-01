@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       bottomNavigationBar: isLoading != true ? Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: InkWell(
+        child: GestureDetector(
           onTap: () { 
             setState(() {
               isLoading = true;

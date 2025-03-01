@@ -72,7 +72,7 @@ class PageTitle extends StatelessWidget {
     return Row(
       children: [
         if(back == true) ... [
-          InkWell(
+          GestureDetector(
             onTap: () {
               Navigator.pop(context, true);
             },

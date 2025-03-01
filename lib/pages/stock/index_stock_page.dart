@@ -9,6 +9,7 @@ import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 
@@ -52,11 +53,15 @@ class _IndexStockPageState extends State<IndexStockPage> {
   Future<void> fetchProducts(String keyword) async {
     final data = await ApiService().fetchProducts(keyword);
     Logger().d(data);
-    if(mounted){
-      setState(() {
-        products = data;
-        isLoading = false;
-      });
+    try {
+      if(mounted){
+        setState(() {
+          products = data;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -96,7 +101,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
       itemCount: products.length,
       itemBuilder: (context, index){
         final product = products[index];
-        return InkWell(
+        return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, '/stock-detail', arguments: product.id);
           },
