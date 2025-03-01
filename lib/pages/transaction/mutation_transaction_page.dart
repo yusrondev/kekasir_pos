@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/transaction.dart';
@@ -142,7 +143,9 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                 ),
               ],
             ),
-            Gap(15),
+            Gap(5),
+            LineSM(),
+            Gap(5),
             buildMutationList(),
           ],
         ),

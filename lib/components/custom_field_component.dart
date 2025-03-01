@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 
 // TextField biasa
