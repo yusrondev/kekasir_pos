@@ -193,7 +193,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                 Row(
                   children: [
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         PriceTag(text: '+ ${transaction.grandTotal}'),
                         StockTag(text: transaction.paymentMethod)

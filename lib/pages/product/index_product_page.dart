@@ -198,10 +198,12 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     ),
                   ),
                 ),
-                Gap(3),
+                Gap(product.shortDescription == "" ? 20 : 3),
                 ProductName(text: product.name),
-                ShortDesc(text: product.shortDescription),
-                Gap(5),
+                if(product.shortDescription != "") ... [
+                  ShortDesc(text: product.shortDescription),
+                  Gap(5),
+                ],
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -69,7 +69,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                 Label(text: data['code'],)
               ],
             ),
-            Line(),
+            LineSM(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -80,7 +80,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         LabelSemiBold(text: data['merchant_name']),
-                        ShortDesc(text: "Alamat Toko",)
+                        // ShortDesc(text: "Alamat Toko",)
                       ],
                     ),
                     Column(
@@ -92,12 +92,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                     ),
                   ],
                 ),
-                Line(),
-                Label(text: "Daftar Pesanan",),
+                LineSM(),
+                LabelSemiBold(text: "Daftar Pesanan",),
                 buildProductList(),
-                Line(),
-                Label(text: "Detail Pembayaran",),
-                Gap(10),
+                LineSM(),
+                LabelSemiBold(text: "Detail Pembayaran",),
                 buildpaymentSummary()
               ],
             ),
@@ -125,8 +124,8 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LabelSemiBold(text: '${detail['product']['name']} (${detail['quantity']})'),
-                  LabelSemiBold(text: detail['product']['price'],)
+                  Label(text: '${detail['product']['name']} (${detail['quantity']})'),
+                  Label(text: detail['product']['price'],)
                 ],
               ),
               LabelSemiBold(text: detail['sub_total'],)
@@ -139,44 +138,47 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   }
   
   Widget buildpaymentSummary() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LabelSemiBold(text: "Sub Total"),
-            LabelSemiBold(text: subTotal,)
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LabelSemiBold(text: "Diskon"),
-            LabelSemiBold(text: discount,)
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LabelSemiBold(text: "Grand Total"),
-            LabelSemiBold(text: grandTotal,)
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LabelSemiBold(text: "Dibayar"),
-            LabelSemiBold(text: paid,)
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LabelSemiBold(text: "Kembalian"),
-            LabelSemiBold(text: change,)
-          ],
-        ),
-      ],
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Label(text: "Sub Total"),
+              LabelSemiBold(text: subTotal,)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Label(text: "Diskon"),
+              LabelSemiBold(text: discount,)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Label(text: "Grand Total"),
+              LabelSemiBold(text: grandTotal,)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Label(text: "Dibayar"),
+              LabelSemiBold(text: paid,)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Label(text: "Kembalian"),
+              LabelSemiBold(text: change,)
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

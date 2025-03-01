@@ -118,17 +118,10 @@ class _FormProductPageState extends State<FormProductPage> {
         return;
       }
 
-      // Tampilkan Lottie loading animation
-      showDialog(
-        context: context,
-        barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
-        barrierColor: Colors.white.withValues(alpha: 0.8),
-        builder: (BuildContext context) {
-          return Center(
-            child: CustomLoader.showCustomLoader()
-          );
-        },
-      );
+      if (priceController.text == "") {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan harga produk sudah terisi!')));
+        return;
+      }      
 
       if (widget.product == null) {
         // Jika produk baru, buat produk
@@ -144,16 +137,34 @@ class _FormProductPageState extends State<FormProductPage> {
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
-          Navigator.pop(context); 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Jumlah melebihi stok yang tersedia!')));
           return;
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
-          Navigator.pop(context); 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan tipe penyesuaian sudah terpilih!')));
           return;
         }
+
+        if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
+          if (quantity.text == "") {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pastikan jumlah stok produk sudah terisi!')));
+            return;
+          }
+        }
+
+        // Tampilkan Lottie loading animation
+        showDialog(
+          context: context,
+          barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+          barrierColor: Colors.white.withValues(alpha: 0.8),
+          builder: (BuildContext context) {
+            return Center(
+              child: CustomLoader.showCustomLoader()
+            );
+          },
+        );
+
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
@@ -247,7 +258,7 @@ class _FormProductPageState extends State<FormProductPage> {
               ),
               CustomTextField(
                 controller: nameController,
-                label: "Nama",
+                label: "Nama *",
                 placeholder: "Misalnya Snack...",
               ),
               CustomTextField(
@@ -258,7 +269,7 @@ class _FormProductPageState extends State<FormProductPage> {
               ),
               PriceField(
                 controller: priceController,
-                label: "Harga",
+                label: "Harga *",
                 placeholder: "Misalnya 10.000...",
               ),
               // adjust stock
@@ -294,7 +305,7 @@ class _FormProductPageState extends State<FormProductPage> {
                             color: availableStock > 5 ? successColor : dangerColor,
                             borderRadius: BorderRadius.circular(5)
                           ),
-                          child: Text("Mutasi ›" , style: TextStyle(
+                          child: Text("Mutasi" , style: TextStyle(
                             color: Colors.white
                           )),
                         ),
@@ -325,6 +336,7 @@ class _FormProductPageState extends State<FormProductPage> {
               ),
               CustomTextField(
                 maxLine: 3,
+                maxLength: 150,
                 controller: description,
                 label: "Deskripsi",
                 placeholder: "Misalnya karena barang rusak (Opsional)",

@@ -253,4 +253,59 @@ class DialogHelper {
       },
     );
   }
+
+  static void customDialog({
+    required BuildContext context,
+    required VoidCallback onConfirm,
+    String? title = "",
+    String? content,
+    bool? actionButton
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(title != "" ? '$title' : "Oops!"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('$content'),
+              if(actionButton == true) ... [
+                Gap(20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: ButtonPrimaryOutline(
+                          text: "Batal",
+                        ),
+                      )
+                    ),
+                    Gap(5),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          onConfirm();
+                        },
+                        child: ButtonPrimary(
+                          text: "Yakin",
+                        ),
+                      )
+                    ),
+                  ],
+                )
+              ]
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

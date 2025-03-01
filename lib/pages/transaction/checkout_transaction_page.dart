@@ -5,6 +5,7 @@ import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -64,11 +65,9 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
       if (paidNominal < gtFinal) { 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Nominal pembayaran harus lebih dari grand total!")),
-          );
+          DialogHelper.customDialog(context: context, onConfirm: (){}, content: "Nominal pembayaran harus lebih dari grand total!", actionButton: false);
         }
-        return; // Hentikan proses jika paid tidak valid
+        return;
       }
 
       transactionProccess = true;
@@ -180,7 +179,11 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           LabelSemiBold(text: cartItem.productName),
-                          ShortDesc(text: cartItem.productShortDescription,),
+                          if(cartItem.productShortDescription != "") ... [
+                            ShortDesc(text: cartItem.productShortDescription,),
+                          ]else ... [
+                            Gap(2)
+                          ],
                           LabelSemiBold(text: cartItem.unitPrice),
                         ],
                       ),

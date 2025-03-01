@@ -47,7 +47,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(Duration(milliseconds: 500), () {
+      _debounce = Timer(Duration(milliseconds: 3000), () {
+        isLoadProduct = true;
         fetchProducts(keyword.text, 'true');
         fetchCart();
       });
@@ -422,7 +423,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       LabelSemiBoldMD(text: product.name),
-                      ShortDesc(text: product.shortDescription, maxline: 2),
+                      if(product.shortDescription != "") ... [
+                        ShortDesc(text: product.shortDescription, maxline: 2)
+                      ]else ... [
+                        Gap(2)
+                      ],
                       Row(
                         children: [
                           PriceTag(text: formatRupiah(product.price)),
