@@ -386,7 +386,9 @@ class CustomDropdownField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10)
           ),
           child: DropdownButtonFormField<String>(
+            dropdownColor: Colors.white,
             value: selectedValue,
+            borderRadius: BorderRadius.circular(10),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

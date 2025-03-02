@@ -179,6 +179,9 @@ class _FormProductPageState extends State<FormProductPage> {
         );
       }
 
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+
       if (success == true) {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
