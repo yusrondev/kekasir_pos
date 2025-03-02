@@ -189,78 +189,85 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildSectionFeatures() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround ,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/stock');
-            },
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/sections/stock.png',
-                    width: 55,
+      padding: EdgeInsets.symmetric(horizontal: 14),
+      child: Container(
+        padding: EdgeInsets.only(top: 15, bottom: 15),
+        decoration: BoxDecoration(
+          color: ligthSky,
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround ,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/stock');
+              },
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/sections/stock.png',
+                      width: 55,
+                    ),
                   ),
-                ),
-                Gap(5),
-                Text(
-                  "Mutasi Stok", 
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600
+                  Gap(5),
+                  Text(
+                    "Mutasi Stok", 
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600
+                    )
                   )
-                )
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/transaction/mutation');
-            },
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/sections/transaction.png',
-                    width: 55,
-                  ),
-                ),
-                Gap(5),
-                Text(
-                  "Mutasi Transaksi", 
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600
-                  )
-                )
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  'assets/sections/report.png',
-                  width: 55,
-                ),
+                ],
               ),
-              Gap(5),
-              Text(
-                "Laporan", 
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/transaction/mutation');
+              },
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/sections/transaction.png',
+                      width: 55,
+                    ),
+                  ),
+                  Gap(5),
+                  Text(
+                    "Mutasi Transaksi", 
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600
+                    )
+                  )
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/sections/report.png',
+                    width: 55,
+                  ),
+                ),
+                Gap(5),
+                Text(
+                  "Laporan", 
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600
+                  )
                 )
-              )
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
