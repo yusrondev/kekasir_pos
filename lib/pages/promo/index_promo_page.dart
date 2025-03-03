@@ -33,7 +33,7 @@ class _IndexPromoPageState extends State<IndexPromoPage> {
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(Duration(milliseconds: 3000), () {
+      _debounce = Timer(Duration(milliseconds: 1000), () {
         isLoadProduct = true;
         fetchProducts(keyword.text);
       });

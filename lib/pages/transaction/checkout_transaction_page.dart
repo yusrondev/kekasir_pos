@@ -327,7 +327,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                       ),
                                     ),
                                   ),
-                                  Gap(30),
+                                  Gap(15),
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Column(
@@ -456,6 +456,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                   LabelSemiBold(text: "Nominal Pecahan"),
                                   Gap(5),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: List.generate(
                                       nominalList.length,
                                       (index) {
@@ -477,17 +478,14 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                             });
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                              horizontal: 5,
-                                            ),
+                                            margin: EdgeInsets.only(right: 10),
                                             padding: EdgeInsets.all(10),
                                             decoration: BoxDecoration(
                                               color:
                                                   selectedIndex == index
                                                       ? bgSuccess
                                                       : lightColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
+                                              borderRadius:BorderRadius.circular(5)
                                             ),
                                             child: Center(
                                               child: Text(
@@ -633,7 +631,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         LabelSemiBold(text: "QRIS"),
                       ],
                     ),
-                    Text("(Segera Hadir)", style: TextStyle(fontSize: 12),)
+                    Text("Segera Hadir", style: TextStyle(fontSize: 12),)
                   ],
                 ),
               ),

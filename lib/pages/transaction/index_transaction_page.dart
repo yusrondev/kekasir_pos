@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
@@ -51,7 +52,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(Duration(milliseconds: 3000), () {
+      _debounce = Timer(Duration(milliseconds: 1000), () {
         isLoadProduct = true;
         fetchProducts(keyword.text, 'true');
         fetchCart();
@@ -104,7 +105,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       await ApiServiceCart().updateCart(products[index].id, quantity);
       fetchCart();
     } catch (e) {
-      showErrorSnackbar(context, e.toString());
+      if (mounted) {
+        showErrorSnackbar(context, e.toString());
+      }
     }
   }
   
@@ -228,6 +231,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Hanya angka
+                    FilteringTextInputFormatter.deny(RegExp(r'\s')), // Mencegah spasi
+                  ],
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Masukkan jumlah...",
