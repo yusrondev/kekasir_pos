@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Bulan Kemarin', style: TextStyle(color: primaryColor)),
+                Text('Bulan Kemarin', style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
                 lastMonthRevenue == "" ? SizedBox(
                   width: 10,
                   height: 10,
