@@ -112,6 +112,18 @@ class _FormProductPageState extends State<FormProductPage> {
     if (_formKey.currentState!.validate()) {
       bool success;
 
+      // Tampilkan Lottie loading animation
+      showDialog(
+        context: context,
+        barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+        barrierColor: Colors.white.withValues(alpha: 0.8),
+        builder: (BuildContext context) {
+          return Center(
+            child: CustomLoader.showCustomLoader()
+          );
+        },
+      );
+
       String priceValue = _cleanCurrency(priceController.text);
 
       if (nameController.text == "") {
@@ -154,18 +166,6 @@ class _FormProductPageState extends State<FormProductPage> {
           }
         }
 
-        // Tampilkan Lottie loading animation
-        showDialog(
-          context: context,
-          barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
-          barrierColor: Colors.white.withValues(alpha: 0.8),
-          builder: (BuildContext context) {
-            return Center(
-              child: CustomLoader.showCustomLoader()
-            );
-          },
-        );
-
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
@@ -179,13 +179,12 @@ class _FormProductPageState extends State<FormProductPage> {
         );
       }
 
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
-
       if (success == true) {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
+        Navigator.pop(context, true);
       } else {
+        Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
         showErrorSnackbar(context, 'Ada yang salah...');
       }

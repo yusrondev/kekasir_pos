@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
-import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
@@ -12,12 +13,14 @@ import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 
 class CheckoutTransactionPage extends StatefulWidget {
   const CheckoutTransactionPage({super.key});
 
   @override
-  State<CheckoutTransactionPage> createState() => _CheckoutTransactionPageState();
+  State<CheckoutTransactionPage> createState() =>
+      _CheckoutTransactionPageState();
 }
 
 class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
@@ -33,6 +36,15 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   bool isLoader = true;
   bool transactionProccess = false;
 
+  int selectedIndex = -1;
+
+  final List<String> nominalList = [
+    "Uang Pas",
+    "Rp 5.000",
+    "Rp 10.000",
+    "Rp 20.000",
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +52,9 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   }
 
   Future<void> fetchCart() async {
-    await Future.delayed(Duration(milliseconds: 300)); // Tambahkan delay untuk memastikan data siap
+    await Future.delayed(
+      Duration(milliseconds: 300),
+    ); // Tambahkan delay untuk memastikan data siap
     final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
     try {
       if (mounted) {
@@ -61,19 +75,28 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       final paid = nominalCustomer.text.replaceAll(RegExp(r'[^0-9]'), '');
       final gt = grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
 
-      final paidNominal = int.tryParse(paid) ?? 0; // Konversi ke int, jika gagal jadi 0
-      final gtFinal = int.tryParse(gt) ?? 0; // Konversi ke int, jika gagal jadi 0
+      final paidNominal =
+          int.tryParse(paid) ?? 0; // Konversi ke int, jika gagal jadi 0
+      final gtFinal =
+          int.tryParse(gt) ?? 0; // Konversi ke int, jika gagal jadi 0
 
-      if (paidNominal < gtFinal) { 
+      if (paidNominal < gtFinal) {
         if (context.mounted) {
-          DialogHelper.customDialog(context: context, onConfirm: (){}, content: "Nominal pembayaran harus lebih dari grand total!", actionButton: false);
+          DialogHelper.customDialog(
+            context: context,
+            onConfirm: () {},
+            content: "Nominal pembayaran harus lebih dari grand total!",
+            actionButton: false,
+          );
         }
         return;
       }
 
       transactionProccess = true;
       Navigator.pop(context);
-      final transactionData = await ApiServiceTransaction().saveTransaction(paid);
+      final transactionData = await ApiServiceTransaction().saveTransaction(
+        paid,
+      );
 
       setState(() {
         transactionProccess = false;
@@ -89,6 +112,18 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
     }
   }
 
+  final NumberFormat _currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  String _formatCurrency(String value) {
+    if (value.isEmpty) return '';
+    final number = int.tryParse(value.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    return _currencyFormat.format(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -100,24 +135,30 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       },
       child: Scaffold(
         // backgroundColor: ligthSky,
-        body: isLoader == true ?
-          Center(child: CustomLoader.showCustomLoader()) : cartItems.isEmpty ? Center(
-            child: LabelSemiBold(text: "Hemmm, belum ada item nih...",),
-          ) : transactionProccess == true ? Center(child: CustomLoader.showCustomLoader()) : ListView(
-          padding: defaultPadding,
-          children: [
-            PageTitle(text: "Checkout", back: true),
-            Column(
-              children: [
-                Gap(15),
-                buildListCart(),
-                buildPayment(),
-                Gap(10),
-                buildPaymentMethod(),
-              ],
-            )
-          ],
-        ),
+        body:
+            isLoader == true
+                ? Center(child: CustomLoader.showCustomLoader())
+                : cartItems.isEmpty
+                ? Center(
+                  child: LabelSemiBold(text: "Hemmm, belum ada item nih..."),
+                )
+                : transactionProccess == true
+                ? Center(child: CustomLoader.showCustomLoader())
+                : ListView(
+                  padding: defaultPadding,
+                  children: [
+                    PageTitle(text: "Checkout", back: true),
+                    Column(
+                      children: [
+                        Gap(15),
+                        buildListCart(),
+                        buildPayment(),
+                        Gap(10),
+                        buildPaymentMethod(),
+                      ],
+                    ),
+                  ],
+                ),
         bottomNavigationBar: buildFinishTransaction(screenHeight),
       ),
     );
@@ -129,7 +170,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: ligthSky,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,14 +184,17 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             itemCount: cartItems.length,
             itemBuilder: (context, index) {
               final cartItem = cartItems[index];
-      
+
               return Container(
                 margin: EdgeInsets.only(bottom: 5),
                 padding: EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: secondaryColor.withValues(alpha: 0.4), width: 1),
-                  borderRadius: BorderRadius.circular(10)
+                  border: Border.all(
+                    color: secondaryColor.withValues(alpha: 0.4),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
@@ -178,26 +222,26 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           LabelSemiBold(text: cartItem.productName),
-                          if(cartItem.productShortDescription != "") ... [
-                            ShortDesc(text: cartItem.productShortDescription,),
-                          ]else ... [
-                            Gap(2)
+                          if (cartItem.productShortDescription != "") ...[
+                            ShortDesc(text: cartItem.productShortDescription),
+                          ] else ...[
+                            Gap(2),
                           ],
                           Label(text: cartItem.unitPrice),
                         ],
                       ),
                     ),
                     Gap(5),
-                    SizedBox( // Ganti Expanded dengan SizedBox untuk jumlah item
+                    SizedBox(
+                      // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: LabelSemiBold(
-                          text: '${cartItem.quantity}x'
-                        ),
+                        child: LabelSemiBold(text: '${cartItem.quantity}x'),
                       ),
                     ),
                     Gap(25),
-                    Expanded( // Pastikan subtotal punya lebar tetap
+                    Expanded(
+                      // Pastikan subtotal punya lebar tetap
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: LabelSemiBold(text: cartItem.subtotal),
@@ -219,7 +263,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: ligthSky,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,330 +273,367 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Sub Total",),
+              Label(text: "Sub Total"),
               LabelSemiBoldMD(text: grandTotal),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Label(text: "Diskon",),
-              LabelSemiBoldMD(text: "Rp 0"),
-            ],
+            children: [Label(text: "Diskon"), LabelSemiBoldMD(text: "Rp 0")],
           ),
           Line(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LabelSemiBold(text: 'Grand Total'),
-              LabelSemiBoldMD(text: grandTotal, primary: true,),
+              LabelSemiBoldMD(text: grandTotal, primary: true),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget buildFinishTransaction(screenHeight) {
-    return isLoader == false && transactionProccess != true ? Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-      child: GestureDetector(
-        onTap: () {
-          cartItems.isEmpty ? Navigator.pop(context, true) : 
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true, // Tambahkan ini!
-            backgroundColor: secondaryColor,
-            builder: (context) {
-              return FractionallySizedBox(
-                heightFactor: 0.8, // Mengatur tinggi menjadi full screen
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          height: 5,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: Color(0xffced6e0),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      Gap(30),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Grand Total',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              grandTotal,
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Gap(5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            child: PriceField(
-                              label: "Nominal Pelanggan",
-                              controller: nominalCustomer,
-                              placeholder: "Nominal...",
-                            ),
-                          ),
-                          Gap(10),
-                          Expanded(
+    return isLoader == false && transactionProccess != true
+        ? Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
+          child: GestureDetector(
+            onTap: () {
+              cartItems.isEmpty
+                  ? Navigator.pop(context, true)
+                  : showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.white,
+                    builder: (context) {
+                      int selectedIndex =
+                          -1; // Pindahkan selectedIndex ke dalam modal
+                      return StatefulBuilder(
+                        builder: (context, setModalState) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.7,
                             child: Container(
-                              margin: EdgeInsets.only(top: 15),
-                              padding: EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  saveTransaction();
-                                },
-                                child: Text(
-                                  "Bayar",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
+                              padding: EdgeInsets.all(16.0),
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Container(
+                                      height: 5,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffced6e0),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Gap(30),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Grand Total',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          grandTotal,
+                                          style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w600,
+                                            color: primaryColor
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  LineXM(),
+                                  Text(
+                                    "Nominal Pelanggan",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Gap(5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 220,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            color: Colors.white,
+                                            border: Border.all(
+                                              color: secondaryColor,
+                                            ),
+                                          ),
+                                          child: TextField(
+                                            cursorColor: primaryColor,
+                                            keyboardType: TextInputType.number,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                8,
+                                              ),
+                                            ],
+                                            maxLines: 1,
+                                            controller: nominalCustomer,
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              counterText: "",
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(10), // Radius sudut
+                                                borderSide: BorderSide.none, // Hilangkan border default
+                                              ),
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 5,
+                                                  ),
+                                              hintText: "Masukkan nominal",
+                                              hintStyle: TextStyle(
+                                                color: Color(0xffB1B9C3),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            onChanged: (value) {
+                                              final formatted = _formatCurrency(
+                                                value,
+                                              );
+                                              nominalCustomer!
+                                                  .value = TextEditingValue(
+                                                text: formatted,
+                                                selection:
+                                                    TextSelection.collapsed(
+                                                      offset: formatted.length,
+                                                    ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Gap(10),
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.all(15),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              saveTransaction();
+                                            },
+                                            child: Text(
+                                              "Selesaikan",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Gap(5),
+                                  LineXM(),
+                                  LabelSemiBold(text: "Nominal Pecahan"),
+                                  Gap(5),
+                                  Row(
+                                    children: List.generate(
+                                      nominalList.length,
+                                      (index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            setModalState(() {
+                                              selectedIndex = index;
+                                              
+                                              if (index == 0) {
+                                                nominalCustomer.text = grandTotal;
+                                              }else{
+                                                nominalCustomer.text =
+                                                    nominalList[index];
+                                              }
+                                            });
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.symmetric(
+                                              horizontal: 5,
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  selectedIndex == index
+                                                      ? bgSuccess
+                                                      : lightColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                nominalList[index],
+                                                style: TextStyle(
+                                                  color:
+                                                      selectedIndex == index
+                                                          ? successColor
+                                                          : Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      LabelSemiBold(text: "Nominal Pecahan"),
-                      Gap(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                nominalCustomer.text = grandTotal;
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: bgSuccess,
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text("Uang Pas", style: TextStyle(
-                                  color: successColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                )),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                nominalCustomer.text = 'Rp 5.000';
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: bgSuccess,
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text("Rp 5.000", style: TextStyle(
-                                  color: successColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                )),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                nominalCustomer.text = 'Rp 10.000';
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: bgSuccess,
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text("Rp 10.000", style: TextStyle(
-                                  color: successColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                )),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                nominalCustomer.text = 'Rp 15.000';
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: bgSuccess,
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text("Rp 15.000", style: TextStyle(
-                                  color: successColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600
-                                )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                          );
+                        },
+                      );
+                    },
+                  );
             },
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(10)
-          ),
-          child: Text(
-            cartItems.isEmpty ? "Kembali" : "Selesaikan Pembayaran",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600
+
+            child: Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                cartItems.isEmpty ? "Kembali" : "Selesaikan Pembayaran",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          )
-        ),
-      ),
-    ) : SizedBox.shrink();
+          ),
+        )
+        : SizedBox.shrink();
   }
 
   Widget buildPaymentMethod() {
-    return transactionProccess != true ?
-       Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: ligthSky,
-          borderRadius: BorderRadius.circular(10)
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            LabelSemiBoldMD(text: "Metode Pembayaran"),
-            ShortDesc(text: "Pilih salah satu metode"),
-            Gap(5),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 35,
-                        height: 35,
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: lightColor,
-                          borderRadius: BorderRadius.circular(100)
+    return transactionProccess != true
+        ? Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: ligthSky,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LabelSemiBoldMD(text: "Metode Pembayaran"),
+              ShortDesc(text: "Pilih salah satu metode"),
+              Gap(5),
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: secondaryColor.withValues(alpha: 0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 35,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: lightColor,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/cash.png',
+                              width: 23,
+                            ),
+                          ),
                         ),
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/cash.png',
-                            width: 23,
-                          )
+                        Gap(10),
+                        LabelSemiBold(text: "Tunai"),
+                      ],
+                    ),
+                    Container(
+                      width: 25,
+                      height: 25,
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: bgSuccess,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Center(
+                        child: Icon(Icons.check, size: 15, color: successColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: secondaryColor,
+                  border: Border.all(
+                    color: secondaryColor.withValues(alpha: 0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 35,
+                      height: 35,
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: lightColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          'assets/images/qr-code.png',
+                          width: 18,
                         ),
                       ),
-                      Gap(10),
-                      LabelSemiBold(text: "Tunai",)
-                    ],
-                  ),
-                  Container(
-                    width: 25,
-                    height: 25,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: bgSuccess,
-                      borderRadius: BorderRadius.circular(100)
                     ),
-                    child: Center(
-                      child: Icon(Icons.check, size: 15, color: successColor,)
-                    ),
-                  ),
-                ],
+                    Gap(10),
+                    LabelSemiBold(text: "QRIS"),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: secondaryColor,
-                border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 35,
-                    height: 35,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: lightColor,
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/images/qr-code.png',
-                        width: 18,
-                      )
-                    ),
-                  ),
-                  Gap(10),
-                  LabelSemiBold(text: "QRIS",)
-                ],
-              ),
-            )
-          ],
-        ),
-      ) : SizedBox.shrink();
-    }
+            ],
+          ),
+        )
+        : SizedBox.shrink();
+  }
 }

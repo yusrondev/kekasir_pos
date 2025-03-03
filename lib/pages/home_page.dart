@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
         saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue);
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showErrorBottomSheet(context, e.toString());
     }
   }
@@ -172,27 +173,12 @@ class _HomePageState extends State<HomePage> {
                           color: primaryColor,
                         ),
                       )
-                      : AnimatedSwitcher(
-                        duration: Duration(milliseconds: 500), // Durasi animasi
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: SlideTransition(
-                              position: Tween<Offset>(
-                                begin: Offset(-0.05, 0), // Mulai sedikit ke kiri
-                                end: Offset(0.05, 0), // Bergeser sedikit ke kanan
-                              ).chain(CurveTween(curve: Curves.elasticIn)).animate(animation), // Efek getar
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          thisMonthRevenue,
-                          key: ValueKey(thisMonthRevenue), // Perubahan revenue akan memicu animasi
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                          ),
+                      : Text(
+                        thisMonthRevenue,
+                        key: ValueKey(thisMonthRevenue), // Perubahan revenue akan memicu animasi
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
                         ),
                       ),
                 ],
