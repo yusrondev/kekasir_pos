@@ -13,7 +13,6 @@ import 'package:kekasir/models/cart_summary.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/web.dart';
 
 class CheckoutTransactionPage extends StatefulWidget {
   const CheckoutTransactionPage({super.key});
@@ -415,8 +414,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               final formatted = _formatCurrency(
                                                 value,
                                               );
-                                              nominalCustomer!
-                                                  .value = TextEditingValue(
+                                              nominalCustomer.value = TextEditingValue(
                                                 text: formatted,
                                                 selection:
                                                     TextSelection.collapsed(
