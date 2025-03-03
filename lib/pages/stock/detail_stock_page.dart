@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_stock.dart';
@@ -25,6 +27,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
   num? totalStockOut = 0;
   int? availableStock = 0;
 
+  Timer? _debounceHit;
+
   @override
   void initState() {
     super.initState();
@@ -32,12 +36,20 @@ class _DetailStockPageState extends State<DetailStockPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = ModalRoute.of(context)!.settings.arguments;
       if (args != null && args is int) {
-        setState(() {
-          productId = args;
+        _debounceHit = Timer(Duration(milliseconds: 500), () {
+          setState(() {
+            productId = args;
+          });
+          fetchMutation(productId!);
         });
-        fetchMutation(productId!);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
+    super.dispose();
   }
 
   Future<void> fetchMutation(int productId) async {

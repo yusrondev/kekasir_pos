@@ -27,12 +27,15 @@ class _IndexStockPageState extends State<IndexStockPage> {
   bool isLoading = true;
 
   Timer? _debounce;
+  Timer? _debounceHit;
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      fetchProducts(keyword.text);
+      _debounceHit = Timer(Duration(milliseconds: 500), () {
+        fetchProducts(keyword.text);
+      });
     }
 
     keyword.addListener(() {
@@ -47,6 +50,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
   void dispose() {
     _debounce?.cancel();
     keyword.dispose();
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
   }
 

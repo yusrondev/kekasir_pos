@@ -37,13 +37,16 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
+  Timer? _debounceHit;
 
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      fetchProducts(keyword.text, 'true');
-      fetchCart();
+      if (mounted) {
+        _debounceHit = Timer(Duration(milliseconds: 500), () {
+          fetchProducts(keyword.text, 'true');
+          fetchCart();
+      });
     }
 
     keyword.addListener(() {
@@ -60,6 +63,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   void dispose() {
     _debounce?.cancel();
     keyword.dispose();
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
   }
 
@@ -159,9 +163,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   void closeLoadingDialog() {
-    if (_dialogContext != null) {
-      Navigator.pop(_dialogContext!);
-      _dialogContext = null; // Reset setelah ditutup
+    if (mounted) {
+      if (_dialogContext != null) {
+        Navigator.pop(_dialogContext!);
+        _dialogContext = null; // Reset setelah ditutup
+      } 
     }
   }
 
