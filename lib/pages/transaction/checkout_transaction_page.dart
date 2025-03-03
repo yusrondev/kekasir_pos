@@ -126,6 +126,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () async {
         // Kembalikan data saat pengguna swipe back
@@ -158,7 +159,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     ),
                   ],
                 ),
-        bottomNavigationBar: buildFinishTransaction(screenHeight),
+        bottomNavigationBar: buildFinishTransaction(screenHeight, screenWidth),
       ),
     );
   }
@@ -293,7 +294,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
     );
   }
 
-  Widget buildFinishTransaction(screenHeight) {
+  Widget buildFinishTransaction(screenHeight, screenWidth) {
     return isLoader == false && transactionProccess != true
         ? Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
@@ -366,7 +367,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(
-                                        width: 220,
+                                        width: screenWidth * 0.65,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(
@@ -426,7 +427,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                       Gap(10),
                                       Expanded(
                                         child: Container(
-                                          padding: EdgeInsets.all(15),
+                                          padding: EdgeInsets.all(13),
                                           decoration: BoxDecoration(
                                             color: primaryColor,
                                             borderRadius: BorderRadius.circular(
@@ -438,12 +439,12 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               saveTransaction();
                                             },
                                             child: Text(
-                                              "Selesaikan",
+                                              "Selesai",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 16
+                                                fontSize: 15
                                               ),
                                             ),
                                           ),
