@@ -306,8 +306,6 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     isScrollControlled: true,
                     backgroundColor: Colors.white,
                     builder: (context) {
-                      int selectedIndex =
-                          -1; // Pindahkan selectedIndex ke dalam modal
                       return StatefulBuilder(
                         builder: (context, setModalState) {
                           return FractionallySizedBox(
@@ -473,6 +471,10 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                                     nominalList[index];
                                               }
                                             });
+
+                                            setState(() {
+                                              selectedIndex = index;
+                                            });
                                           },
                                           child: Container(
                                             margin: EdgeInsets.symmetric(
@@ -608,24 +610,30 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 35,
-                      height: 35,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: lightColor,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          'assets/images/qr-code.png',
-                          width: 18,
+                    Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 35,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: lightColor,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/qr-code.png',
+                              width: 18,
+                            ),
+                          ),
                         ),
-                      ),
+                        Gap(10),
+                        LabelSemiBold(text: "QRIS"),
+                      ],
                     ),
-                    Gap(10),
-                    LabelSemiBold(text: "QRIS"),
+                    Text("(Segera Hadir)", style: TextStyle(fontSize: 12),)
                   ],
                 ),
               ),
