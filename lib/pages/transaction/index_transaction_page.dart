@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
@@ -37,18 +38,21 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
+  Timer? _debounceHit;
 
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      fetchProducts(keyword.text, 'true');
-      fetchCart();
+      if (mounted) {
+        _debounceHit = Timer(Duration(milliseconds: 500), () {
+          fetchProducts(keyword.text, 'true');
+          fetchCart();
+      });
     }
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(Duration(milliseconds: 3000), () {
+      _debounce = Timer(Duration(milliseconds: 1000), () {
         isLoadProduct = true;
         fetchProducts(keyword.text, 'true');
         fetchCart();
@@ -60,6 +64,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   void dispose() {
     _debounce?.cancel();
     keyword.dispose();
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
   }
 
@@ -100,7 +105,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       await ApiServiceCart().updateCart(products[index].id, quantity);
       fetchCart();
     } catch (e) {
-      showErrorSnackbar(context, e.toString());
+      if (mounted) {
+        showErrorSnackbar(context, e.toString());
+      }
     }
   }
   
@@ -159,9 +166,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   void closeLoadingDialog() {
-    if (_dialogContext != null) {
-      Navigator.pop(_dialogContext!);
-      _dialogContext = null; // Reset setelah ditutup
+    if (mounted) {
+      if (_dialogContext != null) {
+        Navigator.pop(_dialogContext!);
+        _dialogContext = null; // Reset setelah ditutup
+      } 
     }
   }
 
@@ -222,6 +231,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Hanya angka
+                    FilteringTextInputFormatter.deny(RegExp(r'\s')), // Mencegah spasi
+                  ],
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Masukkan jumlah...",

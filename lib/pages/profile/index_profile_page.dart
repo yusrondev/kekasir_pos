@@ -43,20 +43,30 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   }
 
   Future<void> me() async {
-    final data = await authService.fetchUser();
-    if (data != null) {
-      try {
-        if (mounted) {
-          setState(() {
-            dataMe = data;
-            isLoading = false;
-          });
-        }
-      } catch (e) {
+    try {
+      final data = await authService.fetchUser();
+      
+      if (data == null) {
+        Navigator.pop(context);
+        throw Exception("Gagal mengambil data pengguna.");
+      }
+
+      if (mounted) {
+        setState(() {
+          dataMe = data;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
         showErrorBottomSheet(context, e.toString());
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,19 +118,24 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               text: dataMe?['email'],
             ),
             Gap(10),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(15)
-              ),
-              child: Text(
-                textAlign: TextAlign.center,
-                "Edit Profile",
-                style: TextStyle(
-                  color: Colors.white
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/profile/edit', arguments: dataMe);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(15)
                 ),
-              )
+                child: Text(
+                  textAlign: TextAlign.center,
+                  "Edit Profile",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                )
+              ),
             )
           ],
         ),

@@ -107,7 +107,7 @@ class _AppLayoutState extends State<AppLayout> {
           child: menu[_selectedIndex]['fragment'],
         ),
         bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(vertical: 17),
+          padding: EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -121,23 +121,30 @@ class _AppLayoutState extends State<AppLayout> {
               int index = menu.indexOf(item);
               return GestureDetector(
                 onTap: () => _onItemTapped(index),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      _selectedIndex == index ? item['icon_active'] : item['icon'],
-                      width: 24,
-                      height: 24,
-                    ),
-                    const Gap(2),
-                    Text(
-                      item['page_name'],
-                      style: TextStyle(
-                        color: _selectedIndex == index ? primaryColor : secondaryColor,
-                        fontSize: 12,
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(1000),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        _selectedIndex == index ? item['icon_active'] : item['icon'],
+                        width: 24,
+                        height: 24,
                       ),
-                    ),
-                  ],
+                      const Gap(2),
+                      Text(
+                        item['page_name'],
+                        style: TextStyle(
+                          color: _selectedIndex == index ? primaryColor : secondaryColor,
+                          fontSize: 12,
+                          fontWeight: _selectedIndex == index ? FontWeight.w600 : FontWeight.normal
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }).toList(),

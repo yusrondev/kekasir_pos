@@ -112,6 +112,18 @@ class _FormProductPageState extends State<FormProductPage> {
     if (_formKey.currentState!.validate()) {
       bool success;
 
+      // Tampilkan Lottie loading animation
+      showDialog(
+        context: context,
+        barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+        barrierColor: Colors.white.withValues(alpha: 0.8),
+        builder: (BuildContext context) {
+          return Center(
+            child: CustomLoader.showCustomLoader()
+          );
+        },
+      );
+
       String priceValue = _cleanCurrency(priceController.text);
 
       if (nameController.text == "") {
@@ -154,18 +166,6 @@ class _FormProductPageState extends State<FormProductPage> {
           }
         }
 
-        // Tampilkan Lottie loading animation
-        showDialog(
-          context: context,
-          barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
-          barrierColor: Colors.white.withValues(alpha: 0.8),
-          builder: (BuildContext context) {
-            return Center(
-              child: CustomLoader.showCustomLoader()
-            );
-          },
-        );
-
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
@@ -179,13 +179,12 @@ class _FormProductPageState extends State<FormProductPage> {
         );
       }
 
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
-
       if (success == true) {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
+        Navigator.pop(context, true);
       } else {
+        Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
         showErrorSnackbar(context, 'Ada yang salah...');
       }
@@ -195,6 +194,7 @@ class _FormProductPageState extends State<FormProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Form(
           key: _formKey,
           child: ListView(
@@ -290,12 +290,14 @@ class _FormProductPageState extends State<FormProductPage> {
                 ],
               ),
               CustomTextField(
+                border: true,
                 controller: nameController,
                 label: "Nama *",
                 placeholder: "Misalnya Snack...",
                 maxLine: 1,
               ),
               CustomTextField(
+                border: true,
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
                 placeholder: "Misalnya Varian Pedas Banget (Tidak Wajib)...",
@@ -306,6 +308,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 label: "Harga *",
                 placeholder: "Misalnya 10.000...",
                 maxLine: 1,
+                border: true,
               ),
               // adjust stock
               LineSM(),
@@ -371,8 +374,10 @@ class _FormProductPageState extends State<FormProductPage> {
                 shortDescription: "Jumlah penyesuaian stok",
                 placeholder: "Misalnya 20...",
                 maxLength: 5,
+                border: true,
               ),
               CustomTextField(
+                border: true,
                 maxLine: 3,
                 maxLength: 150,
                 controller: description,

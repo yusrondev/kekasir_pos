@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
@@ -20,11 +22,20 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   dynamic transaction;
   List order = [];
   bool isLoader = true;
+  Timer? _debounceHit;
 
   @override
   void initState() {
     super.initState();
-    detailTransaction();
+    _debounceHit = Timer(Duration(milliseconds: 500), () {
+      detailTransaction();
+    });
+  }
+  
+  @override
+  void dispose() {
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
+    super.dispose();
   }
 
   Future<void> detailTransaction() async {

@@ -23,9 +23,9 @@ void showErrorBottomSheet(BuildContext context, String message) {
                 "Terjadi Kesalahan",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              Gap(10),
+              Gap(5),
               Text(
-                message,
+                "Server sedang bermasalah 🙏",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14),
               ),

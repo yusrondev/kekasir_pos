@@ -7,6 +7,7 @@ import 'package:kekasir/models/product.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
+import 'package:kekasir/pages/profile/edit_profile_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
 import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
@@ -71,6 +72,7 @@ class MainApp extends StatelessWidget {
           return FormProductPage(product: product);
         },
         '/profile' : (context) => IndexProfilePage(),
+        '/profile/edit' : (context) => EditProfilePage(),
         '/stock' : (context) => IndexStockPage(),
         '/stock-detail' : (context) => DetailStockPage(),
         '/transaction' : (context) => IndexTransactionPage(),

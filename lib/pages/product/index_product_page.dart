@@ -33,12 +33,15 @@ class _IndexProductPageState extends State<IndexProductPage> {
   TextEditingController searchField = TextEditingController();
 
   Timer? _debounce;
+  Timer? _debounceHit;
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      fetchProducts(searchField.text);
+      _debounceHit = Timer(Duration(milliseconds: 500), () {
+        fetchProducts(searchField.text);
+      });
     }
 
     searchField.addListener(() {
@@ -53,6 +56,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
   void dispose() {
     _debounce?.cancel();
     searchField.dispose();
+    _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
   }
 

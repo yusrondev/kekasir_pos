@@ -59,7 +59,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
       });
 
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(Duration(milliseconds: 500), () {
+      _debounce = Timer(Duration(milliseconds: 800), () {
         fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
       });
     });

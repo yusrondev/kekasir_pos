@@ -53,7 +53,7 @@ class ApiServiceTransaction {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception("Gagal mengambil data pendapatan");
+      throw Exception("Server sedang bermasalah");
     }
   }
 
