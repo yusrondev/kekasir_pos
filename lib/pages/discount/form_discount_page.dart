@@ -6,6 +6,7 @@ import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -57,7 +58,12 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
     int? parseIntNominal = int.tryParse(originNominal);
     
     if (parseIntNominal != null && parseOriginPriceFinal != null && parseIntNominal > parseOriginPriceFinal) {
-      showErrorSnackbar(context, 'Nominal tidak boleh melebihi harga produk!');
+      DialogHelper.customDialog(
+        context: context,
+        onConfirm: () {},
+        content: "Nominal tidak boleh melebihi harga produk!",
+        actionButton: false,
+      );
       return;
     }
 
