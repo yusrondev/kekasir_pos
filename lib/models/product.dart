@@ -1,7 +1,7 @@
 class Product {
   final int id, availableStock, quantity;
   final String code, name, shortDescription, image;
-  final double price;
+  final double price, nominalDiscount, finalPrice;
 
   Product({
     required this.id,
@@ -11,7 +11,9 @@ class Product {
     required this.image,
     required this.price,
     required this.availableStock,
-    this.quantity = 0, // Default 0
+    this.quantity = 0, // Default 0,
+    required this.nominalDiscount,
+    required this.finalPrice
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,8 @@ class Product {
       price: double.parse(json['price'] ?? 0),
       availableStock: json['available_stock'] ?? 0,
       quantity: json['quantity'] ?? 0,
+      nominalDiscount: double.parse(json['nominal_discount'] ?? 0),
+      finalPrice: double.parse(json['final_price'] ?? 0),
     );
   }
 
@@ -37,6 +41,8 @@ class Product {
       price: price,
       availableStock: availableStock,
       quantity: quantity ?? this.quantity,
+      nominalDiscount: nominalDiscount,
+      finalPrice: finalPrice,
     );
   }
 

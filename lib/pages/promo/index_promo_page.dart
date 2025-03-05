@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -103,7 +104,75 @@ class _IndexPromoPageState extends State<IndexPromoPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Text(product.name),
+          child: Row(
+            children: [
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      product.image,
+                      width: 65,
+                      height: 65,
+                      fit: BoxFit.fitWidth,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/empty.png', 
+                          width: 65,
+                          height: 65,
+                          fit: BoxFit.fitWidth,
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: 65,
+                    height: 65,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 65,
+                    height: 65,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/icons/gear.png',
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Gap(10),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSemiBoldMD(text: product.name),
+                      if(product.shortDescription != "") ... [
+                        ShortDesc(text: product.shortDescription, maxline: 2)
+                      ]else ... [
+                        Gap(2)
+                      ],
+                      Row(
+                        children: [
+                          PriceTag(text: formatRupiah(product.price)),
+                          Gap(5),
+                          StockTag(text: 'Stok : ${product.availableStock.toString()}'),
+                        ],
+                      ),
+                      Gap(5),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       }
     );
