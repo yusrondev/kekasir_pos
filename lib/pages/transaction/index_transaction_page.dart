@@ -588,7 +588,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     borderRadius: BorderRadius.circular(10)
                   ),
                   child: Text("Checkout", style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     color: primaryColor,
                     fontWeight: FontWeight.w600
                   ),),

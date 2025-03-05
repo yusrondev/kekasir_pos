@@ -10,7 +10,6 @@ import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/logger.dart';
 
 class FormDiscountPage extends StatefulWidget {
   final Product? product;
