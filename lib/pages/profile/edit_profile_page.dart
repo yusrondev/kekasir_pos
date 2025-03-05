@@ -18,6 +18,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
@@ -89,6 +90,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       final result = await AuthService().updateUser(
         nameController.text,
+        addressController.text,
         emailController.text,
         oldPasswordController.text.isNotEmpty ? oldPasswordController.text : null,
         passwordController.text.isNotEmpty ? passwordController.text : null,
@@ -140,6 +142,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       emailController.text = dataMe!['email'];
       nameController.text = dataMe['name'];
+      addressController.text = dataMe['address'];
     });
 
     return Scaffold(
@@ -154,6 +157,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
             label: "Nama",
             placeholder: "Misalnya kekasir...",
             maxLine: 1,
+            maxLength: 100,
+            border: true,
+          ),
+          CustomTextField(
+            controller: addressController,
+            label: "Alamat",
+            placeholder: "Misalnya Jalan Pemuda...",
+            maxLine: 3,
+            maxLength: 255,
             border: true,
           ),
           CustomTextField(
@@ -177,6 +189,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: GestureDetector(
           onTap: () {
             if (passwordController.text != "") {
+              if (passwordController.text.length < 6) {
+                showErrorSnackbar(context, "Jumlah password minimal 6 karakter");
+                return;
+              }
               showInputDialog();
             }else{
               updateUser();

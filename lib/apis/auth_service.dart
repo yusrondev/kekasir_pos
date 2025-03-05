@@ -102,10 +102,11 @@ class AuthService {
     return jsonDecode(userData);
   }
 
-  Future<Map<String, dynamic>> updateUser(String name, String email, [String? oldPassword, String? password]) async {
+  Future<Map<String, dynamic>> updateUser(String name, String address, String email, [String? oldPassword, String? password]) async {
     Map<String, dynamic> body = {
       'name': name,
       'email': email,
+      'address' : address
     };
 
     if (password != null && password.isNotEmpty) {

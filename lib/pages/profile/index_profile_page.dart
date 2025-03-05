@@ -106,9 +106,23 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
 
         Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Image.asset('assets/images/empty.png', width: 70,)
+            Container(
+              width: 65,
+              height: 65,
+              decoration: BoxDecoration(
+                color: Color(0xfff1f2f6),
+                borderRadius: BorderRadius.circular(100)
+              ),
+              child: Center(
+                child: Text(
+                  dataMe?['name'].substring(0, 1).toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff57606f),
+                    fontSize: 35
+                  ),
+                ),
+              ),
             ),
             Gap(10),
             LabelSemiBold(
@@ -118,7 +132,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               text: dataMe?['email'],
             ),
             Gap(10),
-            InkWell(
+            GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/profile/edit', arguments: dataMe).then((value){
                   if (value == true) {
@@ -129,14 +143,14 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
-                  color: primaryColor,
+                  border: Border.all(color: primaryColor),
                   borderRadius: BorderRadius.circular(15)
                 ),
                 child: Text(
                   textAlign: TextAlign.center,
                   "Edit Profile",
                   style: TextStyle(
-                    color: Colors.white
+                    color: primaryColor
                   ),
                 )
               ),

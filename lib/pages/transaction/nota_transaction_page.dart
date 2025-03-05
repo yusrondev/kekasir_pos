@@ -80,7 +80,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         LabelSemiBold(text: data['merchant_name']),
-                        // ShortDesc(text: "Alamat Toko",)
+                        SizedBox(width: 160,child: Text(data['merchant_address'], style: TextStyle(fontSize: 12),))
                       ],
                     ),
                     Column(
