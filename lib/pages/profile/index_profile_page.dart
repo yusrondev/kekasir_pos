@@ -148,7 +148,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                 ),
                 child: Text(
                   textAlign: TextAlign.center,
-                  "Edit Profile",
+                  "Edit Profil",
                   style: TextStyle(
                     color: primaryColor
                   ),

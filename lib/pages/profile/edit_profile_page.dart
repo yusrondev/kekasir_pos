@@ -145,7 +145,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       emailController.text = dataMe!['email'];
       nameController.text = dataMe['name'];
-      addressController.text = dataMe['address'];
+      addressController.text = dataMe['address'] ?? "";
     });
 
     return Scaffold(
