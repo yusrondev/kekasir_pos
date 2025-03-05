@@ -10,7 +10,7 @@ void showErrorSnackbar(BuildContext context, String message) {
       content: Text(message, style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 13,
-        color: Color(0xffff4757)
+        color: Colors.black
       ),),
     ),
   );

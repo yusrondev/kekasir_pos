@@ -9,6 +9,7 @@ import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
 import 'package:kekasir/pages/profile/edit_profile_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
+import 'package:kekasir/pages/discount/form_discount_page.dart';
 import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
@@ -83,6 +84,10 @@ class MainApp extends StatelessWidget {
         },
         '/checkout' : (context) => CheckoutTransactionPage(),
         '/nota' : (context) => NotaTransactionPage(),
+        '/form-discount' : (context) { 
+          final product = ModalRoute.of(context)!.settings.arguments as Product;
+          return FormDiscountPage(product : product);
+        },
       },
     );
   }

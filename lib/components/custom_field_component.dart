@@ -134,7 +134,7 @@ class CustomTextFieldNumber extends StatelessWidget {
             counterText: "",
             border: InputBorder.none,
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            hintText: placeholder ?? "Masukkan teks",
+            hintText: placeholder ?? "Masukkan nominal",
             hintStyle: TextStyle(
               color: Color(0xffB1B9C3), 
               fontSize: 14
@@ -218,7 +218,7 @@ class PriceField extends StatelessWidget {
             counterText: "",
             border: InputBorder.none,
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            hintText: placeholder ?? "Masukkan teks",
+            hintText: placeholder ?? "Masukkan nominal",
             hintStyle: TextStyle(
               color: Color(0xffB1B9C3), 
               fontSize: 14

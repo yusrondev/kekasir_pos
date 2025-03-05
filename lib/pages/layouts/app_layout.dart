@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/pages/home_page.dart';
 import 'package:kekasir/pages/product/index_product_page.dart';
-import 'package:kekasir/pages/promo/index_promo_page.dart';
+import 'package:kekasir/pages/discount/index_discount_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
 
@@ -39,8 +39,8 @@ class _AppLayoutState extends State<AppLayout> {
     {
       "icon": "assets/icons/ic_discount_inactive.png",
       "icon_active": "assets/icons/ic_discount_active.png",
-      "page_name": "Promo",
-      "fragment": IndexPromoPage()
+      "page_name": "Diskon",
+      "fragment": IndexDiscountPage()
     },
   ];
 
