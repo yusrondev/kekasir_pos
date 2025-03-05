@@ -194,6 +194,7 @@ class _FormProductPageState extends State<FormProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Form(
           key: _formKey,
           child: ListView(
@@ -289,12 +290,14 @@ class _FormProductPageState extends State<FormProductPage> {
                 ],
               ),
               CustomTextField(
+                border: true,
                 controller: nameController,
                 label: "Nama *",
                 placeholder: "Misalnya Snack...",
                 maxLine: 1,
               ),
               CustomTextField(
+                border: true,
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
                 placeholder: "Misalnya Varian Pedas Banget (Tidak Wajib)...",
@@ -305,6 +308,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 label: "Harga *",
                 placeholder: "Misalnya 10.000...",
                 maxLine: 1,
+                border: true,
               ),
               // adjust stock
               LineSM(),
@@ -370,8 +374,10 @@ class _FormProductPageState extends State<FormProductPage> {
                 shortDescription: "Jumlah penyesuaian stok",
                 placeholder: "Misalnya 20...",
                 maxLength: 5,
+                border: true,
               ),
               CustomTextField(
+                border: true,
                 maxLine: 3,
                 maxLength: 150,
                 controller: description,

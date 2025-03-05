@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
   final String? shortDescription;
   final int? maxLength;
   final int? maxLine;
+  final bool border;
 
   const CustomTextField({
     super.key,
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.placeholder,
     this.maxLine,
+    this.border = false
   });
 
   @override
@@ -44,7 +46,10 @@ class CustomTextField extends StatelessWidget {
         Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white
+          color: Colors.white,
+          border: Border.all(
+            color: border == true ? secondaryColor : Colors.transparent,
+          ),
         ),
         child: TextField(
           cursorColor: primaryColor,
@@ -76,6 +81,7 @@ class CustomTextFieldNumber extends StatelessWidget {
   final String? shortDescription;
   final int? maxLength;
   final int? maxLine;
+  final bool? border;
 
   const CustomTextFieldNumber({
     super.key,
@@ -85,6 +91,7 @@ class CustomTextFieldNumber extends StatelessWidget {
     this.controller,
     this.placeholder,
     this.maxLine,
+    this.border = false
   });
 
   @override
@@ -108,7 +115,10 @@ class CustomTextFieldNumber extends StatelessWidget {
         Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white
+          color: Colors.white,
+          border: Border.all(
+            color: border == true ? secondaryColor : Colors.transparent,
+          ),
         ),
         child: TextField(
           cursorColor: primaryColor,
@@ -146,6 +156,7 @@ class PriceField extends StatelessWidget {
   final int? maxLength;
   final int? maxLine;
   final Function(String)? onChanged;
+  final bool border;
 
   final NumberFormat _currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
@@ -158,6 +169,7 @@ class PriceField extends StatelessWidget {
     this.placeholder,
     this.maxLine,
     this.onChanged,
+    this.border = false
   });
 
   String _formatCurrency(String value) {
@@ -187,7 +199,10 @@ class PriceField extends StatelessWidget {
         Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white
+          color: Colors.white,
+          border: Border.all(
+            color: border == true ? secondaryColor : Colors.transparent,
+          ),
         ),
         child: TextField(
           cursorColor: primaryColor,
@@ -232,6 +247,7 @@ class PasswordTextField extends StatefulWidget {
   final String? shortDescription;
   final int? maxLength;
   final int? maxLine;
+  final bool border;
 
   const PasswordTextField({
     super.key,
@@ -241,6 +257,7 @@ class PasswordTextField extends StatefulWidget {
     this.shortDescription, 
     this.maxLength, 
     this.maxLine,
+    this.border = false
   });
 
   @override
@@ -271,7 +288,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white
+          color: Colors.white,
+          border: Border.all(
+            color: widget.border == true ? secondaryColor : Colors.transparent,
+          ),
         ),
         child: TextField(
           cursorColor: primaryColor,

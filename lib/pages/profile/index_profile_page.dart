@@ -118,19 +118,24 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               text: dataMe?['email'],
             ),
             Gap(10),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(15)
-              ),
-              child: Text(
-                textAlign: TextAlign.center,
-                "Edit Profile",
-                style: TextStyle(
-                  color: Colors.white
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/profile/edit', arguments: dataMe);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(15)
                 ),
-              )
+                child: Text(
+                  textAlign: TextAlign.center,
+                  "Edit Profile",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                )
+              ),
             )
           ],
         ),
