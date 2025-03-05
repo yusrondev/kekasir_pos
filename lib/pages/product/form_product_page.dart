@@ -323,7 +323,6 @@ class _FormProductPageState extends State<FormProductPage> {
                   decoration: BoxDecoration(
                     color: availableStock > 5 ? bgSuccess : bgDanger,
                     borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: availableStock > 5 ?successColor : dangerColor, width: 0.7)
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
