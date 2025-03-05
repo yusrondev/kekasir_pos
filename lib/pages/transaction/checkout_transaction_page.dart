@@ -431,7 +431,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                           decoration: BoxDecoration(
                                             color: primaryColor,
                                             borderRadius: BorderRadius.circular(
-                                              15,
+                                              10,
                                             ),
                                           ),
                                           child: GestureDetector(

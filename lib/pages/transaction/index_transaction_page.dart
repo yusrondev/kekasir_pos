@@ -362,7 +362,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         final product = products[index];
 
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: 7,horizontal: 7),
           margin: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -518,7 +518,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     ),
                   ),
                   Gap(5),
-                  LabelSemiBold(text: formatRupiah(product.price * quantities[index])),
+                  LabelSemiBold(text: formatRupiah(product.price * quantities[index]), primary: true,),
                 ],
               ),
             ],

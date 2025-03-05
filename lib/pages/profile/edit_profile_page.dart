@@ -7,6 +7,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/logger.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -96,6 +97,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         passwordController.text.isNotEmpty ? passwordController.text : null,
       );
 
+      Logger().d(result);
+
       if (result["success"] == true) {
 
         if (oldPasswordController.text.isNotEmpty) {
@@ -154,7 +157,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Gap(15),
           CustomTextField(
             controller: nameController,
-            label: "Nama",
+            label: "Nama Toko",
             placeholder: "Misalnya kekasir...",
             maxLine: 1,
             maxLength: 100,

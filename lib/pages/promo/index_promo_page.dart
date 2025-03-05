@@ -72,7 +72,7 @@ class _IndexPromoPageState extends State<IndexPromoPage> {
           PageTitle(text: "Manajemen Promo"),
           Gap(15),
           SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
-          Gap(15),
+          Gap(10),
           buildListProducts(),
         ],
       ),
@@ -98,7 +98,7 @@ class _IndexPromoPageState extends State<IndexPromoPage> {
         final product = products[index];
 
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: 7,horizontal: 7),
           margin: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -106,45 +106,22 @@ class _IndexPromoPageState extends State<IndexPromoPage> {
           ),
           child: Row(
             children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      product.image,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  product.image,
+                  width: 65,
+                  height: 65,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/images/empty.png', 
                       width: 65,
                       height: 65,
                       fit: BoxFit.fitWidth,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/empty.png', 
-                          width: 65,
-                          height: 65,
-                          fit: BoxFit.fitWidth,
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    width: 65,
-                    height: 65,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 65,
-                    height: 65,
-                    child: Center(
-                      child: Image.asset(
-                        'assets/icons/gear.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  )
-                ],
+                    );
+                  },
+                ),
               ),
               Gap(10),
               Expanded(

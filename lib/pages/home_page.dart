@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 14),
       child: Container(
-        padding: EdgeInsets.only(top: 15, bottom: 15),
+        padding: EdgeInsets.only(top: 10, bottom: 10),
         decoration: BoxDecoration(
           color: ligthSky,
           borderRadius: BorderRadius.circular(20),
