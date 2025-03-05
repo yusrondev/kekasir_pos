@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
 
@@ -67,8 +69,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   Gap(5),
                   Expanded(
-                    child: ButtonPrimary(
-                      text: "Simpan",
+                    child: GestureDetector(
+                      onTap: () => updateUser(),
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
                     )
                   ),
                 ],
@@ -78,6 +83,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
         );
       },
     );
+  }
+
+  Future<void> updateUser() async {
+    try {
+      final result = await AuthService().updateUser(
+        nameController.text,
+        emailController.text,
+        oldPasswordController.text.isNotEmpty ? oldPasswordController.text : null,
+        passwordController.text.isNotEmpty ? passwordController.text : null,
+      );
+
+      if (result["success"] == true) {
+
+        if (oldPasswordController.text.isNotEmpty) {
+          Navigator.pop(context);
+        }
+        
+        showSuccessSnackbar(context, result["message"]); 
+        Navigator.pop(context, true);
+
+      } else {
+        // Ambil pesan error
+        String errorMessage = result["message"];
+
+        // Cek apakah ada detail error di dalam "errors"
+        if (result.containsKey("errors")) {
+          Map<String, dynamic> errors = result["errors"];
+          List<String> errorList = [];
+
+          // Loop melalui setiap field error
+          errors.forEach((key, value) {
+            if (value is List) {
+              errorList.addAll(value.map((e) => "$e")); // Format field: pesan error
+            } else {
+              errorList.add("$key: $value");
+            }
+          });
+
+          // Gabungkan semua error menjadi satu string
+          errorMessage = errorList.join("\n");
+        }
+
+        showErrorSnackbar(context, errorMessage);
+      }
+    } catch (e) {
+      showErrorSnackbar(context, "Terjadi kesalahan: ${e.toString()}");
+    }
   }
 
   @override
@@ -125,7 +177,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: GestureDetector(
           onTap: () {
             if (passwordController.text != "") {
-                showInputDialog();
+              showInputDialog();
+            }else{
+              updateUser();
             }
           },
           child: ButtonPrimary(

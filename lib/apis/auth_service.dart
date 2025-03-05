@@ -7,6 +7,16 @@ class AuthService {
   final String? apiUrl = dotenv.env['API_URL'];
   final String? bearerToken = dotenv.env['BEARER_TOKEN'];
   final String? apiToken = dotenv.env['API_TOKEN'];
+
+  Future<Map<String, String>> get _headers async {
+    String? token = await getToken();
+    return {
+      'Authorization': 'Bearer $token',
+      'X-API-TOKEN': apiToken!,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+  }
   
   Future<bool> login(String email, String password) async {
     final response = await http.post(
@@ -90,5 +100,38 @@ class AuthService {
     String? userData = prefs.getString('user');
     if (userData == null) return null;
     return jsonDecode(userData);
+  }
+
+  Future<Map<String, dynamic>> updateUser(String name, String email, [String? oldPassword, String? password]) async {
+    Map<String, dynamic> body = {
+      'name': name,
+      'email': email,
+    };
+
+    if (password != null && password.isNotEmpty) {
+      body['old_password'] = oldPassword ?? ''; 
+      body['password'] = password;
+    }
+
+    final response = await http.put(
+      Uri.parse('$apiUrl/user/update'),
+      headers: await _headers,
+      body: jsonEncode(body),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {
+        "success": true,
+        "message": data["message"] ?? "User berhasil diperbarui"
+      };
+    } else {
+      return {
+        "success": false,
+        "message": data["message"] ?? "Gagal memperbarui user",
+        "errors": data["errors"] ?? {} // Tambahkan errors jika ada
+      };
+    }
   }
 }

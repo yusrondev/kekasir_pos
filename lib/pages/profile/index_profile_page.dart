@@ -120,7 +120,11 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
             Gap(10),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, '/profile/edit', arguments: dataMe);
+                Navigator.pushNamed(context, '/profile/edit', arguments: dataMe).then((value){
+                  if (value == true) {
+                    me();
+                  }
+                });
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
