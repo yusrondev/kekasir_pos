@@ -124,7 +124,12 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(width: 150,child: Label(text: '${detail['product']['name']} (${detail['quantity']})')),
+                  Row(
+                    children: [
+                      SizedBox(width: 120,child: Text('${detail['product']['name']}')),
+                      Label(text:'(${detail['quantity']})'),
+                    ],
+                  ),
                   Label(text: detail['product']['price'],)
                 ],
               ),
