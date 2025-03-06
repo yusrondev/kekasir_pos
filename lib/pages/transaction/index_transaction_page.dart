@@ -555,7 +555,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Total : $totalItem item",
+                    "Total : $totalItem barang",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14
