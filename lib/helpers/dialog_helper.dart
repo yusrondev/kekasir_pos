@@ -74,13 +74,11 @@ class DialogHelper {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
+                    child: ButtonPrimaryOutline(
+                      text: "Batal",
+                      onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: ButtonPrimaryOutline(
-                        text: "Batal",
-                      ),
                     )
                   ),
                   Gap(5),

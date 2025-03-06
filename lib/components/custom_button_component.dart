@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:kekasir/utils/colors.dart';
 
 class ButtonPrimary extends StatelessWidget {
+
+  final VoidCallback? onPressed;
 
   final String? text;
 
   const ButtonPrimary({
     super.key,
-    this.text
+    this.text, 
+    this.onPressed
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: Color(0xff3554C1),
-        borderRadius: BorderRadius.circular(10)
+    return OutlinedButton(
+      onPressed: onPressed, // Gunakan fungsi yang diberikan dari luar
+      style: OutlinedButton.styleFrom(
+        backgroundColor: primaryColor, // Warna background
+        side: BorderSide(color: primaryColor, width: 1), // Warna & ketebalan garis
+        foregroundColor: Colors.white, // Warna teks & ikon
       ),
-      child: Center(
-        child: Text(text ?? "", style: TextStyle(
-          color: Colors.white,
-          fontSize: 17
-        ),),
-      ),
+      child: Text(text ?? "", style: TextStyle(
+        color: Colors.white,
+        fontSize: 17
+      )),
     );
   }
 }
@@ -31,24 +34,22 @@ class ButtonPrimaryOutline extends StatelessWidget {
 
   final String? text;
 
-  const ButtonPrimaryOutline({
-    super.key,
-    this.text
-  });
+  final VoidCallback? onPressed;
+
+  const ButtonPrimaryOutline({super.key, this.onPressed, this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xff3554C1)),
-        borderRadius: BorderRadius.circular(10)
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: primaryColor, width: 1), // Warna & ketebalan garis
+        foregroundColor: primaryColor, // Warna teks & ikon
       ),
-      child: Center(
-        child: Text(text ?? "", style: TextStyle(
+      onPressed: onPressed,
+      child: Text(text ?? "", style: TextStyle(
           color: Color(0xff3554C1),
           fontSize: 17
-        ),),
+        )
       ),
     );
   }
