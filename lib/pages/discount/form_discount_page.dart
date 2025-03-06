@@ -70,7 +70,9 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
     final store = await ApiServicePromo().updatePromo(productId, persentaseController.text, originNominal);
     
     if (store == true) {
-      Navigator.pop(context, true);
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
       showSuccessSnackbar(context, "Berhasil menyimpan promo!");
     }else{
       showErrorSnackbar(context, "Opps ada yang salah!");
