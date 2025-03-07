@@ -7,6 +7,7 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -67,10 +68,22 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
       return;
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+      barrierColor: Colors.white.withValues(alpha: 0.8),
+      builder: (BuildContext context) {
+        return Center(
+          child: CustomLoader.showCustomLoader()
+        );
+      },
+    );
+
     final store = await ApiServicePromo().updatePromo(productId, persentaseController.text, originNominal);
     
     if (store == true) {
       if (mounted) {
+        Navigator.pop(context, true);
         Navigator.pop(context, true);
       }
       showSuccessSnackbar(context, "Berhasil menyimpan promo!");
@@ -99,7 +112,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
         child: GestureDetector(
           onTap: () {
-            updatePromo(widget.product!.id);
+            DialogHelper.showCreateConfirmation(context: context, onConfirm: () => updatePromo(widget.product!.id));
           },
           child: ButtonPrimary(
             text: "Simpan",
