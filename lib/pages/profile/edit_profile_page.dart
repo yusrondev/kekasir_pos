@@ -25,6 +25,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    
+    // Ambil dataMe dari arguments jika ada
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final dataMe = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+      if (dataMe != null) {
+        emailController.text = dataMe['email'];
+        nameController.text = dataMe['name'];
+        addressController.text = dataMe['address'] ?? "";
+      }
+    });
+  }
+
   void showInputDialog() {
     showDialog(
       context: context,
@@ -142,15 +158,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    final dataMe = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    
-    setState(() {
-      emailController.text = dataMe!['email'];
-      nameController.text = dataMe['name'];
-      addressController.text = dataMe['address'] ?? "";
-    });
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView(
@@ -192,8 +199,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-        child: GestureDetector(
-          onTap: () {
+        child: ButtonPrimary(
+          onPressed: () {
             if (passwordController.text != "") {
               if (passwordController.text.length < 6) {
                 showErrorSnackbar(context, "Jumlah password minimal 6 karakter");
@@ -204,9 +211,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               DialogHelper.showCreateConfirmation(context: context, onConfirm: () => updateUser());
             }
           },
-          child: ButtonPrimary(
-            text: "Simpan",
-          ),
+          text: "Simpan",
         ),
       ),
     );
