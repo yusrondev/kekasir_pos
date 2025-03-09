@@ -41,6 +41,7 @@ class ButtonPrimaryOutline extends StatelessWidget {
     return Container(
       height: 50,
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: Color(0xff3554C1)),
         borderRadius: BorderRadius.circular(10)
       ),

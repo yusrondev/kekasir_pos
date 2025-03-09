@@ -6,10 +6,12 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class IndexProfilePage extends StatefulWidget {
   const IndexProfilePage({super.key});
@@ -40,6 +42,16 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
     );
+  }
+
+  void openWhatsApp() async {
+    final Uri url = Uri.parse(
+        'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan!');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      showErrorSnackbar(context, 'Tidak dapat membuka Whatsapp');
+    }
   }
 
   Future<void> me() async {
@@ -226,6 +238,26 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                   ),
                   Icon(Icons.keyboard_arrow_right_outlined, size: 15)
                 ],
+              ),
+              LineXM(),
+              GestureDetector(
+                onTap: () => openWhatsApp(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/customer-service.png',
+                          width: 20,
+                        ),
+                        Gap(10),
+                        Text("Hubungi Admin Kekasir", style: TextStyle(fontWeight: FontWeight.w600),),
+                      ],
+                    ),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  ],
+                ),
               ),
             ],
           ),

@@ -25,13 +25,18 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
+  Timer? _debounceHit;
 
   bool isLoadProduct = true;
 
   @override
   void initState(){
     super.initState();
-    fetchProducts(keyword.text);
+    if (mounted) {
+      _debounceHit = Timer(Duration(milliseconds: 500), () {
+        fetchProducts(keyword.text);
+      });
+    }
 
     keyword.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -45,6 +50,7 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
   @override
   void dispose() {
     _debounce?.cancel();
+    _debounceHit?.cancel();
     keyword.dispose();
     super.dispose();
   }
@@ -67,15 +73,22 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: defaultPadding,
-        children: [
-          PageTitle(text: "Diskon Produk"),
-          Gap(15),
-          SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
-          Gap(10),
-          buildListProducts(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          fetchProducts(keyword.text);
+        },
+        color: primaryColor,
+        backgroundColor: Colors.white,
+        child: ListView(
+          padding: defaultPadding,
+          children: [
+            PageTitle(text: "Diskon Produk"),
+            Gap(15),
+            SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
+            Gap(10),
+            buildListProducts(),
+          ],
+        ),
       ),
     );
   }
