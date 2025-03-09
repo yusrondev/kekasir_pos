@@ -21,6 +21,7 @@ void showSuccessSnackbar(BuildContext context, String message) {
     SnackBar(
       backgroundColor: bgSuccess,
       showCloseIcon: true,
+      closeIconColor: successColor,
       content: Text(message, style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 13,

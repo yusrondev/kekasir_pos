@@ -221,7 +221,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LabelSemiBold(text: cartItem.productName),
+                          Label(text: cartItem.productName),
                           if (cartItem.productShortDescription != "") ...[
                             ShortDesc(text: cartItem.productShortDescription),
                           ] else ...[

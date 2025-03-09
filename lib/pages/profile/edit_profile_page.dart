@@ -4,6 +4,7 @@ import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -133,7 +134,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         showErrorSnackbar(context, errorMessage);
       }
     } catch (e) {
-      showErrorSnackbar(context, "Terjadi kesalahan: ${e.toString()}");
+      if (mounted) {
+        showErrorSnackbar(context, "Terjadi kesalahan: ${e.toString()}");
+      }
     }
   }
 
@@ -198,7 +201,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               }
               showInputDialog();
             }else{
-              updateUser();
+              DialogHelper.showCreateConfirmation(context: context, onConfirm: () => updateUser());
             }
           },
           child: ButtonPrimary(
