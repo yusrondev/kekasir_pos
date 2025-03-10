@@ -8,6 +8,7 @@ class CustomLoader {
       'assets/animations/loader.json',  // Ganti dengan path animasi Lottie kamu
       width: width,
       height: height,
+      frameRate: const FrameRate(90)
     );
   }
 }

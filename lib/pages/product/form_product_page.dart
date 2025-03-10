@@ -31,6 +31,7 @@ class _FormProductPageState extends State<FormProductPage> {
   // controllers field
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController costController = TextEditingController();
   TextEditingController shortDescriptionController = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
@@ -125,14 +126,23 @@ class _FormProductPageState extends State<FormProductPage> {
       );
 
       String priceValue = _cleanCurrency(priceController.text);
+      String costValue = _cleanCurrency(costController.text);
 
       if (nameController.text == "") {
         showErrorSnackbar(context, 'Pastikan nama produk sudah terisi!');
+        Navigator.pop(context, true);
         return;
       }
 
       if (priceController.text == "") {
         showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
+        Navigator.pop(context, true);
+        return;
+      }      
+
+      if (costController.text == "" && selectedValue.toString() == "Masuk") {
+        showErrorSnackbar(context, 'Pastikan harga beli sudah terisi!');
+        Navigator.pop(context, true);
         return;
       }      
 
@@ -145,6 +155,7 @@ class _FormProductPageState extends State<FormProductPage> {
           shortDescriptionController.text,
           "Masuk",
           quantity.text,
+          costValue,
           description.text
         );
       } else {
@@ -175,6 +186,7 @@ class _FormProductPageState extends State<FormProductPage> {
           shortDescriptionController.text,
           selectedValue.toString(),
           quantity.text,
+          costValue,
           description.text
         );
       }
@@ -200,7 +212,7 @@ class _FormProductPageState extends State<FormProductPage> {
           child: ListView(
             padding: defaultPadding,
             children: [
-              PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk", back: true),
+              PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
               Gap(10),
               Column(
                 children: [
@@ -375,6 +387,15 @@ class _FormProductPageState extends State<FormProductPage> {
                 maxLength: 5,
                 border: true,
               ),
+              if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
+                PriceField(
+                  controller: costController,
+                  label: "Harga Beli *",
+                  placeholder: "Misalnya 150.000...",
+                  maxLine: 1,
+                  border: true,
+                ),
+              ],
               CustomTextField(
                 border: true,
                 maxLine: 3,

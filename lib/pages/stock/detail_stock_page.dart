@@ -5,15 +5,17 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_stock.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/models/product.dart';
 import 'package:kekasir/models/stock.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class DetailStockPage extends StatefulWidget {
-  const DetailStockPage({super.key});
-
+  final Product? product;
+  const DetailStockPage({super.key, this.product});
   @override
   State<DetailStockPage> createState() => _DetailStockPageState();
 }
@@ -21,7 +23,6 @@ class DetailStockPage extends StatefulWidget {
 class _DetailStockPageState extends State<DetailStockPage> {
   ApiServiceStock apiServiceStock = ApiServiceStock();
   List<Stock> stocks = [];
-  int? productId;
   bool isLoading = true;
   num? totalStockIn = 0;
   num? totalStockOut = 0;
@@ -34,15 +35,9 @@ class _DetailStockPageState extends State<DetailStockPage> {
     super.initState();
     // Menjalankan kode setelah widget dibangun sepenuhnya
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final args = ModalRoute.of(context)!.settings.arguments;
-      if (args != null && args is int) {
-        _debounceHit = Timer(Duration(milliseconds: 500), () {
-          setState(() {
-            productId = args;
-          });
-          fetchMutation(productId!);
-        });
-      }
+      _debounceHit = Timer(Duration(milliseconds: 500), () {
+        fetchMutation(widget.product!.id);
+      });
     });
   }
 
@@ -74,14 +69,14 @@ class _DetailStockPageState extends State<DetailStockPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          fetchMutation(productId!);
+          fetchMutation(widget.product!.id);
         },
         color: primaryColor,
         backgroundColor: Colors.white,
         child: ListView(
           padding: defaultPadding,
           children: [
-            PageTitle(text: "Detail Mutasi", back: true),
+            PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
             Gap(15),
             Container(
               padding: EdgeInsets.all(10),
@@ -293,7 +288,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
                         ),
                         Gap(10),
                         Center(
-                          child: Text('${stock.quantity.toString()} pcs', 
+                          child: Text('${stock.quantity.toString()} Pcs', 
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14
@@ -305,9 +300,21 @@ class _DetailStockPageState extends State<DetailStockPage> {
                     Label(text: stock.createdAt)
                   ],
                 ),
-                if(stock.description != '') ... [
+                if(stock.description != '' && stock.costPrice == 0) ... [
                   LineSM(),
                   ShortDescSM(text : stock.description, maxline: 5,),
+                ] else if(stock.description != '' && stock.costPrice != 0) ... [
+                  LineSM(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ShortDescSM(text : stock.description, maxline: 5,),
+                      PriceTag(text: 'Harga beli : ${formatRupiah(stock.costPrice)}'),
+                    ],
+                  ),
+                ]else ... [
+                  LineSM(),
+                  PriceTag(text: 'Harga beli : ${formatRupiah(stock.costPrice)}'),
                 ]
               ],
             ),

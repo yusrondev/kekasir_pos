@@ -107,7 +107,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
         final product = products[index];
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/stock-detail', arguments: product.id);
+            Navigator.pushNamed(context, '/stock-detail', arguments: product);
           },
           child: Container(
             margin: EdgeInsets.only(bottom: 10),

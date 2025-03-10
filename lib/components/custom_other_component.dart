@@ -76,16 +76,16 @@ class _StockBadgeState extends State<StockBadge> {
       child: Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: widget.availableStock > 5 ?bgSuccess : bgDanger,
+          color: widget.availableStock > 5 ?bgSuccess : dangerColor,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
+            bottomLeft: Radius.circular(5),
+            topRight: Radius.circular(5),
           )
         ),
         child: Text(
           'Tersisa ${widget.availableStock.toString()}',
           style: TextStyle(
-            color: widget.availableStock > 5 ? successColor : dangerColor,
+            color: widget.availableStock > 5 ? successColor : bgDanger,
             fontSize: 13,
             fontWeight: FontWeight.w600
           ),

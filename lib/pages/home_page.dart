@@ -64,6 +64,8 @@ class _HomePageState extends State<HomePage> {
           lastMonthRevenue = data['data']['last_month'];
         });
 
+        Logger().d(data);
+
         // Simpan data revenue ke storage setelah diambil dari API
         saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue);
       }
@@ -239,7 +241,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 10),
         decoration: BoxDecoration(
-          color: ligthSky,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(

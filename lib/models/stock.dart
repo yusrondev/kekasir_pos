@@ -2,12 +2,14 @@ class Stock {
   final int? transactionId;
   final int id, productId, userId, quantity;
   final String? description, type, createdAt;
+  final double costPrice;
 
   Stock({
     required this.id, 
     required this.productId, 
     required this.userId, 
     required this.quantity, 
+    required this.costPrice,
     this.description, 
     this.transactionId,
     this.createdAt, 
@@ -21,6 +23,9 @@ class Stock {
       userId : json['user_id'],
       transactionId : json['transaction_id'],
       quantity : json['quantity'],
+      costPrice: (json['cost_price'] != null) 
+    ? double.tryParse(json['cost_price'].toString()) ?? 0.0
+    : 0.0,
       description : json['description'] ?? "",
       type : json['type'],
       createdAt : json['created_at'],
@@ -29,7 +34,7 @@ class Stock {
 
   @override
   String toString() {
-    return 'id : $id, productId : $productId, userId : $userId, quantity : $quantity, description : $description, type : $type, created_at : $createdAt';
+    return 'id : $id, productId : $productId, userId : $userId, quantity : $quantity, cost_price : $costPrice, description : $description, type : $type, created_at : $createdAt';
   }
 }
 

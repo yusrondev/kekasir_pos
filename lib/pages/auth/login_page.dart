@@ -6,6 +6,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -37,28 +38,32 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    bool success = await authService.login(
-      emailController.text,
-      passwordController.text,
-    );
+    try {
+      String? error = await authService.login(
+        emailController.text,
+        passwordController.text,
+      );
 
-    if (success) {
-      if (mounted) { // Pastikan widget masih terpasang
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AppLayout()),
-        );
+      if (error == null) {
+        if (mounted) { // Pastikan widget masih terpasang
+          setState(() {
+            isLoading = false;
+          });
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AppLayout()),
+          );
+        }
+      } else {
+        if (mounted) { // Pastikan widget masih terpasang
+          setState(() {
+            isLoading = false;
+          });
+          showErrorSnackbar(context, error);
+        }
       }
-    } else {
-      if (mounted) { // Pastikan widget masih terpasang
-        setState(() {
-          isLoading = false;
-        });
-        showErrorSnackbar(context, 'Ada yang salah...');
-      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
     }
   }
 
@@ -242,9 +247,12 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () { 
                   login(); 
                 },
-                child: ButtonPrimary(
-                  text: "Masuk",
-                ),
+                child: Container(
+                  width: double.infinity,
+                  child: ButtonPrimary(
+                    text: "Masuk",
+                  ),
+                )
               ),
               Gap(20),
               Row(

@@ -75,7 +75,10 @@ class MainApp extends StatelessWidget {
         '/profile' : (context) => IndexProfilePage(),
         '/profile/edit' : (context) => EditProfilePage(),
         '/stock' : (context) => IndexStockPage(),
-        '/stock-detail' : (context) => DetailStockPage(),
+        '/stock-detail' : (context) {
+          final product = ModalRoute.of(context)!.settings.arguments as Product;
+          return DetailStockPage(product : product);
+        },
         '/transaction' : (context) => IndexTransactionPage(),
         '/transaction/mutation' : (context) => MutationTransactionPage(),
         '/transaction/detail' : (context) {

@@ -456,8 +456,9 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                   LineXM(),
                                   LabelSemiBold(text: "Nominal Pecahan"),
                                   Gap(5),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                  Wrap(
+                                    spacing: 10,
+                                    runSpacing: 10,
                                     children: List.generate(
                                       nominalList.length,
                                       (index) {
@@ -465,12 +466,11 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                           onTap: () {
                                             setModalState(() {
                                               selectedIndex = index;
-                                              
+
                                               if (index == 0) {
                                                 nominalCustomer.text = grandTotal;
-                                              }else{
-                                                nominalCustomer.text =
-                                                    nominalList[index];
+                                              } else {
+                                                nominalCustomer.text = nominalList[index];
                                               }
                                             });
 
@@ -478,26 +478,25 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               selectedIndex = index;
                                             });
                                           },
-                                          child: Container(
-                                            margin: EdgeInsets.only(right: 10),
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  selectedIndex == index
-                                                      ? bgSuccess
-                                                      : lightColor,
-                                              borderRadius:BorderRadius.circular(5)
+                                          child: ConstrainedBox( // Memberikan batasan lebar
+                                            constraints: BoxConstraints(
+                                              minWidth: 70, // Lebar minimal
+                                              maxWidth: 80, // Lebar maksimal
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                nominalList[index],
-                                                style: TextStyle(
-                                                  color:
-                                                      selectedIndex == index
-                                                          ? successColor
-                                                          : Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
+                                            child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: selectedIndex == index ? bgSuccess : lightColor,
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  nominalList[index],
+                                                  style: TextStyle(
+                                                    color: selectedIndex == index ? successColor : Colors.black,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -506,6 +505,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                       },
                                     ),
                                   ),
+
                                 ],
                               ),
                             ),

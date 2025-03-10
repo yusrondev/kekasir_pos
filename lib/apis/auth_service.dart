@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/web.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -18,12 +19,14 @@ class AuthService {
     };
   }
   
-  Future<bool> login(String email, String password) async {
+  Future<String?> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$apiUrl/login'),
       headers: {'X-API-TOKEN': apiToken!},
       body: {'email': email, 'password': password},
     );
+
+    Logger().d(response.body); // Log respons dari server
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -31,9 +34,10 @@ class AuthService {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', token);
-      return true;
+      return null; // Jika login berhasil, tidak ada error
     } else {
-      return false;
+      final errorData = jsonDecode(response.body);
+      return errorData['error']; // Mengembalikan pesan error dari API
     }
   }
 

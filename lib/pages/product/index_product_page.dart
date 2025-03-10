@@ -148,7 +148,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        mainAxisExtent: 190
+        mainAxisExtent: 200
       ), 
       itemBuilder: (context, index){
         final product = products[index];
@@ -180,7 +180,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                       children: [
                         Center(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(5),
                             child: Image.network(
                               product.image,
                               width: 160,
@@ -208,6 +208,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                   ShortDesc(text: product.shortDescription),
                   Gap(5),
                 ],
+                LineSM(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
