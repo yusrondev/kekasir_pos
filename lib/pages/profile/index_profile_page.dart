@@ -63,6 +63,11 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
         throw Exception("Gagal mengambil data pengguna.");
       }
 
+      if (data.isEmpty) {
+        Navigator.pop(context);
+        throw Exception("Gagal mengambil data pengguna.");
+      }
+
       if (mounted) {
         setState(() {
           dataMe = data;
@@ -127,7 +132,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               ),
               child: Center(
                 child: Text(
-                  dataMe?['name'].substring(0, 1).toUpperCase(),
+                  dataMe?['name'].substring(0, 1).toUpperCase() ?? "",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Color(0xff57606f),

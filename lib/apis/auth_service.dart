@@ -90,7 +90,7 @@ class AuthService {
 
       return data;
     } else {
-      return null;
+      throw Exception("Server sedang bermasalah");
     }
   }
 

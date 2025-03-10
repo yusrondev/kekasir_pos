@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
+import 'package:logger/web.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 
 class HomePage extends StatefulWidget {
@@ -67,6 +68,7 @@ class _HomePageState extends State<HomePage> {
         saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue);
       }
     } catch (e) {
+      Logger().d(e.toString());
       // ignore: use_build_context_synchronously
       showErrorBottomSheet(context, e.toString());
     }
