@@ -8,7 +8,8 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/web.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +30,11 @@ class _HomePageState extends State<HomePage> {
 
   Timer? _debounceHit;
 
+  TutorialCoachMark? tutorialCoachMark;
+  final GlobalKey _buttonKey = GlobalKey();
+  final GlobalKey _otherIncomeHint = GlobalKey();
+  final GlobalKey _revenueKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -36,12 +42,90 @@ class _HomePageState extends State<HomePage> {
     _debounceHit = Timer(Duration(milliseconds: 500), () {
       getRevenue(); // Update data dari API setelah 1 detik
     });
+
+    // Cek apakah user sudah melihat tutorial sebelumnya
+    checkTutorialStatus();
+  }
+
+  Future<void> checkTutorialStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool hasSeenTutorial = prefs.getBool('has_seen_tutorial_home') ?? false;
+
+    if (!hasSeenTutorial) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        showTutorial();
+      });
+    }
   }
 
   @override
   void dispose() {
     _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
+  }
+
+   void showTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: [
+        TargetFocus(
+          identify: "Revenue",
+          keyTarget: _revenueKey,
+          shape: ShapeLightFocus.RRect,
+          contents: [
+            TargetContent(
+              align: ContentAlign.right,
+              child: Text(
+                "Ini adalah total pendapatan Anda dalam bulan ini",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        TargetFocus(
+          identify: "Button",
+          keyTarget: _buttonKey,
+          shape: ShapeLightFocus.Circle,
+          contents: [
+            TargetContent(
+              align: ContentAlign.left,
+              child: Text(
+                "Tekan tombol ini untuk mendapatkan informasi akun",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        TargetFocus(
+          identify: "OtherIncome",
+          keyTarget: _otherIncomeHint,
+          alignSkip: Alignment.topRight,
+          shape: ShapeLightFocus.RRect,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              child: Text(
+                "Klik bagian ini untuk melihat detail dari semua ringkasan pendapatan Anda",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+      ],
+      onFinish: () async {
+        // Tandai bahwa user sudah melihat tutorial
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('has_seen_tutorial_home', true);
+      },
+      onSkip: () {
+        // Inisialisasi SharedPreferences
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setBool('has_seen_tutorial_home', true);
+        });
+
+        return true; // Harus mengembalikan bool agar sesuai dengan tipe data yang diharapkan
+      },
+
+    )..show(context: context);
   }
 
   /// Ambil data revenue dari SharedPreferences
@@ -76,10 +160,10 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           thisMonthRevenue = data!['data']['this_month'];
           lastMonthRevenue = data['data']['last_month'];
-          totalPurchases = data!['data']['total_purchases'];
-          grossProfit = data!['data']['gross_profit'];
-          netProfit = data!['data']['net_profit'];
-          hpp = data!['data']['hpp'];
+          totalPurchases = data['data']['total_purchases'];
+          grossProfit = data['data']['gross_profit'];
+          netProfit = data['data']['net_profit'];
+          hpp = data['data']['hpp'];
         });
 
         Logger().d(data);
@@ -165,7 +249,7 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             Navigator.pushNamed(context, '/profile');
           },
-          child: Image.asset('assets/icons/menu.png', width: 23),
+          child: Image.asset('assets/icons/menu.png', width: 23, key: _buttonKey,),
         ),
       ],
     );
@@ -184,6 +268,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                key: _revenueKey,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Pendapatan bulan ini", style: TextStyle(fontSize: 13)),
@@ -275,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image.asset('assets/sections/stock.png', width: 55),
+                    child: Image.asset('assets/sections/stock.png', width: 50),
                   ),
                   Gap(5),
                   Text(
@@ -295,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.asset(
                       'assets/sections/transaction.png',
-                      width: 55,
+                      width: 50,
                     ),
                   ),
                   Gap(5),
@@ -310,7 +395,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.asset('assets/sections/report.png', width: 55),
+                  child: Image.asset('assets/sections/report.png', width: 50),
                 ),
                 Gap(5),
                 Text(
@@ -327,6 +412,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildOtherIncome() {
     return Padding(
+      key: _otherIncomeHint,
       padding: EdgeInsets.symmetric(horizontal: 14),
       child: GestureDetector(
         onTap: () {
@@ -442,21 +528,21 @@ class _HomePageState extends State<HomePage> {
           );
         },
         child: Container(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
+          padding: EdgeInsets.symmetric(horizontal:14, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 8,
-                    height: 8,
+                    width: 9,
+                    height: 9,
                     decoration: BoxDecoration(
-                      color: Color(0xff34495e),
+                      color: Color(0xfff9ca24),
                       borderRadius: BorderRadius.circular(100)
                     ),
                   ),
@@ -473,8 +559,8 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Container(
-                    width: 8,
-                    height: 8,
+                    width: 9,
+                    height: 9,
                     decoration: BoxDecoration(
                       color: primaryColor,
                       borderRadius: BorderRadius.circular(100)
@@ -493,8 +579,8 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Container(
-                    width: 8,
-                    height: 8,
+                    width: 9,
+                    height: 9,
                     decoration: BoxDecoration(
                       color: Color(0xffe74c3c),
                       borderRadius: BorderRadius.circular(100)
