@@ -414,11 +414,11 @@ class CustomDropdownField extends StatelessWidget {
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-            hint: Text(hint ?? "Pilih opsi"),
+            hint: Text(hint ?? "Pilih opsi", style: TextStyle(fontWeight: FontWeight.normal),),
             items: items.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value, style: TextStyle(fontWeight: FontWeight.normal),),
               );
             }).toList(),
             onChanged: onChanged,

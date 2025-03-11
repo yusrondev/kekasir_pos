@@ -16,6 +16,7 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:logger/web.dart';
 
 class FormProductPage extends StatefulWidget {
   final Product? product;
@@ -35,6 +36,7 @@ class _FormProductPageState extends State<FormProductPage> {
   TextEditingController shortDescriptionController = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
+  final ScrollController mainListView= ScrollController();
 
   File? _image;
   String? urlImage;
@@ -62,6 +64,16 @@ class _FormProductPageState extends State<FormProductPage> {
         labelStock = "Butuh Penyesuaian Stok?";
         descStock = "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya";
       });
+    }
+  }
+
+  void scrollToBottom() {
+    if (mainListView.hasClients) {
+      mainListView.animateTo(
+        mainListView.position.maxScrollExtent,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
     }
   }
   
@@ -210,6 +222,7 @@ class _FormProductPageState extends State<FormProductPage> {
         body: Form(
           key: _formKey,
           child: ListView(
+            controller: mainListView,
             padding: defaultPadding,
             children: [
               PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
@@ -375,36 +388,41 @@ class _FormProductPageState extends State<FormProductPage> {
                   onChanged: (newValue) {
                     setState(() {
                       selectedValue = newValue;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        scrollToBottom();
+                      });
                     });
                   },
                 ),
               ],
               isEdit == false ? Gap(10) : Gap(0),
-              CustomTextFieldNumber(
-                controller: quantity,
-                label: "Jumlah",
-                shortDescription: "Jumlah penyesuaian stok",
-                placeholder: "Misalnya 20...",
-                maxLength: 5,
-                border: true,
-              ),
-              if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
-                PriceField(
-                  controller: costController,
-                  label: "Harga Beli *",
-                  placeholder: "Misalnya 150.000...",
-                  maxLine: 1,
+              if(isEdit == false || selectedValue != null) ... [
+                CustomTextFieldNumber(
+                  controller: quantity,
+                  label: "Jumlah",
+                  shortDescription: "Jumlah penyesuaian stok",
+                  placeholder: "Misalnya 20...",
+                  maxLength: 5,
                   border: true,
                 ),
-              ],
-              CustomTextField(
-                border: true,
-                maxLine: 3,
-                maxLength: 150,
-                controller: description,
-                label: "Deskripsi",
-                placeholder: "Misalnya karena barang rusak / stok awal (Tidak Wajib)",
-              )
+                if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
+                  PriceField(
+                    controller: costController,
+                    label: "Harga Beli *",
+                    placeholder: "Misalnya 150.000...",
+                    maxLine: 1,
+                    border: true,
+                  ),
+                ],
+                CustomTextField(
+                  border: true,
+                  maxLine: 3,
+                  maxLength: 150,
+                  controller: description,
+                  label: "Deskripsi",
+                  placeholder: "Misalnya karena barang rusak / stok awal (Tidak Wajib)",
+                )
+              ]
             ],
           ),
         ),

@@ -191,7 +191,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           PasswordTextField(
             shortDescription: "Isi jika Anda ingin merubah password untuk akun ini",
             controller: passwordController,
-            label: "Password",
+            label: "Ubah Password",
             placeholder: "******",
             border: true,
           )
