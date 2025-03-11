@@ -56,7 +56,12 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xffEDF1F9),
-        textTheme: GoogleFonts.lexendTextTheme()
+         textTheme: TextTheme(
+            bodyLarge: TextStyle(fontFamily: 'Lexend'), 
+            bodyMedium: TextStyle(fontFamily: 'Lexend'),
+            titleLarge: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w600), // SemiBold
+            titleMedium: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w700), // Bold
+          ),
       ),
       debugShowCheckedModeBanner: false,
       home: FutureBuilder(
