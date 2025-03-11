@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -27,6 +28,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   ApiServiceTransaction apiServiceTransaction = ApiServiceTransaction();
 
   List<CartItem> cartItems = [];
+  BuildContext? _dialogContext;
 
   TextEditingController nominalCustomer = TextEditingController();
 
@@ -69,6 +71,37 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
     }
   }
 
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.white.withOpacity(0.8),
+      builder: (BuildContext dialogContext) {
+        _dialogContext = dialogContext; // Simpan context dari dialog yang aktif
+        return Align(
+          alignment: Alignment.center,
+          child: Material( // Tambahkan Material agar terlihat jelas
+            color: Colors.transparent,
+            child: SizedBox(
+              width: 150,
+              height: 150,
+              child: CustomLoader.showCustomLoader(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void closeLoadingDialog() {
+    if (mounted) {
+      if (_dialogContext != null) {
+        Navigator.pop(_dialogContext!);
+        _dialogContext = null; // Reset setelah ditutup
+      } 
+    }
+  }
+
   Future<void> saveTransaction() async {
     try {
       final paid = nominalCustomer.text.replaceAll(RegExp(r'[^0-9]'), '');
@@ -81,6 +114,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
       if (paidNominal < gtFinal) {
         if (context.mounted) {
+          closeLoadingDialog();
           DialogHelper.customDialog(
             context: context,
             onConfirm: () {},
@@ -102,6 +136,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       });
 
       if (context.mounted) {
+        closeLoadingDialog();
         Navigator.pushNamed(context, '/nota', arguments: transactionData);
       }
     } catch (e) {
@@ -426,18 +461,18 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                       ),
                                       Gap(10),
                                       Expanded(
-                                        child: Container(
-                                          padding: EdgeInsets.all(13),
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            DialogHelper.showFinishPayment(context: context, onConfirm: () => saveTransaction());
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(13),
+                                            decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius: BorderRadius.circular(
+                                                10,
+                                              ),
                                             ),
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              saveTransaction();
-                                            },
                                             child: Text(
                                               "Selesai",
                                               textAlign: TextAlign.center,

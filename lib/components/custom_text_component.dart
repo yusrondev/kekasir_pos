@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:kekasir/utils/colors.dart';
 
+class LabelSM extends StatelessWidget {
+  final String? text;
+  const LabelSM({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text ?? "",
+      maxLines: 1,
+      style: TextStyle(
+        fontSize: 12,
+        overflow: TextOverflow.ellipsis
+      ),
+    );
+  }
+}
+
 class Label extends StatelessWidget {
   final String? text;
   const Label({super.key, this.text});

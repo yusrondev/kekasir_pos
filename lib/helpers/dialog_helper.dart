@@ -264,14 +264,69 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text(title != "" ? '$title' : "Oops!"),
+          title: Text(title != "" ? '$title' : "Gagal"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('$content'),
               if(actionButton == true) ... [
-                Gap(20),
+                Gap(15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: ButtonPrimaryOutline(
+                          text: "Batal",
+                        ),
+                      )
+                    ),
+                    Gap(5),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          onConfirm();
+                        },
+                        child: ButtonPrimary(
+                          text: "Yakin",
+                        ),
+                      )
+                    ),
+                  ],
+                )
+              ]
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  static void customDialogRingkasan({
+    required BuildContext context,
+    required VoidCallback onConfirm,
+    String? title = "",
+    Widget? content,
+    bool? actionButton
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(title != "" ? '$title' : "Gagal"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              content as Widget,
+              if(actionButton == true) ... [
+                Gap(15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

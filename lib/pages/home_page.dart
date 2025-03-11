@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
+import 'package:kekasir/components/custom_other_component.dart';
+import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/web.dart';
@@ -20,6 +22,10 @@ class _HomePageState extends State<HomePage> {
 
   String thisMonthRevenue = "";
   String lastMonthRevenue = "";
+  String totalPurchases = "";
+  String grossProfit = "";
+  String netProfit = "";
+  String hpp = "";
 
   Timer? _debounceHit;
 
@@ -44,14 +50,22 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       thisMonthRevenue = prefs.getString('this_month_revenue') ?? "";
       lastMonthRevenue = prefs.getString('last_month_revenue') ?? "";
+      totalPurchases = prefs.getString('total_purchases') ?? "";
+      grossProfit = prefs.getString('gross_profit') ?? "";
+      netProfit = prefs.getString('net_profit') ?? "";
+      hpp = prefs.getString('hpp') ?? "";
     });
   }
 
   /// Simpan data revenue ke SharedPreferences
-  Future<void> saveRevenueToStorage(String thisMonth, String lastMonth) async {
+  Future<void> saveRevenueToStorage(String thisMonth, String lastMonth, String totalPurchases, String grossProfit, String netProfit, String hpp) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('this_month_revenue', thisMonth);
     await prefs.setString('last_month_revenue', lastMonth);
+    await prefs.setString('total_purchases', totalPurchases);
+    await prefs.setString('gross_profit', grossProfit);
+    await prefs.setString('net_profit', netProfit);
+    await prefs.setString('hpp', hpp);
   }
 
   /// Ambil data revenue dari API
@@ -62,12 +76,16 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           thisMonthRevenue = data!['data']['this_month'];
           lastMonthRevenue = data['data']['last_month'];
+          totalPurchases = data!['data']['total_purchases'];
+          grossProfit = data!['data']['gross_profit'];
+          netProfit = data!['data']['net_profit'];
+          hpp = data!['data']['hpp'];
         });
 
         Logger().d(data);
 
         // Simpan data revenue ke storage setelah diambil dari API
-        saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue);
+        saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue, totalPurchases, grossProfit, netProfit, hpp);
       }
     } catch (e) {
       Logger().d(e.toString());
@@ -106,6 +124,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            Gap(15),
+            buildOtherIncome(),
             Gap(15),
             buildSectionFeatures(),
           ],
@@ -166,7 +186,7 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pendapatan Bulan Ini", style: TextStyle(fontSize: 13)),
+                  Text("Pendapatan bulan ini", style: TextStyle(fontSize: 13)),
                   thisMonthRevenue.isEmpty
                       ? Container(
                         margin: EdgeInsets.only(top: 10),
@@ -300,6 +320,198 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildOtherIncome() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 14),
+      child: GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, setModalState) {
+                  return FractionallySizedBox(
+                    heightFactor: 0.8,
+                    child: Container(
+                      padding: EdgeInsets.all(14),
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                           Align(
+                            alignment: Alignment.topCenter,
+                            child: Container(
+                              height: 5,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: Color(0xffced6e0),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          Gap(15),
+                          LabelSemiBold(text: "📌 Pendapatan bulan ini"),
+                          Text(
+                            thisMonthRevenue,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
+                          LabelSemiBold(text: "📌 Pendapatan bulan lalu"),
+                          Text(
+                            lastMonthRevenue,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
+                          LabelSemiBold(text: "💰 Total biaya modal barang yang sudah terjual (HPP)"),
+                          Text(
+                            hpp,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
+                          LabelSemiBold(text: "💰 Total biaya pembelian barang (semua stok masuk)"),
+                          Text(
+                            totalPurchases,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
+                          LabelSemiBold(text: "📈 Laba kotor (pendapatan - HPP)"),
+                          Text(
+                            grossProfit,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
+                          LabelSemiBold(text: "📊 Laba bersih (pendapatan - total modal pembelian)"),
+                          Text(
+                            netProfit,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          Gap(20),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Color(0xfff6e58d)),
+                              color: Color(0xfff6e58d).withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Text("Jika laba bersih minus berarti jumlah pembelian barang lebih besar dari pendapatan yang diperoleh. Namun, ini bisa disebabkan oleh stok barang yang belum terjual. Jika barang yang sudah dibeli laku terjual, keuntungan akan meningkat.", style: TextStyle(
+                              fontWeight: FontWeight.w600
+                            )),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              );
+            },
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Color(0xff34495e),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                  ),
+                  Gap(5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSM(text: "Laba Kotor"),
+                      LabelSemiBold(text: grossProfit,)
+                    ],
+                  ),
+                ]
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                  ),
+                  Gap(5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSM(text: "Laba Bersih"),
+                      LabelSemiBold(text: netProfit,)
+                    ],
+                  ),
+                ]
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Color(0xffe74c3c),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                  ),
+                  Gap(5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSM(text: "Total Belanja"),
+                      LabelSemiBold(text: totalPurchases,)
+                    ],
+                  )
+                ]
+              )
+            ],
+          ),
         ),
       ),
     );

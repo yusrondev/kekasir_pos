@@ -334,13 +334,14 @@ class _FormProductPageState extends State<FormProductPage> {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: availableStock > 5 ? bgSuccess : bgDanger,
+                    border: Border.all(color: availableStock > 5 ? successColor : dangerColor),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tersisa $availableStock untuk produk ini",
+                        "Tersisa $availableStock pcs untuk produk ini",
                         style: TextStyle(
                           color: availableStock > 5 ? successColor : dangerColor,
                           fontWeight: FontWeight.w600
@@ -348,7 +349,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/stock-detail', arguments: productId);
+                          Navigator.pushNamed(context, '/stock-detail', arguments: widget.product);
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
