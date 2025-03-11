@@ -24,7 +24,8 @@ class ButtonPrimary extends StatelessWidget {
       ),
       child: Text(text ?? "", style: TextStyle(
         color: Colors.white,
-        fontSize: 17
+        fontSize: 17,
+        fontFamily: 'Lexend'
       )),
     );
   }
@@ -48,7 +49,8 @@ class ButtonPrimaryOutline extends StatelessWidget {
       onPressed: onPressed,
       child: Text(text ?? "", style: TextStyle(
           color: Color(0xff3554C1),
-          fontSize: 17
+          fontSize: 17,
+          fontFamily: 'Lexend'
         )
       ),
     );
@@ -75,7 +77,8 @@ class ButtonSecondary extends StatelessWidget {
       child: Center(
         child: Text(text ?? "", style: TextStyle(
           color: Color(0xff2f3542),
-          fontSize: 17
+          fontSize: 17,
+          fontFamily: 'Lexend'
         ),),
       ),
     );
@@ -102,7 +105,8 @@ class ButtonSecondaryOutline extends StatelessWidget {
       child: Center(
         child: Text(text ?? "", style: TextStyle(
           color: Color(0xff747d8c),
-          fontSize: 17
+          fontSize: 17,
+          fontFamily: 'Lexend'
         ),),
       ),
     );
