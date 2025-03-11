@@ -13,7 +13,7 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Konfirmasi"),
+          title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +63,7 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Konfirmasi"),
+          title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +111,7 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Konfirmasi"),
+          title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Konfirmasi"),
+          title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,7 +211,7 @@ class DialogHelper {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Konfirmasi"),
+          title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
