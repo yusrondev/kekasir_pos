@@ -25,6 +25,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Pastikan Flutter terinisialisasi
   await initializeDateFormatting('id_ID', null); // Inisialisasi data lokal
 
+  GoogleFonts.config.allowRuntimeFetching = false;
+
   WidgetsFlutterBinding.ensureInitialized(); // untuk disable rotasi
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
