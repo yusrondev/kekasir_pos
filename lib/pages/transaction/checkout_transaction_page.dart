@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
@@ -514,8 +515,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                           },
                                           child: ConstrainedBox( // Memberikan batasan lebar
                                             constraints: BoxConstraints(
-                                              minWidth: 70, // Lebar minimal
-                                              maxWidth: 80, // Lebar maksimal
+                                              minWidth: 90, // Lebar minimal
+                                              maxWidth: 100, // Lebar maksimal
                                             ),
                                             child: Container(
                                               padding: EdgeInsets.all(10),
@@ -550,21 +551,9 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                   );
             },
 
-            child: Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                cartItems.isEmpty ? "Kembali" : "Selesaikan Pembayaran",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            child: ButtonPrimary(
+              text: cartItems.isEmpty ? "Kembali" : "Selesaikan Pembayaran",
+            )
           ),
         )
         : SizedBox.shrink();

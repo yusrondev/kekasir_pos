@@ -270,7 +270,6 @@ class _DetailStockPageState extends State<DetailStockPage> {
                     Row(
                       children: [
                         Container(
-                          width: 60,
                           padding: EdgeInsets.all(7),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
