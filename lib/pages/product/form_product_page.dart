@@ -47,7 +47,7 @@ class _FormProductPageState extends State<FormProductPage> {
   int availableStock = 0;
   bool hasBeenChange = false;
   int productId = 0;
-  String? storeQuantity = "";
+  String? storeQuantity = "Masukkan harga...";
 
   @override
   void initState() {
@@ -69,9 +69,9 @@ class _FormProductPageState extends State<FormProductPage> {
     quantity.addListener(() {
       String? wording = "";
       if (quantity.text != "") {
-        wording = 'dari total ${quantity.text} pcs';
+        wording = "Dari ${quantity.text} pcs total harganya berapa?";
       }else{
-        wording = '';
+        wording = "Masukkan harga...";
       }
 
       setState(() {
@@ -425,7 +425,7 @@ class _FormProductPageState extends State<FormProductPage> {
                   PriceField(
                     controller: costController,
                     label: "Total Harga Beli *",
-                    placeholder: "Masukkan harga $storeQuantity...",
+                    placeholder: "$storeQuantity",
                     maxLine: 1,
                     border: true,
                   ),
