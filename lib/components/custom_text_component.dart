@@ -198,7 +198,8 @@ class PriceTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
         color: bgSuccess,
-        borderRadius: BorderRadius.circular(5)
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: successColor, width: 0.5)
       ),
       child: Text(
         text ?? "",
@@ -225,7 +226,8 @@ class StockTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
         color: lightColor,
-        borderRadius: BorderRadius.circular(5)
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: primaryColor, width: 0.5)
       ),
       child: Text(
         text ?? "",
@@ -252,7 +254,8 @@ class DangerTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
         color: bgDanger,
-        borderRadius: BorderRadius.circular(5)
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: dangerColor, width: 0.5)
       ),
       child: Text(
         text ?? "",

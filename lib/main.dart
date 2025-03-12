@@ -10,6 +10,7 @@ import 'package:kekasir/pages/product/form_product_page.dart';
 import 'package:kekasir/pages/profile/edit_profile_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
 import 'package:kekasir/pages/discount/form_discount_page.dart';
+import 'package:kekasir/pages/report/index_report_page.dart';
 import 'package:kekasir/pages/stock/detail_stock_page.dart';
 import 'package:kekasir/pages/stock/index_stock_page.dart';
 import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
@@ -57,10 +58,10 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xffEDF1F9),
          textTheme: TextTheme(
-            bodyLarge: TextStyle(fontFamily: 'Lexend'), 
-            bodyMedium: TextStyle(fontFamily: 'Lexend'),
-            titleLarge: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w600), // SemiBold
-            titleMedium: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w700), // Bold
+            bodyLarge: TextStyle(fontFamily: 'Lexend', height: 1.2,), 
+            bodyMedium: TextStyle(fontFamily: 'Lexend', height: 1.2,),
+            titleLarge: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w600,  height: 1.2,), // SemiBold
+            titleMedium: TextStyle(fontFamily: 'Lexend', fontWeight: FontWeight.w700,  height: 1.2,), // Bold
           ),
       ),
       debugShowCheckedModeBanner: false,
@@ -98,6 +99,7 @@ class MainApp extends StatelessWidget {
           final product = ModalRoute.of(context)!.settings.arguments as Product;
           return FormDiscountPage(product : product);
         },
+        '/report' : (context) => IndexReportPage(),
       },
     );
   }

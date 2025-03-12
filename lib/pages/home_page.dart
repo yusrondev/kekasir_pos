@@ -391,18 +391,23 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset('assets/sections/report.png', width: 50),
-                ),
-                Gap(5),
-                Text(
-                  "Laporan",
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-                ),
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/report');              
+              },
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset('assets/sections/report.png', width: 50),
+                  ),
+                  Gap(5),
+                  Text(
+                    "Laporan",
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -534,7 +539,7 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Row(
                 children: [
@@ -556,26 +561,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ]
               ),
-              Row(
-                children: [
-                  Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                  ),
-                  Gap(5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LabelSM(text: "Laba Bersih"),
-                      LabelSemiBold(text: netProfit,)
-                    ],
-                  ),
-                ]
-              ),
+              // Row(
+              //   children: [
+              //     Container(
+              //       width: 9,
+              //       height: 9,
+              //       decoration: BoxDecoration(
+              //         color: primaryColor,
+              //         borderRadius: BorderRadius.circular(100)
+              //       ),
+              //     ),
+              //     Gap(5),
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         LabelSM(text: "Laba Bersih"),
+              //         LabelSemiBold(text: netProfit,)
+              //       ],
+              //     ),
+              //   ]
+              // ),
               Row(
                 children: [
                   Container(

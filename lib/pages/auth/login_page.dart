@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: Text('Konfirmasi Keluar'),
+        title: Text('Konfirmasi Keluar', style: TextStyle(fontFamily: 'Lexend'),),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

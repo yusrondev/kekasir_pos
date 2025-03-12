@@ -47,6 +47,7 @@ class _FormProductPageState extends State<FormProductPage> {
   int availableStock = 0;
   bool hasBeenChange = false;
   int productId = 0;
+  String? storeQuantity = "";
 
   @override
   void initState() {
@@ -64,6 +65,19 @@ class _FormProductPageState extends State<FormProductPage> {
         descStock = "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya";
       });
     }
+
+    quantity.addListener(() {
+      String? wording = "";
+      if (quantity.text != "") {
+        wording = 'dari total ${quantity.text} pcs';
+      }else{
+        wording = '';
+      }
+
+      setState(() {
+        storeQuantity = wording;
+      });
+    });
   }
 
   void scrollToBottom() {
@@ -173,17 +187,20 @@ class _FormProductPageState extends State<FormProductPage> {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
           showErrorSnackbar(context, 'Jumlah melebihi stok yang tersedia!');
+          Navigator.pop(context, true);
           return;
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
           showErrorSnackbar(context, 'Pastikan tipe penyesuaian sudah terpilih!');
+          Navigator.pop(context, true);
           return;
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
             showErrorSnackbar(context, 'Pastikan jumlah stok produk sudah terisi!');
+            Navigator.pop(context, true);
             return;
           }
         }
@@ -324,7 +341,7 @@ class _FormProductPageState extends State<FormProductPage> {
                 border: true,
                 controller: shortDescriptionController,
                 label: "Deskripsi Singkat",
-                placeholder: "Misalnya Varian Pedas Banget (Tidak Wajib)...",
+                placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
                 maxLine: 4,
               ),
               PriceField(
@@ -407,8 +424,8 @@ class _FormProductPageState extends State<FormProductPage> {
                 if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
                   PriceField(
                     controller: costController,
-                    label: "Harga Beli *",
-                    placeholder: "Misalnya 150.000...",
+                    label: "Total Harga Beli *",
+                    placeholder: "Masukkan harga $storeQuantity...",
                     maxLine: 1,
                     border: true,
                   ),
@@ -419,7 +436,7 @@ class _FormProductPageState extends State<FormProductPage> {
                   maxLength: 150,
                   controller: description,
                   label: "Deskripsi",
-                  placeholder: "Misalnya karena barang rusak / stok awal (Tidak Wajib)",
+                  placeholder: "Misalnya karena barang rusak / stok awal (tidak wajib)",
                 )
               ]
             ],
