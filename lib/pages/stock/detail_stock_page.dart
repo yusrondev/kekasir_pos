@@ -103,7 +103,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
         child: ListView(
           padding: defaultPadding,
           children: [
-            PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
+            PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 16 ? '${widget.product?.name.substring(0, 16)}...' : widget.product?.name } ", back: true),
             Gap(15),
             LabelSemiBold(text: "Periode",),
             ShortDesc(text: "Anda dapat menyesuaikan periode mutasi",),
@@ -121,7 +121,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
                   children: [
                     Icon(Icons.date_range, color: Color(0xffB1B9C3), size: 20,),
                     Gap(5),
-                    _selected == null ? Text(DateFormat('MM-yyyy').format(DateTime.now()), style: TextStyle(fontSize: 14),) : Text(DateFormat('MM-yyyy').format(_selected!), style: TextStyle(fontSize: 14))
+                    _selected == null ? Text(DateFormat('MM-yyyy').format(DateTime.now()), style: TextStyle(fontSize: 15),) : Text(DateFormat('MM-yyyy').format(_selected!), style: TextStyle(fontSize: 15))
                   ],
                 ),
               ),

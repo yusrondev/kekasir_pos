@@ -457,6 +457,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
       initialDate: initialDate,
       firstDate: widget.minDate ?? DateTime(2000), // Terapkan batasan minDate
       lastDate: DateTime(2100),
+      locale: Locale('id')
     );
 
     if (picked != null) {
@@ -494,7 +495,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
               hintText: "tanggal-bulan-tahun",
               hintStyle: TextStyle(fontSize: 13, color: darkColor),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
             readOnly: true,
             onTap: widget.enabled ? () => _selectDate(context) : null,

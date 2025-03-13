@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/models/product.dart';
@@ -65,6 +66,12 @@ class MainApp extends StatelessWidget {
           ),
       ),
       debugShowCheckedModeBanner: false,
+      locale: Locale('id'), // Set bahasa Indonesia
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: FutureBuilder(
         future: checkToken(),
         builder: (context, AsyncSnapshot<Widget> snapshot) {
