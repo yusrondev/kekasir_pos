@@ -409,7 +409,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           width: 65,
                           height: 65,
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withValues(alpha: 0.4),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -418,9 +418,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           height: 65,
                           child: Center(
                             child: Image.asset(
-                              'assets/icons/pen.png',
-                              width: 20,
-                              height: 20,
+                              'assets/icons/plus-minus.png',
+                              width: 25,
+                              height: 25,
                             ),
                           ),
                         )

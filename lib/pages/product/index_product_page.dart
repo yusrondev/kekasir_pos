@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -27,6 +26,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
   ApiService apiService = ApiService();
   List<Product> products = [];
   bool isLoading = true;
+  List<bool> tapped = [];
 
   var logger = Logger();
 
@@ -68,6 +68,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
       setState(() {
         products = data;
         isLoading = false;
+        tapped = List.generate(products.length, (index) => false);
       });
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
@@ -125,7 +126,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
             ),
             Gap(10),
             SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
-            Gap(14),
+            Gap(10),
             buildProductList()
           ],
         ),
@@ -148,24 +149,21 @@ class _IndexProductPageState extends State<IndexProductPage> {
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        mainAxisExtent: 200
+        mainAxisExtent: 190
       ), 
       itemBuilder: (context, index){
         final product = products[index];
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
-              if (value == true) {
-                setState(() {
-                  fetchProducts(searchField.text);
-                });
-              }
+            setState(() {
+               tapped[index] = !tapped[index];
             });
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: Colors.white,
+              border: Border.all(color: secondaryColor),
               borderRadius: BorderRadius.circular(10)
             ),
             child: Column(
@@ -178,56 +176,115 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     height: 100,
                     child: Stack(
                       children: [
-                        Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: Image.network(
-                              product.image,
-                              width: 160,
-                              height: 160,
-                              fit: BoxFit.fitWidth,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/empty.png', 
-                                  width: 155,
-                                  height: 155,
-                                  fit: BoxFit.fitWidth
-                                );
+                        Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  tapped[index] = !tapped[index];
+                                });
                               },
-                            )
-                          ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.network(
+                                  product.image,
+                                  width: 160,
+                                  height: 160,
+                                  fit: BoxFit.fitWidth,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/empty.png', 
+                                      width: 155,
+                                      height: 155,
+                                      fit: BoxFit.fitWidth
+                                    );
+                                  },
+                                )
+                              ),
+                            ),
+                            StockBadge(availableStock: product.availableStock),
+                            if( tapped[index] == true) ... [
+                              Container(
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
+                                          if (value == true) {
+                                            setState(() {
+                                              fetchProducts(searchField.text);
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(12),
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          borderRadius: BorderRadius.circular(10)
+                                        ),
+                                        child: Image.asset(
+                                          'assets/icons/pen.png',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    Gap(30),
+                                    GestureDetector(
+                                      onTap: () {
+                                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffe74c3c),
+                                          borderRadius: BorderRadius.circular(10)
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.close_rounded,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ]
+                          ],
                         ),
-                        StockBadge(availableStock: product.availableStock)
                       ],
                     ),
                   ),
                 ),
-                Gap(product.shortDescription == "" ? 20 : 3),
+                Gap(product.shortDescription == "" ? 20 : 7),
                 ProductName(text: product.name),
                 if(product.shortDescription != "") ... [
                   ShortDesc(text: product.shortDescription),
-                  Gap(5),
                 ],
                 LineSM(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    LabelSemiBold(text: formatRupiah(product.price), primary: true,),
-                    GestureDetector(
-                      onTap: () {
-                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          color: Color(0xffF2F4F8),
-                          borderRadius: BorderRadius.circular(20)
-                        ),
-                        child: Icon(
-                          Icons.close_rounded,
-                          color: Colors.black,
-                          size: 17,
-                        ),
+                    Text(
+                      formatRupiah(product.price),
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: primaryColor,
+                        fontWeight: FontWeight.w600
                       ),
                     )
                   ],
