@@ -85,7 +85,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
             PageTitle(text: "Mutasi Stok", back: true),
             Gap(15),
             SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
-            Gap(15),
+            Gap(10),
             buildListProduct(),
           ],
         ),

@@ -126,7 +126,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
             ),
             Gap(10),
             SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
-            Gap(14),
+            Gap(10),
             buildProductList()
           ],
         ),
