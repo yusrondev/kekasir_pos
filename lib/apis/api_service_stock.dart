@@ -24,8 +24,8 @@ class ApiServiceStock {
     return prefs.getString('access_token');
   }
 
-  Future<StockData> fetchMutation(int productId) async {
-    final response = await http.get(Uri.parse('$apiUrl/detail-stock/$productId'), headers: await _headers);
+  Future<StockData> fetchMutation(int productId, String date) async {
+    final response = await http.get(Uri.parse('$apiUrl/detail-stock/$productId?date=$date'), headers: await _headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['data'];

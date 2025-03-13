@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
@@ -111,7 +112,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
           },
           child: Container(
             margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.all(7),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10)
@@ -121,60 +122,35 @@ class _IndexStockPageState extends State<IndexStockPage> {
               children: [
                 Row(
                   children: [
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            product.image,
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.fitWidth,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/empty.png', 
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.fitWidth
-                              );
-                            },
-                          )
-                        ),
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.black.withValues(alpha: 0.3)
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Tersisa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 11)),
-                              Text("${product.availableStock}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23)),
-                              Text("PCS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 11)),
-                            ],
-                          ),
-                        ),
-                      ],
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        product.image,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.fitWidth,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/empty.png', 
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.fitWidth
+                          );
+                        },
+                      )
                     ),
                     Gap(10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(width: 150,child: LabelSemiBoldMD(text: product.name)),
-                        if(product.shortDescription != "") ... [
-                          SizedBox(width: 170,child: ShortDesc(text: product.shortDescription)),
-                        ]else ... [
-                          Gap(2)
-                        ],
-                        SizedBox(width: 150,child: LabelSemiBold(text: formatRupiah(product.price)))
+                        Gap(2),
+                        SizedBox(width: 150,child: Label(text: formatRupiah(product.price)))
                       ],
-                    )
+                    ),
                   ],
                 ),
-                
-                Icon(Icons.keyboard_arrow_right)
+                StockBadge(availableStock: product.availableStock),
               ],
             ),
           ),

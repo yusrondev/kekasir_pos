@@ -83,9 +83,9 @@ class _StockBadgeState extends State<StockBadge> {
           )
         ),
         child: Text(
-          'Tersisa ${widget.availableStock.toString()}',
+          'Tersisa ${widget.availableStock.toString()} pcs',
           style: TextStyle(
-            color: widget.availableStock > 5 ? successColor : bgDanger,
+            color: widget.availableStock > 5 ? successColor : Colors.white,
             fontSize: 13,
             fontWeight: FontWeight.w600
           ),

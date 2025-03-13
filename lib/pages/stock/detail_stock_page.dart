@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_stock.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
@@ -12,6 +13,7 @@ import 'package:kekasir/models/stock.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
 
 class DetailStockPage extends StatefulWidget {
   final Product? product;
@@ -28,6 +30,10 @@ class _DetailStockPageState extends State<DetailStockPage> {
   num? totalStockOut = 0;
   int? availableStock = 0;
 
+  String today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+  DateTime? _selected;
+
   Timer? _debounceHit;
 
   @override
@@ -36,7 +42,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
     // Menjalankan kode setelah widget dibangun sepenuhnya
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _debounceHit = Timer(Duration(milliseconds: 500), () {
-        fetchMutation(widget.product!.id);
+        fetchMutation(widget.product!.id, today);
       });
     });
   }
@@ -47,8 +53,8 @@ class _DetailStockPageState extends State<DetailStockPage> {
     super.dispose();
   }
 
-  Future<void> fetchMutation(int productId) async {
-    final data = await ApiServiceStock().fetchMutation(productId);    
+  Future<void> fetchMutation(int productId, String date) async {
+    final data = await ApiServiceStock().fetchMutation(productId, date);    
     try {
       if (mounted) {
         setState(() {
@@ -66,10 +72,31 @@ class _DetailStockPageState extends State<DetailStockPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    Future<void> showDate({
+      required BuildContext context
+    }) async {
+      final selectedDate = await showMonthPicker(
+        context: context,
+        initialDate: _selected ?? DateTime.now(),
+        firstDate: DateTime(2023),
+        lastDate: DateTime(DateTime.now().year, DateTime.now().month),
+      );
+
+      if (selectedDate != null && _selected != selectedDate) {
+        setState(() {
+          isLoading = true;
+          _selected = selectedDate;
+          fetchMutation(widget.product!.id, selectedDate.toString());
+        });
+      }
+    }
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () async {
-          fetchMutation(widget.product!.id);
+          fetchMutation(widget.product!.id, today);
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -78,27 +105,51 @@ class _DetailStockPageState extends State<DetailStockPage> {
           children: [
             PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
             Gap(15),
+            LabelSemiBold(text: "Periode",),
+            ShortDesc(text: "Anda dapat menyesuaikan periode mutasi",),
+            Gap(5),
+            GestureDetector(
+              onTap: () async => showDate(context: context),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: secondaryColor),
+                  borderRadius: BorderRadius.circular(8)
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.date_range, color: Color(0xffB1B9C3), size: 20,),
+                    Gap(5),
+                    _selected == null ? Text(DateFormat('MM-yyyy').format(DateTime.now()), style: TextStyle(fontSize: 14),) : Text(DateFormat('MM-yyyy').format(_selected!), style: TextStyle(fontSize: 14))
+                  ],
+                ),
+              ),
+            ),
+            Gap(10),
             Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: secondaryColor),
                 color: ligthSky
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LabelSemiBold(text: "Total Perhitungan Stok"),
+                  LabelSemiBold(text: "Total Perhitungan"),
                   Gap(8),
                   buildCounting(),
                 ],
               )
             ),
-            Gap(15),
+            Gap(10),
             Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: ligthSky
+                color: ligthSky,
+                border: Border.all(color: secondaryColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +212,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Color(0xfffc5c65),
+              color: Color(0xffb71540),
               borderRadius: BorderRadius.circular(8)
             ),
             child: Column(
@@ -259,7 +310,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
-              border: Border.all(color: secondaryColor.withValues(alpha: 0.5)),
+              border: Border.all(color: secondaryColor),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,14 +324,14 @@ class _DetailStockPageState extends State<DetailStockPage> {
                           padding: EdgeInsets.all(7),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: stock.type == "in" ? Color(0xff4A92A9) : Color(0xfffc5c65),
+                            color: stock.type == "in" ? Color(0xff4A92A9) : Color(0xffb71540),
                           ),
                           child: Center(
                             child: Text(stock.type == "in" ? "Masuk" : "Keluar", 
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14
+                                fontSize: 12
                               )
                             ),
                           )
