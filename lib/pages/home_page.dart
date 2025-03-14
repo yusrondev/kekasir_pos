@@ -23,7 +23,7 @@ class DashedBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = secondaryColor
+      ..color = primaryColor
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
@@ -301,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                 key: _revenueKey,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pendapatan bulan ini", style: TextStyle(fontSize: 13)),
+                  Text("Pendapatan bulan ini", style: TextStyle(fontSize: 14)),
                   thisMonthRevenue.isEmpty
                       ? Container(
                         margin: EdgeInsets.only(top: 10),
@@ -553,44 +553,99 @@ class _HomePageState extends State<HomePage> {
             },
           );
         },
-        child: CustomPaint(
-          size: Size(double.infinity, 80), // Sesuaikan dengan ukuran yang diinginkan
-          painter: DashedBorderPainter(),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Total Keuntungan", style: TextStyle(fontSize: 13)),
-                    Text(grossProfit.toString(), style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: primaryColor
-                    ))
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text("Total Belanja", style: TextStyle(fontSize: 13)),
-                    Text(totalPurchases.toString(), style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: primaryColor
-                    ))
-                  ],
-                )
-              ],
-            ),
+        child: Container(
+          padding: EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: secondaryColor)
           ),
-        ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Total keuntungan dan belanja di bulan ini", style: TextStyle(fontSize: 14)),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: primaryColor,
+                        border: Border.all(color: primaryColor)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Total keuntungan", style: TextStyle(fontSize: 12, color: Colors.white)),
+                          Text(grossProfit.toString(), style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white
+                          )),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(child: Text("Bulan Kemarin", style: TextStyle(fontSize: 10, color: primaryColor))),
+                                Expanded(child: Text(grossProfit.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor))),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Gap(10),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: primaryColor)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Total belanja", style: TextStyle(fontSize: 12, color: primaryColor)),
+                          Text(totalPurchases.toString(), style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor
+                          )),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: primaryColor)
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(child: Text("Bulan Kemarin", style: TextStyle(fontSize: 10, color: primaryColor))),
+                                Expanded(child: Text(grossProfit.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor))),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        )
       ),
     );
   }

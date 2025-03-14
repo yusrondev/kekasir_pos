@@ -349,10 +349,15 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     }
 
     if (isLoadProduct == false && products.isEmpty) {
-      return Center(
-        child: Label(text: "Data produk tidak ditemukan",),
+      return Column(
+        children: [
+          Gap(100),
+          EmptyProduct.showEmptyProduct(),
+          LabelSemiBold(text: "Data produk tidak ditemukan ..."),
+        ],
       );
     }
+    
     return ListView.builder(
       padding: EdgeInsets.all(0),
       physics: NeverScrollableScrollPhysics(),

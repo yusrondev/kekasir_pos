@@ -12,3 +12,15 @@ class CustomLoader {
     );
   }
 }
+
+class EmptyProduct {
+  // Fungsi untuk mengembalikan widget Lottie
+  static Widget showEmptyProduct() {
+    return Lottie.asset(
+      'assets/animations/empty.json',  // Ganti dengan path animasi Lottie kamu
+      width: 150,
+      height: 150,
+      frameRate: const FrameRate(90)
+    );
+  }
+}

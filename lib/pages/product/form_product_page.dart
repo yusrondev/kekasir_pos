@@ -222,8 +222,10 @@ class _FormProductPageState extends State<FormProductPage> {
       if (success == true) {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
+        // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
       } else {
+        // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
         showErrorSnackbar(context, 'Ada yang salah...');

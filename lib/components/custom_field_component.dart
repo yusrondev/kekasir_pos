@@ -347,16 +347,16 @@ class SearchTextField extends StatelessWidget {
         cursorColor: primaryColor,
         controller: controller,
         style: TextStyle(
-          fontSize: 14
+          fontSize: 15
         ),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: placeholder ?? 'Cari sesuatu...',
           contentPadding: EdgeInsets.symmetric(vertical: 15),
-          prefixIcon: Icon(Icons.search, size: 20, color: Color(0xffB1B9C3)),
+          prefixIcon: Icon(Icons.search, size: 23, color: Color(0xffB1B9C3)),
           hintStyle: TextStyle(
             color: Color(0xffB1B9C3), 
-            fontSize: 14
+            fontSize: 15
             )
           ),
         ),

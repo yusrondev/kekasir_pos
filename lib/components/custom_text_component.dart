@@ -99,7 +99,7 @@ class PageTitle extends StatelessWidget {
               height: 30,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xfff5f6fa),
                 borderRadius: BorderRadius.circular(100)
               ),
               child: Container(
@@ -199,7 +199,7 @@ class PriceTag extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgSuccess,
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: successColor, width: 0.5)
+        // border: Border.all(color: successColor, width: 0.5)
       ),
       child: Text(
         text ?? "",
@@ -227,7 +227,7 @@ class StockTag extends StatelessWidget {
       decoration: BoxDecoration(
         color: lightColor,
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: primaryColor, width: 0.5)
+        // border: Border.all(color: primaryColor, width: 0.5)
       ),
       child: Text(
         text ?? "",

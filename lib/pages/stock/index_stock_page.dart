@@ -94,6 +94,16 @@ class _IndexStockPageState extends State<IndexStockPage> {
   }
 
   Widget buildListProduct() {
+    if (isLoading == false && products.isEmpty) {
+      return Column(
+        children: [
+          Gap(100),
+          EmptyProduct.showEmptyProduct(),
+          LabelSemiBold(text: "Data produk tidak ditemukan ..."),
+        ],
+      );
+    }
+
     return isLoading ? Column(
         children: [
           Gap(100),

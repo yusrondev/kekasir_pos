@@ -135,6 +135,16 @@ class _IndexProductPageState extends State<IndexProductPage> {
   }
 
   Widget buildProductList(){
+    if (isLoading == false && products.isEmpty) {
+      return Column(
+        children: [
+          Gap(100),
+          EmptyProduct.showEmptyProduct(),
+          LabelSemiBold(text: "Data produk tidak ditemukan ..."),
+        ],
+      );
+    }
+
     return isLoading ? Column(
       children: [
         Gap(100),

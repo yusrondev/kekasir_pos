@@ -105,6 +105,24 @@ class _DetailStockPageState extends State<DetailStockPage> {
           children: [
             PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 16 ? '${widget.product?.name.substring(0, 16)}...' : widget.product?.name } ", back: true),
             Gap(15),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: bgDanger),
+                color: Color(0xffFFF5E9),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, size: 20,),
+                  Gap(5),
+                  Text("Menggunakan metode FIFO", style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                  )),
+                ],
+              ),
+            ),
+            Gap(10),
             LabelSemiBold(text: "Periode",),
             ShortDesc(text: "Anda dapat menyesuaikan periode mutasi",),
             Gap(5),
