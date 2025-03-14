@@ -340,7 +340,8 @@ class SearchTextField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
       ),
       child: TextField(
         cursorColor: primaryColor,
@@ -487,6 +488,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
           decoration: BoxDecoration(
             color: widget.enabled ? Colors.white : Colors.grey[300],
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: secondaryColor)
           ),
           child: TextFormField(
             controller: widget.controller,

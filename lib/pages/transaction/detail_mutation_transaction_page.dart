@@ -59,7 +59,13 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
         Center(child: CustomLoader.showCustomLoader()) : ListView(
         padding: defaultPadding,
         children: [
-          PageTitle(text: "Detail Transaksi", back: true),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PageTitle(text: "Detail Transaksi", back: true),
+              Label(text: transaction['created_at'],)
+            ],
+          ),
           Column(
             children: [
               Gap(15),
@@ -78,18 +84,13 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: ligthSky,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              LabelSemiBoldMD(text: "Daftar Pesanan"),
-              Label(text: transaction['created_at'],)
-            ],
-          ),
+          LabelSemiBoldMD(text: "Daftar Pesanan"),
           Gap(5),
           ListView.builder(
             padding: EdgeInsets.all(0),
@@ -170,7 +171,8 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: ligthSky,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

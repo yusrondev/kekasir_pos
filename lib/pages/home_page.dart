@@ -23,11 +23,11 @@ class DashedBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = primaryColor
-      ..strokeWidth = 2.5
+      ..color = secondaryColor
+      ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
-    double dashWidth = 3, dashSpace = 2;
+    double dashWidth = 3, dashSpace = 3;
     Path path = Path()..addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(10)));
 
     Path dashPath = Path();
@@ -568,7 +568,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Total Keuntungan", style: TextStyle(fontSize: 13, color: primaryColor)),
+                    Text("Total Keuntungan", style: TextStyle(fontSize: 13)),
                     Text(grossProfit.toString(), style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
@@ -579,7 +579,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text("Total Belanja", style: TextStyle(fontSize: 13, color: primaryColor)),
+                    Text("Total Belanja", style: TextStyle(fontSize: 13)),
                     Text(totalPurchases.toString(), style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,

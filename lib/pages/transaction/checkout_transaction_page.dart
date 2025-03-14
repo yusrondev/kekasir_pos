@@ -206,6 +206,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       decoration: BoxDecoration(
         color: ligthSky,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,6 +300,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       decoration: BoxDecoration(
         color: ligthSky,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

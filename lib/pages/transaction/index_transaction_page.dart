@@ -367,6 +367,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: secondaryColor)
           ),
           child: Row(
             children: [
