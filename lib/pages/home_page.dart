@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -16,6 +17,35 @@ class HomePage extends StatefulWidget {
 
   @override
   State<HomePage> createState() => _HomePageState();
+}
+
+class DashedBorderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = primaryColor
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke;
+
+    double dashWidth = 3, dashSpace = 2;
+    Path path = Path()..addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(10)));
+
+    Path dashPath = Path();
+    PathMetrics pathMetrics = path.computeMetrics();
+    for (PathMetric pathMetric in pathMetrics) {
+      double distance = 0;
+      while (distance < pathMetric.length) {
+        Path extractPath = pathMetric.extractPath(distance, distance + dashWidth);
+        dashPath.addPath(extractPath, Offset.zero);
+        distance += dashWidth + dashSpace;
+      }
+    }
+
+    canvas.drawPath(dashPath, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -344,10 +374,11 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 14),
       child: Container(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
+        padding: EdgeInsets.only(top: 12, bottom: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: secondaryColor)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -472,6 +503,16 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
+                          LabelSemiBold(text: "📈 Total laba (Keuntungan)"),
+                          Text(
+                            grossProfit,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
+                          LineXM(),
                           LabelSemiBold(text: "💰 Total biaya modal barang yang sudah terjual (HPP)"),
                           Text(
                             hpp,
@@ -491,38 +532,18 @@ class _HomePageState extends State<HomePage> {
                               color: primaryColor
                             ),
                           ),
-                          LineXM(),
-                          LabelSemiBold(text: "📈 Laba kotor (pendapatan - HPP)"),
-                          Text(
-                            grossProfit,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor
-                            ),
-                          ),
-                          LineXM(),
-                          LabelSemiBold(text: "📊 Laba bersih (pendapatan - total modal pembelian)"),
-                          Text(
-                            netProfit,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor
-                            ),
-                          ),
                           Gap(20),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xfff6e58d)),
-                              color: Color(0xfff6e58d).withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Text("Jika laba bersih minus berarti jumlah pembelian barang lebih besar dari pendapatan yang diperoleh. Namun, ini bisa disebabkan oleh stok barang yang belum terjual. Jika barang yang sudah dibeli laku terjual, keuntungan akan meningkat.", style: TextStyle(
-                              fontWeight: FontWeight.w600
-                            )),
-                          )
+                          // Container(
+                          //   padding: EdgeInsets.all(10),
+                          //   decoration: BoxDecoration(
+                          //     border: Border.all(color: Color(0xfff6e58d)),
+                          //     color: Color(0xfff6e58d).withValues(alpha: 0.5),
+                          //     borderRadius: BorderRadius.circular(10)
+                          //   ),
+                          //   child: Text("", style: TextStyle(
+                          //     fontWeight: FontWeight.w600
+                          //   )),
+                          // )
                         ],
                       ),
                     ),
@@ -532,76 +553,42 @@ class _HomePageState extends State<HomePage> {
             },
           );
         },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal:14, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: Color(0xfff9ca24),
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                  ),
-                  Gap(5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LabelSM(text: "Laba Kotor"),
-                      LabelSemiBold(text: grossProfit,)
-                    ],
-                  ),
-                ]
-              ),
-              // Row(
-              //   children: [
-              //     Container(
-              //       width: 9,
-              //       height: 9,
-              //       decoration: BoxDecoration(
-              //         color: primaryColor,
-              //         borderRadius: BorderRadius.circular(100)
-              //       ),
-              //     ),
-              //     Gap(5),
-              //     Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         LabelSM(text: "Laba Bersih"),
-              //         LabelSemiBold(text: netProfit,)
-              //       ],
-              //     ),
-              //   ]
-              // ),
-              Row(
-                children: [
-                  Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: Color(0xffe74c3c),
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                  ),
-                  Gap(5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LabelSM(text: "Total Belanja"),
-                      LabelSemiBold(text: totalPurchases,)
-                    ],
-                  )
-                ]
-              )
-            ],
+        child: CustomPaint(
+          size: Size(double.infinity, 80), // Sesuaikan dengan ukuran yang diinginkan
+          painter: DashedBorderPainter(),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Total Keuntungan", style: TextStyle(fontSize: 13, color: primaryColor)),
+                    Text(grossProfit.toString(), style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor
+                    ))
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text("Total Belanja", style: TextStyle(fontSize: 13, color: primaryColor)),
+                    Text(totalPurchases.toString(), style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor
+                    ))
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
