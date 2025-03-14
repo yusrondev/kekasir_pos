@@ -42,11 +42,13 @@ class StockData {
   final List<Stock> stockList;
   final int totalStockIn;
   final int totalStockOut;
+  final int previousMonth;
 
   StockData({
     required this.stockList,
     required this.totalStockIn,
     required this.totalStockOut,
+    required this.previousMonth,
   });
 
   factory StockData.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class StockData {
       stockList: (json['stock'] as List).map((data) => Stock.fromJson(data)).toList(),
       totalStockIn: json['total_stock']['in'],
       totalStockOut: json['total_stock']['out'],
+      previousMonth: json['total_stock']['previous_month'],
     );
   }
 

@@ -567,7 +567,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Total keuntungan dan belanja di bulan ini", style: TextStyle(fontSize: 14)),
+              Text("Keuntungan dan belanja bulan ini", style: TextStyle(fontSize: 14)),
               Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -577,32 +577,32 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: primaryColor,
-                        border: Border.all(color: primaryColor)
+                        color: bgSuccess,
+                        border: Border.all(color: successColor)
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: Colors.white)),
+                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: successColor)),
                           Gap(2),
                           Text(grossProfit.toString(), style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white
+                            color: successColor
                           )),
                           Gap(5),
-                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: Colors.white)),
+                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: successColor)),
                           Gap(5),
                           Container(
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: successColor,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(child: Text(grossProfitLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryColor))),
+                                Expanded(child: Text(grossProfitLastMonth.toString(), textAlign: TextAlign.start, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: bgSuccess))),
                               ],
                             ),
                           )
@@ -616,32 +616,32 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: primaryColor)
+                        color: bgDanger,
+                        border: Border.all(color: dangerColor)
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Total belanja", style: TextStyle(fontSize: 13, color: primaryColor)),
+                          Text("Total belanja", style: TextStyle(fontSize: 13, color: dangerColor)),
                           Gap(2),
                           Text(totalPurchases.toString(), style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: primaryColor
+                            color: dangerColor
                           )),
                           Gap(5),
-                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: primaryColor)),
+                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: dangerColor)),
                           Gap(5),
                           Container(
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: dangerColor,
                               borderRadius: BorderRadius.circular(5),
-                              border: Border.all(color: primaryColor)
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(child: Text(totalPurchasesLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryColor))),
+                                Expanded(child: Text(totalPurchasesLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: bgDanger))),
                               ],
                             ),
                           )

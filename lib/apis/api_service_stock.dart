@@ -35,7 +35,7 @@ class ApiServiceStock {
       return StockData.fromJson(data);
     }
     
-    return StockData(stockList: [], totalStockIn: 0, totalStockOut: 0);
+    return StockData(stockList: [], totalStockIn: 0, totalStockOut: 0, previousMonth: 0);
   }
 
 }

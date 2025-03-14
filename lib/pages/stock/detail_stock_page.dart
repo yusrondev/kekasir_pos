@@ -29,6 +29,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
   num? totalStockIn = 0;
   num? totalStockOut = 0;
   int? availableStock = 0;
+  int? previousMonth = 0;
 
   String today = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
@@ -61,8 +62,9 @@ class _DetailStockPageState extends State<DetailStockPage> {
           stocks = data.stockList;
           totalStockIn = data.totalStockIn;
           totalStockOut = data.totalStockOut;
+          previousMonth = data.previousMonth;
           isLoading = false;
-          availableStock = (totalStockIn! - totalStockOut!) as int?;
+          availableStock = (totalStockIn! - totalStockOut! + data.previousMonth) as int?;
         }); 
       }
     } catch (e) {
@@ -175,6 +177,58 @@ class _DetailStockPageState extends State<DetailStockPage> {
                   LabelSemiBold(text: "Daftar Mutasi"),
                   Gap(8),
                   buildListDetailMutation(),
+                  if(previousMonth != 0 && isLoading != true) ... [
+                    LineXM(),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      padding: EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        border: Border.all(color: secondaryColor),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(7),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: secondaryColor,
+                                    ),
+                                    child: Center(
+                                      child: Text("Sisa Stok", 
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12
+                                        )
+                                      ),
+                                    )
+                                  ),
+                                  Gap(10),
+                                  Center(
+                                    child: Text('$previousMonth Pcs', 
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14
+                                      )
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Label(text: "Dari bulan sebelumnya")
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
                 ],
               )
             ),
