@@ -503,7 +503,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "📈 Total laba (Keuntungan)"),
+                          LabelSemiBold(text: "📈 Total laba (keuntungan)"),
                           Text(
                             grossProfit,
                             style: TextStyle(
