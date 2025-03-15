@@ -155,11 +155,11 @@ class _IndexProductPageState extends State<IndexProductPage> {
       itemCount: products.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200, // Maksimal lebar tiap item
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        mainAxisExtent: 190
+        childAspectRatio: 3 / 3.2, // Sesuaikan rasio aspek
       ), 
       itemBuilder: (context, index){
         final product = products[index];
@@ -204,8 +204,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
                                       'assets/images/empty.png', 
-                                      width: 155,
-                                      height: 155,
+                                      width: 160,
+                                      height: 160,
                                       fit: BoxFit.fitWidth
                                     );
                                   },
