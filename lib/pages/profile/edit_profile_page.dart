@@ -42,6 +42,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  bool isValidEmail(String email) {
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9._%+-]+@kekasir\.com$');
+    return regex.hasMatch(email);
+  }
+
   void showInputDialog() {
     showDialog(
       context: context,
@@ -106,6 +111,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> updateUser() async {
+    if (!isValidEmail(emailController.text)) {
+      showErrorSnackbar(context, "Format email tidak valid! Harus menggunakan domain @kekasir.com");
+      return;
+    }
+
     try {
       final result = await AuthService().updateUser(
         nameController.text,
@@ -197,6 +207,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           CustomTextField(
             controller: emailController,
             label: "Email",
+            shortDescription: "Harus menggunakan domain @kekasir.com",
             placeholder: "Misalnya kekasir@gmail.com...",
             border: true,
             maxLine: 1,
@@ -205,7 +216,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             shortDescription: "Isi jika Anda ingin merubah password untuk akun ini",
             controller: passwordController,
             label: "Ubah Password",
-            placeholder: "******",
+            placeholder: "Password baru...",
             border: true,
           )
         ],

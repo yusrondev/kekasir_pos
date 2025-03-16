@@ -382,7 +382,6 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: secondaryColor)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -467,7 +466,7 @@ class _HomePageState extends State<HomePage> {
               return StatefulBuilder(
                 builder: (context, setModalState) {
                   return FractionallySizedBox(
-                    heightFactor: 0.5,
+                    heightFactor: 0.7,
                     child: Container(
                       padding: EdgeInsets.all(14),
                       width: double.infinity,
@@ -507,7 +506,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "📈 Total laba bulan ini (keuntungan)"),
+                          LabelSemiBold(text: "📈 Total laba bulan ini"),
                           Text(
                             grossProfit,
                             style: TextStyle(
@@ -517,9 +516,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "💰 Total biaya modal barang yang sudah terjual (HPP)"),
+                          LabelSemiBold(text: "📈 Total laba bulan kemarin"),
                           Text(
-                            hpp,
+                            grossProfitLastMonth,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -527,7 +526,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "💰 Total biaya pembelian barang (semua stok masuk)"),
+                          LabelSemiBold(text: "💰 Total belanja bulan ini"),
                           Text(
                             totalPurchases,
                             style: TextStyle(
@@ -536,7 +535,27 @@ class _HomePageState extends State<HomePage> {
                               color: primaryColor
                             ),
                           ),
+                          LineXM(),
+                          LabelSemiBold(text: "💰 Total belanja bulan kemarin"),
+                          Text(
+                            totalPurchasesLastMonth,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            ),
+                          ),
                           Gap(20),
+                          // LabelSemiBold(text: "💰 Total biaya modal barang yang sudah terjual (HPP)"),
+                          // Text(
+                          //   hpp,
+                          //   style: TextStyle(
+                          //     fontSize: 20,
+                          //     fontWeight: FontWeight.w600,
+                          //     color: primaryColor
+                          //   ),
+                          // ),
+                          // LineXM(),
                           // Container(
                           //   padding: EdgeInsets.all(10),
                           //   decoration: BoxDecoration(
@@ -561,51 +580,39 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: secondaryColor)
+            borderRadius: BorderRadius.circular(15)
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Keuntungan dan belanja bulan ini", style: TextStyle(fontSize: 14)),
-              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Ringkasan pendapatan", style: TextStyle(fontSize: 14)),
+                  Icon(Icons.more_horiz, size: 20,),
+                ],
+              ),
+              Gap(7),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(7),
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: bgSuccess,
-                        border: Border.all(color: successColor)
+                        color: Color(0xFFF3F5FB)
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: successColor)),
+                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(grossProfit.toString(), style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: successColor
+                            color: primaryColor
                           )),
-                          Gap(5),
-                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: successColor)),
-                          Gap(5),
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: successColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(child: Text(grossProfitLastMonth.toString(), textAlign: TextAlign.start, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: bgSuccess))),
-                              ],
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -613,38 +620,21 @@ class _HomePageState extends State<HomePage> {
                   Gap(10),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(7),
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: bgDanger,
-                        border: Border.all(color: dangerColor)
+                        color: Color(0xFFF3F5FB)
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total belanja", style: TextStyle(fontSize: 13, color: dangerColor)),
+                          Text("Total belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(totalPurchases.toString(), style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: dangerColor
+                            color: primaryColor
                           )),
-                          Gap(5),
-                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: dangerColor)),
-                          Gap(5),
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: dangerColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(child: Text(totalPurchasesLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: bgDanger))),
-                              ],
-                            ),
-                          )
                         ],
                       ),
                     ),
