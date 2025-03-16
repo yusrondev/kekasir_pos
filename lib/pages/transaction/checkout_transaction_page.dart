@@ -314,6 +314,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
               LabelSemiBoldMD(text: grandTotal),
             ],
           ),
+          Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [Label(text: "Diskon"), LabelSemiBoldMD(text: "Rp 0")],
