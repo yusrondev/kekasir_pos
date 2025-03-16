@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/pages/home_page.dart';
@@ -99,6 +100,18 @@ class _AppLayoutState extends State<AppLayout> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        extendBodyBehindAppBar:true,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+          child: AppBar(
+            backgroundColor: primaryColor, // Warna status bar
+            elevation: 0, // Hilangkan bayangan
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: primaryColor, // Warna status bar
+              statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+            ),
+          ),
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {

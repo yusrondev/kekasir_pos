@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
@@ -242,6 +243,18 @@ class _FormProductPageState extends State<FormProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        extendBodyBehindAppBar:true,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+          child: AppBar(
+            backgroundColor: primaryColor, // Warna status bar
+            elevation: 0, // Hilangkan bayangan
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: primaryColor, // Warna status bar
+              statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+            ),
+          ),
+        ),
         backgroundColor: Colors.white,
         body: Form(
           key: _formKey,

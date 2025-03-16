@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
@@ -118,6 +119,18 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar:true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+        child: AppBar(
+          backgroundColor: primaryColor, // Warna status bar
+          elevation: 0, // Hilangkan bayangan
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: primaryColor, // Warna status bar
+            statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+          ),
+        ),
+      ),
       body: loading == true ? Center(child: CustomLoader.showCustomLoader()) : RefreshIndicator(
         onRefresh: () async {
           await fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);

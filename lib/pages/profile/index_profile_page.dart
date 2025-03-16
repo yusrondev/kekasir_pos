@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
@@ -88,6 +89,18 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar:true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+        child: AppBar(
+          backgroundColor: primaryColor, // Warna status bar
+          elevation: 0, // Hilangkan bayangan
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: primaryColor, // Warna status bar
+            statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(10),

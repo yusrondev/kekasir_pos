@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -73,6 +74,18 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar:true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+        child: AppBar(
+          backgroundColor: primaryColor, // Warna status bar
+          elevation: 0, // Hilangkan bayangan
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: primaryColor, // Warna status bar
+            statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+          ),
+        ),
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           fetchProducts(keyword.text);
