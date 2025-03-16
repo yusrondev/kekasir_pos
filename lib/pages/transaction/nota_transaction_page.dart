@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
@@ -101,6 +102,38 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               ],
             ),
           ],
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () { 
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => AppLayout()),
+                      (route) => false, // Menghapus semua route yang ada
+                    );
+                  },
+                  child: ButtonPrimaryOutline(
+                    text: "Selesai",
+                  )
+                ),
+              ),
+              Gap(10),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () { 
+                    
+                  },
+                  child: ButtonPrimary(
+                    text: "Cetak",
+                  )
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
