@@ -25,8 +25,9 @@ class ButtonPrimary extends StatelessWidget {
       ),
       child: Text(text ?? "", style: TextStyle(
         color: Colors.white,
-        fontSize: 17,
-        fontFamily: 'Lexend'
+        fontSize: 15,
+        fontFamily: 'Lexend',
+        fontWeight: FontWeight.w600
       )),
     );
   }
@@ -51,8 +52,9 @@ class ButtonPrimaryOutline extends StatelessWidget {
       onPressed: onPressed,
       child: Text(text ?? "", style: TextStyle(
           color: Color(0xff3554C1),
-          fontSize: 17,
-          fontFamily: 'Lexend'
+          fontSize: 15,
+          fontFamily: 'Lexend',
+          fontWeight: FontWeight.w600
         )
       ),
     );
