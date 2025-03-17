@@ -601,7 +601,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // color: Color(0xFFF3F5FB),
-                        border: Border.all(color: darkColor)
+                        border: Border.all(color: secondaryColor, width: 0.9)
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -624,7 +624,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // color: Color(0xFFF3F5FB),
-                        border: Border.all(color: darkColor)
+                        border: Border.all(color: secondaryColor, width: 0.9)
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
