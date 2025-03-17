@@ -10,7 +10,6 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
-import 'package:logger/logger.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
