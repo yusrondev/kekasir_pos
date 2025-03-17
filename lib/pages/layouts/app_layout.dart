@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:kekasir/components/custom_button_component.dart';
-import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/pages/home_page.dart';
 import 'package:kekasir/pages/product/index_product_page.dart';
 import 'package:kekasir/pages/discount/index_discount_page.dart';
