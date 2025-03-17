@@ -347,7 +347,6 @@ class _HomePageState extends State<HomePage> {
                   'Bulan Kemarin',
                   style: TextStyle(
                     color: primaryColor,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 lastMonthRevenue.isEmpty
