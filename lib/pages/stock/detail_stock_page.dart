@@ -154,7 +154,9 @@ class _DetailStockPageState extends State<DetailStockPage> {
                   children: [
                     Icon(Icons.date_range, color: Color(0xffB1B9C3), size: 20,),
                     Gap(5),
-                    _selected == null ? Text(DateFormat('MM-yyyy').format(DateTime.now()), style: TextStyle(fontSize: 15),) : Text(DateFormat('MM-yyyy').format(_selected!), style: TextStyle(fontSize: 15))
+                    _selected == null 
+                    ? Text(DateFormat('MMMM yyyy', 'id_ID').format(DateTime.now()), style: TextStyle(fontSize: 15))
+                    : Text(DateFormat('MMMM yyyy', 'id_ID').format(_selected!), style: TextStyle(fontSize: 15))
                   ],
                 ),
               ),
