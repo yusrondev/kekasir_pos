@@ -36,9 +36,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon-app.png" # Ganti dengan lokasi ikonmu
-  adaptive_icon_foreground: "assets/images/icon-app.png" # Untuk Android adaptive icon
-  adaptive_icon_background: "assets/images/icon-app.png"
+  image_path: "assets/images/icon-app-v2.png" # Ganti dengan lokasi ikonmu
 
 flutter:
   uses-material-design: true
