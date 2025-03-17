@@ -155,8 +155,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           child: Material( // Tambahkan Material agar terlihat jelas
             color: Colors.transparent,
             child: SizedBox(
-              width: 150,
-              height: 150,
+              width: 50,
+              height: 50,
               child: CustomLoader.showCustomLoader(),
             ),
           ),
