@@ -609,7 +609,7 @@ class _HomePageState extends State<HomePage> {
                           Text("Total keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(grossProfit.toString(), style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: primaryColor
                           )),
@@ -632,7 +632,7 @@ class _HomePageState extends State<HomePage> {
                           Text("Total belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(totalPurchases.toString(), style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: primaryColor
                           )),
