@@ -465,7 +465,7 @@ class _HomePageState extends State<HomePage> {
               return StatefulBuilder(
                 builder: (context, setModalState) {
                   return FractionallySizedBox(
-                    heightFactor: 0.7,
+                    heightFactor: 0.58,
                     child: Container(
                       padding: EdgeInsets.all(14),
                       width: double.infinity,
@@ -587,7 +587,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Ringkasan pendapatan", style: TextStyle(fontSize: 14)),
+                  Text("Ringkasan pendapatan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                   Icon(Icons.more_horiz, size: 20,),
                 ],
               ),
