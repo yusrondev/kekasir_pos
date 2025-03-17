@@ -117,6 +117,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     padding: EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       color: Colors.white,
+                      border: Border.all(color: secondaryColor),
                       borderRadius:BorderRadius.circular(100) 
                     ),
                     child: Icon(Icons.add, color: Colors.black,size: 24)
