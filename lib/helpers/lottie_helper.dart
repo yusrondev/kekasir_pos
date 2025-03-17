@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CustomLoader {
   // Fungsi untuk mengembalikan widget Lottie
-  static Widget showCustomLoader({double width = 200, double height = 200}) {
+  static Widget showCustomLoader({double width = 50, double height = 50}) {
     return Lottie.asset(
       'assets/animations/loading.json',  // Ganti dengan path animasi Lottie kamu
       width: width,

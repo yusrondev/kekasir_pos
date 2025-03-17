@@ -49,6 +49,9 @@ class _AppLayoutState extends State<AppLayout> {
       showDialog(
         context: context,
         barrierDismissible: false,
+        // ignore: deprecated_member_use
+        barrierColor: Colors.black.withOpacity(0.7), // Atur tingkat 
+        // ignore: deprecated_member_use
         builder: (context) => WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
@@ -56,35 +59,35 @@ class _AppLayoutState extends State<AppLayout> {
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8, // 80% dari layar
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Center(
+                    child: Lottie.asset(
+                      'assets/animations/disconnect.json',
+                      width: 50,
+                      frameRate: const FrameRate(90),
+                    ),
+                  ),
+                  Gap(5),
+                  Center(
                     child: Text(
-                      "Tidak Ada Koneksi Internet",
+                      "Tidak Ada Koneksi Internet!",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  Center(
-                    child: Lottie.asset(
-                      'assets/animations/disconnect.json',
-                      width: 100,
-                      frameRate: const FrameRate(90),
-                    ),
-                  ),
-                  LabelSemiBold(text: "Jika masalah berlanjut, pastikan:"),
-                  Gap(3),
-                  Text("✅ Wi-Fi atau data seluler aktif", style: TextStyle(fontSize: 12)),
-                  Text("✅ Perangkat terhubung ke jaringan yang stabil", style: TextStyle(fontSize: 12)),
-                  Text("✅ Mode pesawat tidak aktif", style: TextStyle(fontSize: 12)),
+                  Gap(5),
+                  Center(child: Text("Pastikan Perangkat terhubung ke jaringan", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
+                  Gap(10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Sedang menunggu jaringan", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
+                      Text("Sedang menunggu jaringan", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor)),
+                      Gap(5),
                       Lottie.asset(
                         'assets/animations/loading.json',
-                        width: 100,
+                        width: 20,
                         frameRate: const FrameRate(90),
                       ),
                     ],
