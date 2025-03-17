@@ -14,7 +14,7 @@ void showErrorSnackbar(BuildContext context, String message) {
         left: 16,
         right: 16,
       ),
-      duration: Duration(seconds: 1), // Durasi muncul
+      duration: Duration(seconds: 2), // Durasi muncul
       content: Text(
         message,
         style: TextStyle(
@@ -44,7 +44,7 @@ void showSuccessSnackbar(BuildContext context, String message) {
         left: 16,
         right: 16,
       ),
-      duration: Duration(seconds: 1), // Durasi muncul
+      duration: Duration(seconds: 2), // Durasi muncul
       content: Text(
         message,
         style: TextStyle(

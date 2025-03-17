@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
-import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -17,6 +16,37 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+
+void showErrorSnackbarCustom(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Color(0xfffdcb6e),
+      showCloseIcon: true,
+      closeIconColor: Colors.black,
+      behavior: SnackBarBehavior.floating, // Membuat snackbar mengambang
+      elevation: 0,
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.height * 0.73, // Untuk menampilkan di atas
+        left: 16,
+        right: 16,
+      ),
+      duration: Duration(seconds: 2), // Durasi muncul
+      content: Text(
+        message,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          color: Colors.black,
+        ),
+      ),
+      animation: CurvedAnimation(
+        parent: ModalRoute.of(context)!.animation!,
+        curve: Curves.easeOut, // Animasi lebih halus
+      ),
+    ),
+  );
+}
+
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -26,12 +56,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     if (emailController.text == "") {
-      showErrorSnackbar(context, 'Pastikan email sudah terisi!');
+      showErrorSnackbarCustom(context, 'Pastikan email sudah terisi!');
       return;
     }
 
     if (passwordController.text == "") {
-      showErrorSnackbar(context, 'Pastikan password sudah terisi!');
+      showErrorSnackbarCustom(context, 'Pastikan password sudah terisi!');
       return;
     }
 
@@ -60,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             isLoading = false;
           });
-          showErrorSnackbar(context, error);
+          showErrorSnackbarCustom(context, error);
         }
       }
     } catch (e) {
@@ -74,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
-      showErrorSnackbar(context, 'Tidak dapat membuka Whatsapp');
+      showErrorSnackbarCustom(context, 'Tidak dapat membuka Whatsapp');
     }
   }
 
@@ -226,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           counterText: "",
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                           hintText: "******",
                           suffixIcon: IconButton(
                             icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, size: 20, color: Color(0xff747d8c)),
