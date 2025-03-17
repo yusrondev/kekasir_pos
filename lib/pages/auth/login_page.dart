@@ -94,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showErrorBottomSheet(context, e.toString());
     }
   }
@@ -104,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
+      // ignore: use_build_context_synchronously
       showErrorSnackbarCustom(context, 'Tidak dapat membuka Whatsapp');
     }
   }
@@ -154,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -290,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () { 
                   login(); 
                 },
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: ButtonPrimary(
                     text: "Masuk",
