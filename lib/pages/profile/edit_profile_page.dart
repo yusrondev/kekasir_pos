@@ -6,6 +6,7 @@ import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -25,6 +26,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -112,6 +115,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> updateUser() async {
     if (!isValidEmail(emailController.text)) {
+      setState(() {
+        isLoading = false;
+      });
       showErrorSnackbar(context, "Format email tidak valid! Harus menggunakan domain @kekasir.com");
       return;
     }
@@ -125,8 +131,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         passwordController.text.isNotEmpty ? passwordController.text : null,
       );
 
-      Logger().d(result);
-
       if (result["success"] == true) {
 
         if (oldPasswordController.text.isNotEmpty) {
@@ -137,6 +141,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Navigator.pop(context, true);
 
       } else {
+        setState(() {
+          isLoading = false;
+        });
         // Ambil pesan error
         String errorMessage = result["message"];
 
@@ -162,6 +169,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
         showErrorSnackbar(context, "Terjadi kesalahan: ${e.toString()}");
       }
     }
@@ -183,7 +193,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: ListView(
+      body: isLoading ? Center(
+          child: CustomLoader.showCustomLoader(),
+        ) : ListView(
         padding: defaultPadding,
         children: [
           PageTitle(text: "Edit Profil", back: true,),
@@ -221,23 +233,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
           )
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-        child: ButtonPrimary(
-          onPressed: () {
-            if (passwordController.text != "") {
-              if (passwordController.text.length < 6) {
-                showErrorSnackbar(context, "Jumlah password minimal 6 karakter");
-                return;
+      bottomNavigationBar: isLoading
+      ? null
+      : Padding(
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+          child: ButtonPrimary(
+            onPressed: () {
+              if (passwordController.text != "") {
+                if (passwordController.text.length < 6) {
+                  showErrorSnackbar(context, "Jumlah password minimal 6 karakter");
+                  return;
+                }
+                showInputDialog();
+              } else {
+                DialogHelper.showCreateConfirmation(context: context, onConfirm: () {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  updateUser();
+                });
               }
-              showInputDialog();
-            }else{
-              DialogHelper.showCreateConfirmation(context: context, onConfirm: () => updateUser());
-            }
-          },
-          text: "Simpan",
+            },
+            text: "Simpan",
+          ),
         ),
-      ),
     );
   }
 }

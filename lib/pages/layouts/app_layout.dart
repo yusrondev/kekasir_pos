@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:kekasir/components/custom_button_component.dart';
+import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/pages/home_page.dart';
 import 'package:kekasir/pages/product/index_product_page.dart';
 import 'package:kekasir/pages/discount/index_discount_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:lottie/lottie.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -16,7 +19,84 @@ class AppLayout extends StatefulWidget {
 }
 
 class _AppLayoutState extends State<AppLayout> {
+  late InternetConnectionChecker _connectionChecker;
+  bool isDialogOpen = false;
   int _selectedIndex = 0;
+
+   @override
+  void initState() {
+    super.initState();
+    _connectionChecker = InternetConnectionChecker.createInstance();
+    _checkInternetConnection(); // Cek internet saat aplikasi dimulai
+  }
+
+  void _checkInternetConnection() {
+    _connectionChecker.onStatusChange.listen((status) {
+      if (status == InternetConnectionStatus.disconnected) {
+        _showNoInternetDialog();
+      } else {
+        if (isDialogOpen) {
+          Navigator.of(context).pop();
+          isDialogOpen = false;
+        }
+      }
+    });
+  }
+
+  void _showNoInternetDialog() {
+    if (!isDialogOpen) {
+      isDialogOpen = true;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8, // 80% dari layar
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Text(
+                      "Tidak Ada Koneksi Internet",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Center(
+                    child: Lottie.asset(
+                      'assets/animations/disconnect.json',
+                      width: 100,
+                      frameRate: const FrameRate(90),
+                    ),
+                  ),
+                  LabelSemiBold(text: "Jika masalah berlanjut, pastikan:"),
+                  Gap(3),
+                  Text("✅ Wi-Fi atau data seluler aktif", style: TextStyle(fontSize: 12)),
+                  Text("✅ Perangkat terhubung ke jaringan yang stabil", style: TextStyle(fontSize: 12)),
+                  Text("✅ Mode pesawat tidak aktif", style: TextStyle(fontSize: 12)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Sedang menunggu jaringan", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
+                      Lottie.asset(
+                        'assets/animations/loading.json',
+                        width: 100,
+                        frameRate: const FrameRate(90),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
 
   final List<Map<String, dynamic>> menu = [
     {
