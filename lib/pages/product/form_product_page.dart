@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/apis/api_service_type_price.dart';
 import 'package:kekasir/components/custom_button_component.dart';
@@ -80,6 +81,7 @@ class _FormProductPageState extends State<FormProductPage> {
   String? urlImage;
   ApiService apiService = ApiService();
   String labelStock = "Sesuaikan Stok";
+  String wordingPrice = "Harga Jual Produk (Normal)*";
   String descStock= "Tentukan jumlah stok pertama untuk produk ini";
   bool isEdit = false;
   String? selectedValue;
@@ -198,9 +200,10 @@ class _FormProductPageState extends State<FormProductPage> {
   }
 
   Future<void> showDialogAddPriceType() async {
+    labelPrice.text = "";
     showDialog(
       context: context, 
-      barrierColor: Colors.black.withValues(alpha: 0.2), // Atur tingkat 
+      barrierColor: Colors.black.withValues(alpha: 0.4), // Atur tingkat 
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
@@ -209,7 +212,7 @@ class _FormProductPageState extends State<FormProductPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomTextField(
-                  label: "Nama Tipe Harga",
+                  label: "Tipe Harga",
                   controller: labelPrice,
                   placeholder: "Misalnya Harga Reseller...",
                 ),
@@ -218,7 +221,7 @@ class _FormProductPageState extends State<FormProductPage> {
                     Expanded(
                       child: ButtonPrimary(
                         onPressed: () => saveLabel(),
-                        text: "Simpan",
+                        text: "+ Tambahkan",
                       ),
                     ),
                   ],
@@ -241,6 +244,17 @@ class _FormProductPageState extends State<FormProductPage> {
       );
       return;
     }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+      barrierColor: Colors.white.withValues(alpha: 0.8),
+      builder: (BuildContext context) {
+        return Center(
+          child: CustomLoader.showCustomLoader()
+        );
+      },
+    );
     
     try {
       String? error = await apiServiceTypePrice.updateLabelPrice(labelPrice.text, productId.toString());
@@ -251,10 +265,12 @@ class _FormProductPageState extends State<FormProductPage> {
             labelPrice.text = "";
           });
           Navigator.pop(context);
+          Navigator.pop(context);
           fetchLabelPrice(productId);
         }
       } else {
         if (mounted) { // Pastikan widget masih te
+          Navigator.pop(context);
           showErrorBottomSheetCustom(context, error);
         }
       }
@@ -280,13 +296,23 @@ class _FormProductPageState extends State<FormProductPage> {
 
     String priceValue = _cleanCurrency(priceController.text);
 
-    Logger().d(productId);
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+      barrierColor: Colors.white.withValues(alpha: 0.8),
+      builder: (BuildContext context) {
+        return Center(
+          child: CustomLoader.showCustomLoader()
+        );
+      },
+    );
     
     try {
       String? error = await apiServiceTypePrice.updateTypePrice(priceValue, _selectedName.toString(), productId);
       
       if (error == null) {
         if (mounted) { // Pastikan widget masih terpasang
+          Navigator.pop(context);
           DialogHelper.customDialog(
             title: "Berhasil!",
             context: context,
@@ -301,6 +327,7 @@ class _FormProductPageState extends State<FormProductPage> {
           setState(() {
             isEditedPrice = false;
             _selectedName = "-";
+            wordingPrice = "Harga Jual Produk (Normal)*";
           });
         }
       } else {
@@ -564,7 +591,7 @@ class _FormProductPageState extends State<FormProductPage> {
                   Expanded(
                     child: PriceField(
                       controller: priceController,
-                      label: "Harga Jual Produk*",
+                      label: wordingPrice,
                       shortDescription: "Harga per pcs",
                       placeholder: "Misalnya 10.000...",
                       maxLine: 1,
@@ -582,6 +609,19 @@ class _FormProductPageState extends State<FormProductPage> {
                             _listPrice = true;
                           }else{
                             _listPrice = false;
+                            _selectedName = "-";
+                            wordingPrice = "Harga Jual Produk (Normal)*";
+                            if (productId != 0) {
+                              priceController.text = formatRupiah(widget.product!.price);
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }else{
+                              priceController.text = "";
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }
                           }
                         }
                       });
@@ -600,6 +640,10 @@ class _FormProductPageState extends State<FormProductPage> {
                 ],
               ),
               if(_listPrice == true) ... [
+                if(labelPrices.isNotEmpty) ... [
+                  LabelSemiBold(text: "Pilih Tipe Harga"),
+                  Gap(5),
+                ],
                 ListView.builder(
                   padding: EdgeInsets.all(0),
                   physics: NeverScrollableScrollPhysics(),
@@ -614,8 +658,14 @@ class _FormProductPageState extends State<FormProductPage> {
                         setState(() {
                           if (_selectedName == labelPrice.name) {
                             _selectedName = "-";
+                            wordingPrice = "Harga Jual Produk (Normal)*";
                             if (productId != 0) {
                               priceController.text = formatRupiah(widget.product!.price);
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }else{
+                              priceController.text = "";
                               setState(() {
                                 isEditedPrice = false;
                               });
@@ -624,6 +674,7 @@ class _FormProductPageState extends State<FormProductPage> {
                             _selectedName = labelPrice.name;
                             priceController.text = formatRupiah(labelPrice.price);
                             isEditedPrice = false;
+                            wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
                           }
                         });
                       },
@@ -631,16 +682,23 @@ class _FormProductPageState extends State<FormProductPage> {
                         margin: EdgeInsets.only(bottom: 5),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isSelected == true ? bgSuccess : lightColor,
+                          color: isSelected == true ? bgSuccess : ligthSky,
                           border: Border.all(color: isSelected == true ? successColor : secondaryColor),
                           borderRadius: BorderRadius.circular(10)
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(labelPrice.name ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
-                            if (isSelected) // Hanya tampilkan ikon jika aktif
-                            Icon(Icons.check_circle, size: 15, color: successColor),
+                            Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                            Row(
+                              children: [
+                                Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                                if (isSelected) ... [
+                                  Gap(5),
+                                  Icon(Icons.check_circle, size: 15, color: successColor),
+                                ]
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -657,7 +715,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10)
                       ),
-                      child: Center(child: Text("Tambah +", style: TextStyle(fontWeight: FontWeight.w600))))),
+                      child: Center(child: Text("+ Tambah Tipe Harga", style: TextStyle(fontWeight: FontWeight.w600))))),
                 ),
               ],
               // adjust stock
@@ -764,6 +822,16 @@ class _FormProductPageState extends State<FormProductPage> {
               showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
               return;
             }
+
+            if (_selectedName != "-") {
+              setState(() {
+                _selectedName = "-";
+                if (productId != 0) {
+                  priceController.text = formatRupiah(widget.product!.price);
+                }
+              });
+            }
+
             DialogHelper.showCreateConfirmation(context: context, onConfirm: () => saveProduct());
           },
           child: ButtonPrimary(

@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/apis/api_service_cart.dart';
+import 'package:kekasir/apis/api_service_type_price.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
@@ -11,6 +13,7 @@ import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
+import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -27,8 +30,10 @@ class IndexTransactionPage extends StatefulWidget {
 class _IndexTransactionPageState extends State<IndexTransactionPage> {
   ApiService apiService = ApiService();
   ApiServiceCart apiServiceCart = ApiServiceCart();
+  ApiServiceTypePrice apiServiceTypePrice = ApiServiceTypePrice();
 
   List<Product> products = [];
+  List<LabelPrice> labelPrices = [];
   List<int> quantities = []; // Menyimpan jumlah produk untuk setiap item
   String grandTotal = "Rp 0";
   int totalItem = 0;
@@ -39,14 +44,16 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
   Timer? _debounceHit;
+  String? _selectedName = "";
 
   @override
   void initState() {
     super.initState();
       if (mounted) {
         _debounceHit = Timer(Duration(milliseconds: 500), () {
-          fetchProducts(keyword.text, 'true');
-          fetchCart();
+          fetchProducts(keyword.text, 'true', _selectedName.toString());
+          fetchLabelPrice(0);
+          fetchCart(_selectedName.toString());
       });
     }
 
@@ -54,8 +61,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 1000), () {
         isLoadProduct = true;
-        fetchProducts(keyword.text, 'true');
-        fetchCart();
+        fetchProducts(keyword.text, 'true', _selectedName.toString());
+        fetchCart(_selectedName.toString());
       });
     });
   }
@@ -68,8 +75,20 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     super.dispose();
   }
 
-  Future<void> fetchProducts(String keyword, String sort) async {
-    final data = await ApiService().fetchProducts(keyword, sort);
+  Future<void> fetchLabelPrice(productId) async {
+    final data = await apiServiceTypePrice.fetchLabelPrice(productId);
+
+    if (mounted) { // Cek apakah widget masih ada sebelum setState
+      setState(() {
+        labelPrices = data;
+      });
+
+      Logger().d(labelPrices);
+    }
+  }
+
+  Future<void> fetchProducts(String keyword, String sort, String typePrice) async {
+    final data = await ApiService().fetchProducts(keyword, sort, typePrice);
     Logger().d(data);
     try {
       if (mounted) {  
@@ -78,16 +97,16 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           products = data;
           quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
         });
-        fetchCart();
+        fetchCart(_selectedName.toString());
       }
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
     }
   }
 
-  Future<void> fetchCart() async {
+  Future<void> fetchCart(String? typePrice) async {
 
-    final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
+    final fetchCartSummary = await ApiServiceCart().fetchCartSummary(typePrice);
 
     if (mounted) {
       setState(() {
@@ -103,7 +122,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     // Tampilkan Lottie loading animation
     try {
       await ApiServiceCart().updateCart(products[index].id, quantity);
-      fetchCart();
+      fetchCart(_selectedName.toString());
     } catch (e) {
       if (mounted) {
         showErrorSnackbar(context, e.toString());
@@ -178,12 +197,103 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     showLoadingDialog(context);
     try {
       await ApiServiceCart().clearCart();
-      fetchCart();
-      fetchProducts(keyword.text, 'true');
+      fetchCart(_selectedName.toString());
+      fetchProducts(keyword.text, 'true', _selectedName.toString());
       closeLoadingDialog();
     } catch (e) {
       showErrorSnackbar(context, e.toString());
     }
+  }
+
+  void showDialogListPriceType() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.4), // Atur tingkat 
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                width: 100,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LabelSemiBold(text: "Pilih Tipe Harga"),
+                    Gap(2),
+                    ShortDesc(text: "Pilihan Anda akan mempengaruhi harga jual"),
+                    Gap(2),
+                    Text("Saat ini terpilih sebagai : ${_selectedName == "" ? "Harga normal" : toBeginningOfSentenceCase(_selectedName)}", style: TextStyle(
+                      fontSize: 12,
+                      color: primaryColor,
+                      fontWeight: FontWeight.w600
+                    )),
+                    Gap(10),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(0),
+                        itemCount: labelPrices.length,
+                        itemBuilder: (context, index){
+                          final labelPrice = labelPrices[index];
+                          bool isSelected = _selectedName == labelPrice.name; 
+                                  
+                          return GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                if (_selectedName == labelPrice.name) {
+                                  _selectedName = "";
+                                }else{
+                                  _selectedName = labelPrice.name;
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: isSelected == true ? bgSuccess : ligthSky,
+                                borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(
+                                    color: isSelected == true ? successColor : Colors.black,
+                                    fontWeight: FontWeight.w600
+                                  )),
+                                  if(isSelected)
+                                  Icon(Icons.check_circle, size: 15, color: successColor,)
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      ),
+                    ),
+                    Gap(10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ButtonPrimary(text: "Simpan", onPressed: () {
+                            fetchProducts(keyword.text, "true", _selectedName.toString());
+                            Navigator.pop(context);
+                          })
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void showInputDialog(int index, int availableStock) {
@@ -300,7 +410,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          await fetchProducts(keyword.text, 'true');
+          await fetchProducts(keyword.text, 'true', _selectedName.toString());
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -327,7 +437,26 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               ],
             ),
             Gap(10),
-            SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
+            Row(
+              children: [
+                Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword)),
+                if(labelPrices.isNotEmpty) ... [
+                  Gap(5),
+                  GestureDetector(
+                    onTap: () => showDialogListPriceType(),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: ligthSky,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: secondaryColor)
+                      ),
+                      child: Icon(Icons.settings, size: 20),
+                    ),
+                  )
+                ]
+              ],
+            ),
             Gap(10),
             // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
             buildProductList(),
@@ -381,7 +510,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
                     if (value == true) {
                       setState(() {
-                        fetchProducts(keyword.text, 'true');
+                        fetchProducts(keyword.text, 'true', _selectedName.toString());
                       });
                     }
                   });
@@ -579,10 +708,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/checkout').then((value){
+                  Navigator.pushNamed(
+                    context,
+                    '/checkout',
+                    arguments: _selectedName.toString(),
+                  ).then((value) {
                     if (value == true) {
                       setState(() {
-                        fetchProducts(keyword.text, 'true');
+                        fetchProducts(keyword.text, 'true', _selectedName.toString());
                       });
                     }
                   });

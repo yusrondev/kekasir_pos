@@ -39,8 +39,8 @@ class ApiServiceCart {
     }
   }
   
-  Future<CartSummary> fetchCartSummary() async {
-    final response = await http.get(Uri.parse('$apiUrl/cart/total-price'), headers: await _headers);
+  Future<CartSummary> fetchCartSummary(String? typePrice) async {
+    final response = await http.get(Uri.parse('$apiUrl/cart/total-price?type_price=$typePrice'), headers: await _headers);
 
     if (response.statusCode == 200) {
       Logger().d(response.body);

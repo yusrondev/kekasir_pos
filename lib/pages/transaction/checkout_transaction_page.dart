@@ -38,6 +38,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   bool transactionProccess = false;
 
   int selectedIndex = -1;
+  String selectedName = "";
 
   final List<String> nominalList = [
     "Uang Pas",
@@ -49,14 +50,20 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   @override
   void initState() {
     super.initState();
-    fetchCart();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)!.settings.arguments as String;
+      setState(() {
+        selectedName = args; // Simpan ke dalam state
+      });
+      fetchCart(); // Panggil fetchCart setelah mendapatkan selectedName
+    });
   }
 
   Future<void> fetchCart() async {
     await Future.delayed(
       Duration(milliseconds: 300),
     ); // Tambahkan delay untuk memastikan data siap
-    final fetchCartSummary = await ApiServiceCart().fetchCartSummary();
+    final fetchCartSummary = await ApiServiceCart().fetchCartSummary(selectedName);
     try {
       if (mounted) {
         setState(() {
@@ -211,7 +218,15 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LabelSemiBoldMD(text: "Daftar Pesanan"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              LabelSemiBoldMD(text: "Daftar Pesanan"),
+              if(selectedName != "") ... [
+                StockTag(text: "Menggunakan tipe harga : ${toBeginningOfSentenceCase(selectedName)}",)
+              ]
+            ],
+          ),
           Gap(5),
           ListView.builder(
             padding: EdgeInsets.all(0),
