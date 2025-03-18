@@ -328,7 +328,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       width: 17,
                     ),
                     Gap(10),
-                    Text("Keluar", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
+                    Expanded(child: Text("Keluar", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C)))),
                   ],
                 ),
               ),
