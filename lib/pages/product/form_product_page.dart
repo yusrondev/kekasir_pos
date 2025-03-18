@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
+import 'package:kekasir/apis/api_service_type_price.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
@@ -12,11 +14,14 @@ import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
+import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:logger/web.dart';
 
 class FormProductPage extends StatefulWidget {
   final Product? product;
@@ -24,6 +29,35 @@ class FormProductPage extends StatefulWidget {
 
   @override
   State<FormProductPage> createState() => _FormProductPageState();
+}
+
+class DashedBorderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = secondaryColor
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    double dashWidth = 3, dashSpace = 3;
+    Path path = Path()..addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(10)));
+
+    Path dashPath = Path();
+    PathMetrics pathMetrics = path.computeMetrics();
+    for (PathMetric pathMetric in pathMetrics) {
+      double distance = 0;
+      while (distance < pathMetric.length) {
+        Path extractPath = pathMetric.extractPath(distance, distance + dashWidth);
+        dashPath.addPath(extractPath, Offset.zero);
+        distance += dashWidth + dashSpace;
+      }
+    }
+
+    canvas.drawPath(dashPath, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class _FormProductPageState extends State<FormProductPage> {
@@ -36,7 +70,11 @@ class _FormProductPageState extends State<FormProductPage> {
   TextEditingController shortDescriptionController = TextEditingController();
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
+  TextEditingController labelPrice = TextEditingController();
+
   final ScrollController mainListView= ScrollController();
+
+  ApiServiceTypePrice apiServiceTypePrice = ApiServiceTypePrice();
 
   File? _image;
   String? urlImage;
@@ -47,12 +85,18 @@ class _FormProductPageState extends State<FormProductPage> {
   String? selectedValue;
   int availableStock = 0;
   bool hasBeenChange = false;
+  bool _listPrice = false;
+  bool isEditedPrice = false;
   int productId = 0;
   String? storeQuantity = "Masukkan harga...";
+  String? _selectedName = "-";
+
+  List<LabelPrice> labelPrices = [];
 
   @override
   void initState() {
     super.initState();
+
     if (widget.product != null) {
       nameController.text = widget.product!.name;
       priceController.text = formatRupiah(widget.product!.price);
@@ -64,7 +108,11 @@ class _FormProductPageState extends State<FormProductPage> {
         availableStock = widget.product!.availableStock;
         labelStock = "Butuh Penyesuaian Stok?";
         descStock = "Tujuan penyesuaian stok Mengetahui selisih persediaan barang yang sebenarnya";
+
+        fetchLabelPrice(widget.product!.id);
       });
+    }else{
+      fetchLabelPrice(productId);
     }
 
     quantity.addListener(() {
@@ -79,6 +127,20 @@ class _FormProductPageState extends State<FormProductPage> {
         storeQuantity = wording;
       });
     });
+
+    priceController.addListener(() {
+      setState(() {
+        if (_selectedName != "-") {
+          isEditedPrice = true; 
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    priceController.dispose();
+    super.dispose();
   }
 
   void scrollToBottom() {
@@ -133,6 +195,138 @@ class _FormProductPageState extends State<FormProductPage> {
 
   String _cleanCurrency(String value) {
     return value.replaceAll(RegExp(r'[^0-9]'), ''); // Menghapus Rp, titik, dan karakter non-angka lainnya
+  }
+
+  Future<void> showDialogAddPriceType() async {
+    showDialog(
+      context: context, 
+      barrierColor: Colors.black.withValues(alpha: 0.2), // Atur tingkat 
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            backgroundColor: Color(0xffEDF1F9),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomTextField(
+                  label: "Nama Tipe Harga",
+                  controller: labelPrice,
+                  placeholder: "Misalnya Harga Reseller...",
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ButtonPrimary(
+                        onPressed: () => saveLabel(),
+                        text: "Simpan",
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  Future<void> saveLabel() async {
+    if (labelPrice.text == "") {
+      DialogHelper.customDialog(
+        context: context,
+        onConfirm: () {},
+        content: "Pastikan nama tipe sudah terisi!",
+        actionButton: false,
+      );
+      return;
+    }
+    
+    try {
+      String? error = await apiServiceTypePrice.updateLabelPrice(labelPrice.text, productId.toString());
+      
+      if (error == null) {
+        if (mounted) { // Pastikan widget masih terpasang
+          setState(() {
+            labelPrice.text = "";
+          });
+          Navigator.pop(context);
+          fetchLabelPrice(productId);
+        }
+      } else {
+        if (mounted) { // Pastikan widget masih te
+          showErrorBottomSheetCustom(context, error);
+        }
+      }
+
+    } catch (e) {
+      if (mounted) {
+        // ignore: use_build_context_synchronously
+        showErrorBottomSheetCustom(context, e.toString());
+      }
+    }
+  }
+
+  Future<void> updateTypePrice() async {
+    if (priceController.text == "") {
+      DialogHelper.customDialog(
+        context: context,
+        onConfirm: () {},
+        content: "Pastikan harga jual sudah terisi!",
+        actionButton: false,
+      );
+      return;
+    }
+
+    String priceValue = _cleanCurrency(priceController.text);
+
+    Logger().d(productId);
+    
+    try {
+      String? error = await apiServiceTypePrice.updateTypePrice(priceValue, _selectedName.toString(), productId);
+      
+      if (error == null) {
+        if (mounted) { // Pastikan widget masih terpasang
+          DialogHelper.customDialog(
+            title: "Berhasil!",
+            context: context,
+            onConfirm: () {},
+            content: "Berhasil memperbaruhi tipe harga $_selectedName",
+            actionButton: false,
+          );
+          fetchLabelPrice(productId);
+          if (productId != 0) {
+            priceController.text = formatRupiah(widget.product!.price);
+          }
+          setState(() {
+            isEditedPrice = false;
+            _selectedName = "-";
+          });
+        }
+      } else {
+        if (mounted) { // Pastikan widget masih te
+          showErrorBottomSheetCustom(context, error);
+        }
+      }
+
+    } catch (e) {
+      if (mounted) {
+        // ignore: use_build_context_synchronously
+        showErrorBottomSheetCustom(context, e.toString());
+      }
+    }
+  }
+
+  Future<void> fetchLabelPrice(productId) async {
+    final data = await apiServiceTypePrice.fetchLabelPrice(productId);
+
+    if (mounted) { // Cek apakah widget masih ada sebelum setState
+      setState(() {
+        labelPrices = data;
+      });
+
+      Logger().d(labelPrices);
+    }
   }
 
   Future<void> saveProduct() async {
@@ -365,15 +559,109 @@ class _FormProductPageState extends State<FormProductPage> {
                 placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
                 maxLine: 4,
               ),
-              PriceField(
-                controller: priceController,
-                label: "Harga Produk*",
-                shortDescription: "Harga per pcs",
-                placeholder: "Misalnya 10.000...",
-                maxLine: 1,
-                border: true,
+              Row(
+                children: [
+                  Expanded(
+                    child: PriceField(
+                      controller: priceController,
+                      label: "Harga Jual Produk*",
+                      shortDescription: "Harga per pcs",
+                      placeholder: "Misalnya 10.000...",
+                      maxLine: 1,
+                      border: true,
+                    ),
+                  ),
+                  Gap(10),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (_selectedName != "-" && isEditedPrice == true) {
+                          updateTypePrice();
+                        }else{
+                          if (_listPrice == false) {
+                            _listPrice = true;
+                          }else{
+                            _listPrice = false;
+                          }
+                        }
+                      });
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isEditedPrice == true ? primaryColor :ligthSky,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: isEditedPrice == true ? primaryColor :secondaryColor)
+                      ),
+                      child: Icon( isEditedPrice == true ? Icons.check : _listPrice == true ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded , color: isEditedPrice == true ? Colors.white : primaryColor,),
+                    ),
+                  )
+                ],
               ),
+              if(_listPrice == true) ... [
+                ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: labelPrices.length,
+                  itemBuilder: (context, index){
+                    final labelPrice = labelPrices[index];
+                    bool isSelected = _selectedName == labelPrice.name; 
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_selectedName == labelPrice.name) {
+                            _selectedName = "-";
+                            if (productId != 0) {
+                              priceController.text = formatRupiah(widget.product!.price);
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }
+                          }else{
+                            _selectedName = labelPrice.name;
+                            priceController.text = formatRupiah(labelPrice.price);
+                            isEditedPrice = false;
+                          }
+                        });
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 5),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: isSelected == true ? bgSuccess : lightColor,
+                          border: Border.all(color: isSelected == true ? successColor : secondaryColor),
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(labelPrice.name ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                            if (isSelected) // Hanya tampilkan ikon jika aktif
+                            Icon(Icons.check_circle, size: 15, color: successColor),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                ),
+                CustomPaint(
+                  painter: DashedBorderPainter(),
+                  child: GestureDetector(
+                    onTap: () => showDialogAddPriceType(),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 5),
+                      padding: EdgeInsets.only(top: 10, bottom: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Center(child: Text("Tambah +", style: TextStyle(fontWeight: FontWeight.w600))))),
+                ),
+              ],
               // adjust stock
+              Gap(5),
               LineSM(),
               Gap(5),
               LabelSemiBold(text: labelStock),

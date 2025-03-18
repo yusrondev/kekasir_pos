@@ -206,9 +206,10 @@ class _HomePageState extends State<HomePage> {
         saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue, totalPurchases, grossProfit, hpp, grossProfitLastMonth, totalPurchasesLastMonth);
       }
     } catch (e) {
-      Logger().d(e.toString());
-      // ignore: use_build_context_synchronously
-      showErrorBottomSheet(context, e.toString());
+      if (mounted) {
+        // ignore: use_build_context_synchronously
+        showErrorBottomSheet(context, e.toString());
+      }
     }
   }
 

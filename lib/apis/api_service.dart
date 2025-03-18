@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:kekasir/models/product.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/web.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,14 +26,28 @@ class ApiService {
   }
 
   Future<List<Product>> fetchProducts(String keyword, [String? sort]) async {
-    final response = await http.get(Uri.parse('$apiUrl/products?keyword=$keyword&sort_qty=$sort'), headers: await _headers);
+    try {
+      final response = await http.get(
+        Uri.parse('$apiUrl/products?keyword=$keyword&sort_qty=$sort'),
+        headers: await _headers,
+      );
 
-    if (response.statusCode == 200) {
-      List data = json.decode(response.body)['products'];
-      return data.map((json) => Product.fromJson(json)).toList();
+      if (response.statusCode == 200) {
+        List data = json.decode(response.body)['products'];
+        return data.map((json) => Product.fromJson(json)).toList();
+      } else {
+        // Log kesalahan jika response gagal
+        Logger().d('Gagal mengambil produk. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Menangani error jaringan atau parsing JSON
+      Logger().d('Terjadi kesalahan: $e');
     }
+
+    // Jika terjadi error, kembalikan list kosong agar aplikasi tetap berjalan
     return [];
   }
+
 
   Future<bool> _sendProductRequest(String url, {String? name, String? price, String? shortDescription, File? imageFile, String? type, String? quantity, String? costPrice, String? description}) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
