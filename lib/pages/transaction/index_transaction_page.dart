@@ -216,6 +216,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               backgroundColor: Colors.white,
               content: Container(
                 width: 100,
+                height: 300,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10)
@@ -233,46 +234,54 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       fontWeight: FontWeight.w600
                     )),
                     Gap(10),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.all(0),
-                        itemCount: labelPrices.length,
-                        itemBuilder: (context, index){
-                          final labelPrice = labelPrices[index];
-                          bool isSelected = _selectedName == labelPrice.name; 
-                                  
-                          return GestureDetector(
-                            onTap: () {
-                              setModalState(() {
-                                if (_selectedName == labelPrice.name) {
-                                  _selectedName = "";
-                                }else{
-                                  _selectedName = labelPrice.name;
-                                }
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 5),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: isSelected == true ? bgSuccess : ligthSky,
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(
-                                    color: isSelected == true ? successColor : Colors.black,
-                                    fontWeight: FontWeight.w600
-                                  )),
-                                  if(isSelected)
-                                  Icon(Icons.check_circle, size: 15, color: successColor,)
-                                ],
-                              ),
-                            ),
-                          );
-                        }
+                    SizedBox(
+                      height: 190,
+                      child: Flexible(
+                        child: Scrollbar(
+                          thumbVisibility: true, // Agar scrollbar selalu terlihat
+                          thickness: 3, // Ketebalan scrollbar
+                          radius: Radius.circular(10), // Membuat scrollbar lebih halus
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(0),
+                            itemCount: labelPrices.length,
+                            itemBuilder: (context, index){
+                              final labelPrice = labelPrices[index];
+                              bool isSelected = _selectedName == labelPrice.name; 
+                                      
+                              return GestureDetector(
+                                onTap: () {
+                                  setModalState(() {
+                                    if (_selectedName == labelPrice.name) {
+                                      _selectedName = "";
+                                    }else{
+                                      _selectedName = labelPrice.name;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 5),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: isSelected == true ? bgSuccess : ligthSky,
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(
+                                        color: isSelected == true ? successColor : Colors.black,
+                                        fontWeight: FontWeight.w600
+                                      )),
+                                      if(isSelected)
+                                      Icon(Icons.check_circle, size: 15, color: successColor,)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          ),
+                        ),
                       ),
                     ),
                     Gap(10),
