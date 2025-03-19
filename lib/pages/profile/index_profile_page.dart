@@ -167,7 +167,6 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                 Navigator.pushNamed(context, '/profile/edit', arguments: dataMe).then((value){
                   if (value == true) {
                     me();
-                    alertLottie(context, "Berhasil memperbarui data!");
                   }
                 });
               },

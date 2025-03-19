@@ -446,6 +446,7 @@ class _FormProductPageState extends State<FormProductPage> {
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
+        alertLottie(context, 'Berhasil memperbarui produk!');
       } else {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);

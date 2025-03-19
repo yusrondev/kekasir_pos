@@ -9,6 +9,7 @@ import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -136,7 +137,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Navigator.pop(context);
         }
         Navigator.pop(context, true);
-
+        alertLottie(context, 'Berhasil memperbarui data!');
       } else {
         setState(() {
           isLoading = false;

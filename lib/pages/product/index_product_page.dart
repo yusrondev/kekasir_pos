@@ -232,7 +232,6 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                         Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
                                           if (value == true) {
                                             setState(() {
-                                              alertLottie(context, 'Berhasil memperbarui produk!');
                                               fetchProducts(searchField.text);
                                             });
                                           }
