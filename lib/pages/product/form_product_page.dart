@@ -635,7 +635,8 @@ class _FormProductPageState extends State<FormProductPage> {
               ),
               if(_listPrice == true) ... [
                 if(labelPrices.isNotEmpty) ... [
-                  LabelSemiBold(text: "Pilih Tipe Harga"),
+                  LabelSemiBold(text: "Daftar Tipe Harga"),
+                  ShortDesc(text: 'Harga produk akan otomatis mengikuti sesuai transaksi'),
                   Gap(5),
                 ],
                 ListView.builder(
