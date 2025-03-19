@@ -8,6 +8,7 @@ import 'package:kekasir/apis/api_service_cart.dart';
 import 'package:kekasir/apis/api_service_type_price.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
@@ -218,7 +219,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 width: 100,
                 constraints: BoxConstraints(
                   minHeight: 100, // Tinggi minimum
-                  maxHeight: 300
+                  maxHeight: 350
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -229,14 +230,16 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   children: [
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
-                    ShortDesc(text: "Pilihan Anda akan mempengaruhi harga jual"),
+                    ShortDesc(text: "Jika produk tidak memiliki tipe harga"),
+                    ShortDesc(text: "atau harganya Rp 0, maka otomatis akan"),
+                    ShortDesc(text: "menggunakan harga normal"),
                     Gap(2),
                     Text("Saat ini terpilih sebagai : ${_selectedName == "" ? "Harga normal" : toBeginningOfSentenceCase(_selectedName)}", style: TextStyle(
                       fontSize: 12,
                       color: primaryColor,
                       fontWeight: FontWeight.w600
                     )),
-                    Gap(10),
+                    LineXM(),
                     Container(
                       constraints: BoxConstraints(
                         minHeight: 100, // Tinggi minimum
@@ -294,9 +297,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: ButtonPrimary(text: "Simpan", onPressed: () {
+                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
                             fetchProducts(keyword.text, "true", _selectedName.toString());
                             Navigator.pop(context);
+                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}");
                           })
                         )
                       ],
