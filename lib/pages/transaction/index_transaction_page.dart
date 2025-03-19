@@ -233,12 +233,6 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     ShortDesc(text: "Jika produk tidak memiliki tipe harga"),
                     ShortDesc(text: "atau harganya Rp 0, maka otomatis akan"),
                     ShortDesc(text: "menggunakan harga normal"),
-                    Gap(2),
-                    Text("Saat ini terpilih sebagai : ${_selectedName == "" ? "Harga normal" : toBeginningOfSentenceCase(_selectedName)}", style: TextStyle(
-                      fontSize: 12,
-                      color: primaryColor,
-                      fontWeight: FontWeight.w600
-                    )),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
@@ -476,8 +470,32 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 ]
               ],
             ),
-            Gap(10),
             // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
+            if(_selectedName.toString() != "") ... [
+              Gap(5),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+                decoration: BoxDecoration(
+                  color: lightColor,
+                  border: Border.all(color: primaryColor, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  "*Menggunakan harga : ${toBeginningOfSentenceCase(_selectedName)}",
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                    color: primaryColor
+                  ),
+                ),
+              ),
+              Gap(5),
+            ] else ... [
+              Gap(10),
+            ],
             buildProductList(),
           ],
         ),
