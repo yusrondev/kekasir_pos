@@ -135,8 +135,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (oldPasswordController.text.isNotEmpty) {
           Navigator.pop(context);
         }
-        
-        showSuccessSnackbar(context, result["message"]); 
         Navigator.pop(context, true);
 
       } else {

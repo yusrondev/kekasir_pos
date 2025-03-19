@@ -82,6 +82,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
       if (mounted) {
         setState(() {
           fetchProducts(searchField.text);
+          alertLottie(context, "Berhasil menghapus produk!");
         });
       }
     } catch (e) {
@@ -109,6 +110,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                   onTap: () {
                     Navigator.pushNamed(context, '/create-product').then((value){
                       if (value == true) {
+                        alertLottie(context, 'Berhasil menambahkan produk!');
                         fetchProducts(searchField.text);
                       }
                     });
@@ -230,6 +232,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                         Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
                                           if (value == true) {
                                             setState(() {
+                                              alertLottie(context, 'Berhasil memperbarui produk!');
                                               fetchProducts(searchField.text);
                                             });
                                           }

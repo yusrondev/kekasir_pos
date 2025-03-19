@@ -313,13 +313,7 @@ class _FormProductPageState extends State<FormProductPage> {
       if (error == null) {
         if (mounted) { // Pastikan widget masih terpasang
           Navigator.pop(context);
-          DialogHelper.customDialog(
-            title: "Berhasil!",
-            context: context,
-            onConfirm: () {},
-            content: "Berhasil memperbaruhi tipe harga $_selectedName",
-            actionButton: false,
-          );
+          alertLottie(context, 'Berhasil memperbarui harga!');
           fetchLabelPrice(productId);
           if (productId != 0) {
             priceController.text = formatRupiah(widget.product!.price);

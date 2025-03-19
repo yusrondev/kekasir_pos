@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:kekasir/components/custom_text_component.dart';
+import 'package:lottie/lottie.dart';
 
 void showErrorBottomSheet(BuildContext context, String message) {
   showModalBottomSheet(
@@ -74,3 +76,42 @@ void showErrorBottomSheetCustom(BuildContext context, String message) {
     },
   );
 }
+
+void alertLottie(BuildContext context, String message, [String? icon]) {
+  showDialog(
+    context: context,
+    barrierColor: Colors.black.withOpacity(0.4), // Atur tingkat transparansi
+    builder: (BuildContext context) {
+      if (icon == "" || icon == null) {
+        icon = "success";
+      }
+
+      // Tutup otomatis setelah 2 detik
+      Future.delayed(Duration(milliseconds: 2500), () {
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+      });
+
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Lottie.asset(
+                "assets/animations/$icon.json",
+                width: 60,
+                frameRate: const FrameRate(90),
+                repeat: false
+              ),
+            ),
+            Gap(5),
+            LabelSemiBold(text: message)
+          ],
+        ),
+      );
+    },
+  );
+}
+
