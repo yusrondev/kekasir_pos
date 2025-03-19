@@ -276,7 +276,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(_capitalize(labelPrice.name.toString()) ?? "", style: TextStyle(
+                                    Text(_capitalize(labelPrice.name.toString()), style: TextStyle(
                                       color: isSelected == true ? successColor : Colors.black,
                                       fontWeight: FontWeight.w600
                                     )),
