@@ -216,7 +216,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
               backgroundColor: Colors.white,
               content: Container(
                 width: 100,
-                height: 300,
+                constraints: BoxConstraints(
+                  minHeight: 100, // Tinggi minimum
+                  maxHeight: 300
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10)
@@ -234,8 +237,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       fontWeight: FontWeight.w600
                     )),
                     Gap(10),
-                    SizedBox(
-                      height: 190,
+                    Container(
+                      constraints: BoxConstraints(
+                        minHeight: 100, // Tinggi minimum
+                        maxHeight: 190
+                      ),
                       child: Flexible(
                         child: Scrollbar(
                           thumbVisibility: true, // Agar scrollbar selalu terlihat
