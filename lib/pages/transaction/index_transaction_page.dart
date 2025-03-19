@@ -432,76 +432,113 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PageTitle(text: "Tambah Transaksi"),
-                GestureDetector(
-                  onTap: () {
-                    if (grandTotal != "Rp 0") {
-                      DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
-                        clearCart();
-                      });
-                    }
-                  },
-                  child: Image.asset(
-                    grandTotal != "Rp 0" ? 'assets/icons/empty-cart-active.png' : 'assets/icons/empty-cart.png',
-                    width: 30,
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PageTitle(text: "Tambah Transaksi"),
+                      GestureDetector(
+                        onTap: () {
+                          if (grandTotal != "Rp 0") {
+                            DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
+                              clearCart();
+                            });
+                          }
+                        },
+                        child: Image.asset(
+                          grandTotal != "Rp 0" ? 'assets/icons/empty-cart-active.png' : 'assets/icons/empty-cart.png',
+                          width: 30,
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
-            Gap(10),
-            Row(
-              children: [
-                Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword)),
-                if(labelPrices.isNotEmpty) ... [
-                  Gap(5),
-                  GestureDetector(
-                    onTap: () => showDialogListPriceType(),
-                    child: Container(
-                      padding: EdgeInsets.all(10),
+                  Gap(10),
+                  Row(
+                    children: [
+                      Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword)),
+                      if(labelPrices.isNotEmpty) ... [
+                        Gap(5),
+                        GestureDetector(
+                          onTap: () => showDialogListPriceType(),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: ligthSky,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: secondaryColor)
+                            ),
+                            child: Icon(Icons.settings, size: 20),
+                          ),
+                        )
+                      ]
+                    ],
+                  ),
+                  // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
+                  if(_selectedName.toString() != "") ... [
+                    Gap(5),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(vertical: 3),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7),
                       decoration: BoxDecoration(
-                        color: ligthSky,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: secondaryColor)
+                        color: bgSuccess,
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: successColor, width: 1)
                       ),
-                      child: Icon(Icons.settings, size: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Menggunakan harga : ${toBeginningOfSentenceCase(_selectedName)}",
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              overflow: TextOverflow.ellipsis,
+                              color: successColor
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedName = "";
+                                fetchProducts(keyword.text, "true", _selectedName.toString());
+                                alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}"); 
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: successColor,
+                                borderRadius: BorderRadius.circular(100)
+                              ),
+                              child: Icon(Icons.close, size: 15, color: Colors.white,)
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ]
-              ],
-            ),
-            // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
-            if(_selectedName.toString() != "") ... [
-              Gap(5),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 3),
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7),
-                decoration: BoxDecoration(
-                  color: lightColor,
-                  border: Border.all(color: primaryColor, width: 1),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  "*Menggunakan harga : ${toBeginningOfSentenceCase(_selectedName)}",
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                    color: primaryColor
-                  ),
-                ),
+                    Gap(5),
+                  ] else ... [
+                    Gap(10),
+                  ],
+                ],
               ),
-              Gap(5),
-            ] else ... [
-              Gap(10),
-            ],
-            buildProductList(),
+            ),
+            Expanded(
+              child: ListView(
+                  padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                  children: [
+                    buildProductList(),
+                  ],
+                ),
+            ),
           ],
         ),
       ),

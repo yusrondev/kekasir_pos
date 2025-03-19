@@ -8,7 +8,6 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/components/custom_other_component.dart';
@@ -99,38 +98,52 @@ class _IndexProductPageState extends State<IndexProductPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PageTitle(text: "Data Produk"),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/create-product').then((value){
-                      if (value == true) {
-                        alertLottie(context, 'Berhasil menambahkan produk!');
-                        fetchProducts(searchField.text);
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: secondaryColor),
-                      borderRadius:BorderRadius.circular(100) 
-                    ),
-                    child: Icon(Icons.add, color: Colors.black,size: 24)
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PageTitle(text: "Data Produk"),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/create-product').then((value){
+                            if (value == true) {
+                              alertLottie(context, 'Berhasil menambahkan produk!');
+                              fetchProducts(searchField.text);
+                            }
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: secondaryColor),
+                            borderRadius:BorderRadius.circular(100) 
+                          ),
+                          child: Icon(Icons.add, color: Colors.black,size: 24)
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                  Gap(10),
+                  SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
+                ],
+              ),
             ),
-            Gap(10),
-            SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
-            Gap(10),
-            buildProductList()
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                children: [
+                  Gap(10),
+                  buildProductList()
+                ],
+              ),
+            ),
           ],
         ),
       )
