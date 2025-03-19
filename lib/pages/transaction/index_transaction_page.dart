@@ -235,9 +235,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   children: [
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
-                    ShortDesc(text: "Jika produk tidak memiliki tipe harga"),
-                    ShortDesc(text: "atau harganya Rp 0, maka otomatis akan"),
-                    ShortDesc(text: "menggunakan harga normal"),
+                    ShortDesc(text: "Otomatis menggunakan harga normal"),
+                    ShortDesc(text: "jika produk tidak memiliki tipe harga terkait"),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
