@@ -361,7 +361,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     FilteringTextInputFormatter.deny(RegExp(r'\s')), // Mencegah spasi
                   ],
                   decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
                     border: InputBorder.none,
+                    filled: true,
+                    fillColor: Colors.white,
                     hintText: "Masukkan jumlah...",
                   ),
                   onSubmitted: (value) {
