@@ -135,7 +135,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       transactionProccess = true;
       Navigator.pop(context);
       final transactionData = await ApiServiceTransaction().saveTransaction(
-        paid,
+        paid, selectedName
       );
 
       setState(() {
@@ -223,7 +223,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             children: [
               LabelSemiBoldMD(text: "Daftar Pesanan"),
               if(selectedName != "") ... [
-                StockTag(text: "Menggunakan tipe harga : ${toBeginningOfSentenceCase(selectedName)}",)
+                WarningTag(text: "*Menggunakan harga : ${toBeginningOfSentenceCase(selectedName)}",)
               ]
             ],
           ),

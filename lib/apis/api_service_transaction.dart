@@ -24,10 +24,11 @@ class ApiServiceTransaction {
     return prefs.getString('access_token');
   }
 
-  Future<Map<String, dynamic>> saveTransaction(String paid, [int? paymentMethod, int? discount]) async {
+  Future<Map<String, dynamic>> saveTransaction(String paid, String selectedName, [int? paymentMethod, int? discount]) async {
     var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/transaction'));
     request.headers.addAll(await _headers);
     request.fields['paid'] = paid;
+    request.fields['type_price'] = selectedName.toString();
     request.fields['payment_method'] = paymentMethod?.toString() ?? '';
     request.fields['discount'] = discount?.toString() ?? '';
 

@@ -2,6 +2,7 @@ class Transaction {
   final int id;
   final String code;
   final String description;
+  final String? labelPrice;
   final String subTotal;
   final String grandTotal;
   final String discount;
@@ -17,6 +18,7 @@ class Transaction {
     required this.id,
     required this.code,
     required this.description,
+    required this.labelPrice,
     required this.subTotal,
     required this.grandTotal,
     required this.discount,
@@ -34,6 +36,7 @@ class Transaction {
       id: json['id'],
       code: json['code'],
       description: json['description'],
+      labelPrice: json['label_price'],
       subTotal: json['sub_total'],
       grandTotal: json['grand_total'],
       discount: json['discount'],
@@ -61,6 +64,11 @@ class Transaction {
       "paid": paid,
       "change": change,
     };
+  }
+
+  @override
+  String toString() {
+    return 'id : $id, code : $code, description : $description, labelPrice : $labelPrice, subTotal : $subTotal, grandTotal : $grandTotal, discount : $discount, paid : $paid, change : $change, paymentMethod : $paymentMethod, status : $status, merchantName : $merchantName, createdAt : $createdAt, details : $details';
   }
 }
 

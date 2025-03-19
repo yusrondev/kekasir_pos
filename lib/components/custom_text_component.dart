@@ -270,3 +270,30 @@ class DangerTag extends StatelessWidget {
     );
   }
 }
+
+class WarningTag extends StatelessWidget {
+  final String? text;
+  const WarningTag({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: BoxDecoration(
+        color: Color(0xfffff5e7),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        text ?? "",
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          overflow: TextOverflow.ellipsis,
+          color: Color(0xff6f1f00)
+        ),
+      ),
+    );
+  }
+}

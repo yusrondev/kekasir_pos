@@ -13,6 +13,7 @@ import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 
 class MutationTransactionPage extends StatefulWidget {
   const MutationTransactionPage({super.key});
@@ -110,6 +111,9 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
           transactions = data;
           loading = false;
         });
+
+        Logger().d(transactions);
+
       }
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
@@ -209,7 +213,15 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         PriceTag(text: '+ ${transaction.grandTotal}'),
-                        StockTag(text: transaction.paymentMethod)
+                        Row(
+                          children: [
+                            StockTag(text: transaction.paymentMethod),
+                            if(transaction.labelPrice != null) ... [
+                              Gap(5),
+                              WarningTag(text: transaction.labelPrice),
+                            ]
+                          ],
+                        ),
                       ],
                     ),
                     Gap(10),

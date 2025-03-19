@@ -103,7 +103,15 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LabelSemiBoldMD(text: "Daftar Pesanan"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              LabelSemiBoldMD(text: "Daftar Pesanan"),
+              if(transaction['label_price'] != null) ... [
+                WarningTag(text: '*Menggunakan harga ${transaction['label_price']}'),
+              ]
+            ],
+          ),
           Gap(5),
           ListView.builder(
             padding: EdgeInsets.all(0),
