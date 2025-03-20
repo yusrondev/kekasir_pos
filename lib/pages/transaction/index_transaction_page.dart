@@ -18,7 +18,6 @@ import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 
 class IndexTransactionPage extends StatefulWidget {

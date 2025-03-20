@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,11 +50,91 @@ void showErrorSnackbarCustom(BuildContext context, String message) {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late InternetConnectionChecker _connectionChecker;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthService authService = AuthService();
   bool isLoading = false;
   bool _obscureText = true;
+  bool isDialogOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectionChecker = InternetConnectionChecker.createInstance();
+    _checkInternetConnection(); // Cek internet saat aplikasi dimulai
+  }
+
+  void _checkInternetConnection() {
+    _connectionChecker.onStatusChange.listen((status) {
+      if (status == InternetConnectionStatus.disconnected) {
+        _showNoInternetDialog();
+      } else {
+        if (isDialogOpen) {
+          Navigator.of(context).pop();
+          isDialogOpen = false;
+        }
+      }
+    });
+  }
+
+  void _showNoInternetDialog() {
+    if (!isDialogOpen) {
+      isDialogOpen = true;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        // ignore: deprecated_member_use
+        barrierColor: Colors.black.withOpacity(0.7), // Atur tingkat 
+        // ignore: deprecated_member_use
+        builder: (context) => WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8, // 80% dari layar
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Lottie.asset(
+                      'assets/animations/disconnect.json',
+                      width: 50,
+                      frameRate: const FrameRate(90),
+                    ),
+                  ),
+                  Gap(5),
+                  Center(
+                    child: Text(
+                      "Tidak Ada Koneksi Internet!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Gap(5),
+                  Center(child: Text("Pastikan Perangkat terhubung ke jaringan", textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
+                  Gap(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Sedang menunggu jaringan", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor)),
+                      Gap(5),
+                      Lottie.asset(
+                        'assets/animations/loading.json',
+                        width: 20,
+                        frameRate: const FrameRate(90),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
 
   void login() async {
     if (emailController.text == "") {
