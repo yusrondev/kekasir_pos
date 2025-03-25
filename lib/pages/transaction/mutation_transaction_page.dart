@@ -12,7 +12,6 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 
 class MutationTransactionPage extends StatefulWidget {

@@ -19,7 +19,6 @@ import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:logger/web.dart';
