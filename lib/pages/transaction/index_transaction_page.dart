@@ -218,6 +218,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return AlertDialog(
+              clipBehavior: Clip.hardEdge,
               backgroundColor: Colors.white,
               content: Container(
                 width: 100,
@@ -268,8 +269,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                 margin: EdgeInsets.only(bottom: 5),
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: isSelected == true ? bgSuccess : ligthSky,
-                                  borderRadius: BorderRadius.circular(10)
+                                  color: isSelected == true ? bgSuccess : Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: isSelected == true ? successColor : secondaryColor)
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -331,6 +333,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       useSafeArea: false, // Menghindari batas layar
       builder: (context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           content: Column(
             mainAxisSize: MainAxisSize.min,

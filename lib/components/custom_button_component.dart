@@ -116,3 +116,31 @@ class ButtonSecondaryOutline extends StatelessWidget {
     );
   }
 }
+
+class ButtonDangerOutline extends StatelessWidget {
+
+  final String? text;
+
+  final VoidCallback? onPressed;
+
+  const ButtonDangerOutline({super.key, this.onPressed, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: dangerColor, width: 1), // Warna & ketebalan garis
+        foregroundColor: dangerColor, // Warna teks & ikon
+        padding: EdgeInsets.symmetric(vertical: 13)
+      ),
+      onPressed: onPressed,
+      child: Text(text ?? "", style: TextStyle(
+          color: dangerColor,
+          fontSize: 15,
+          fontFamily: 'Lexend',
+          fontWeight: FontWeight.w600
+        )
+      ),
+    );
+  }
+}

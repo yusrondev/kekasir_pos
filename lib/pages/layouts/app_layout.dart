@@ -54,6 +54,7 @@ class _AppLayoutState extends State<AppLayout> {
         builder: (context) => WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
+            clipBehavior: Clip.hardEdge,
             backgroundColor: Colors.white,
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8, // 80% dari layar

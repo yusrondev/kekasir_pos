@@ -57,6 +57,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       useSafeArea: false, // Menghindari batas layar
       builder: (context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           content: Column(
             mainAxisSize: MainAxisSize.min,

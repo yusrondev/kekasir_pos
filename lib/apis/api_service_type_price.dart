@@ -112,4 +112,9 @@ class ApiServiceTypePrice {
     return [];
   }
 
+  Future<bool> deleteTypePrice(int id) async {
+    final response = await http.delete(Uri.parse('$apiUrl/type-price/$id'), headers: await _headers);
+    return response.statusCode == 200;
+  }
+
 }

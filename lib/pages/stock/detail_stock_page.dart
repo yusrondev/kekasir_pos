@@ -131,7 +131,7 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 children: [
                   Icon(Icons.info_outline_rounded, size: 20,),
                   Gap(5),
-                  Text("Menggunakan metode FIFO", style: TextStyle(
+                  Text("Kekasir : menggunakan metode FIFO", style: TextStyle(
                     fontWeight: FontWeight.w600,
                   )),
                 ],

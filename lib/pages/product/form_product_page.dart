@@ -72,6 +72,7 @@ class _FormProductPageState extends State<FormProductPage> {
   TextEditingController quantity = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController labelPrice = TextEditingController();
+  TextEditingController typePrice = TextEditingController();
 
   final ScrollController mainListView= ScrollController();
 
@@ -92,6 +93,7 @@ class _FormProductPageState extends State<FormProductPage> {
   int productId = 0;
   String? storeQuantity = "Masukkan harga...";
   String? _selectedName = "-";
+  int? _oldValueType;
 
   List<LabelPrice> labelPrices = [];
 
@@ -207,7 +209,8 @@ class _FormProductPageState extends State<FormProductPage> {
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
-            backgroundColor: Color(0xffEDF1F9),
+            clipBehavior: Clip.hardEdge,
+            backgroundColor: Colors.white,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -215,6 +218,7 @@ class _FormProductPageState extends State<FormProductPage> {
                   label: "Tipe Harga",
                   controller: labelPrice,
                   placeholder: "Misalnya Harga Reseller...",
+                  border: true,
                 ),
                 Row(
                   children: [
@@ -446,6 +450,7 @@ class _FormProductPageState extends State<FormProductPage> {
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
+        // ignore: use_build_context_synchronously
         alertLottie(context, 'Berhasil memperbarui produk!');
       } else {
         // ignore: use_build_context_synchronously
@@ -455,6 +460,21 @@ class _FormProductPageState extends State<FormProductPage> {
       }
     }
   }  
+
+  deleteTypePrice(id) async {
+    try {
+      await apiServiceTypePrice.deleteTypePrice(id);
+      if (mounted) {
+        setState(() {
+          fetchLabelPrice(productId);
+          Navigator.pop(context);
+          alertLottie(context, "Berhasil menghapus tipe harga!");
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -674,6 +694,88 @@ class _FormProductPageState extends State<FormProductPage> {
                           }
                         });
                       },
+                      onLongPress: () {
+                        setState(() {
+                          typePrice.text = labelPrice.name ?? "";
+                          _oldValueType = labelPrice.id;
+
+                          // default
+                          if (_selectedName == labelPrice.name) {
+                            if (productId != 0) {
+                              priceController.text = formatRupiah(widget.product!.price);
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }else{
+                              priceController.text = "";
+                              setState(() {
+                                isEditedPrice = false;
+                              });
+                            }
+                          }else{
+                            _selectedName = labelPrice.name;
+                            priceController.text = formatRupiah(labelPrice.price);
+                            isEditedPrice = false;
+                            wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
+                          }
+                        });
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              clipBehavior: Clip.hardEdge,
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomTextField(
+                                    label: "Sesuaikan tipe : ${labelPrice.name}",
+                                    shortDescription: "Anda dapat menghapus / merubah tipe harga ini",
+                                    controller: typePrice,
+                                    maxLength: 100,
+                                    border: true,
+                                    placeholder: "Misalnya Reseller...",
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType), title: "Yakin menghapus tipe ${labelPrice.name}?", content: "Tipe harga ini akan dihapus untuk semua produk.", actionButton: true);
+                                          },
+                                          child: ButtonDangerOutline(
+                                            text: "Hapus",
+                                          ),
+                                        )
+                                      ),
+                                      Gap(5),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (_selectedName != typePrice.text) {
+                                              Navigator.pop(context);
+                                              DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType), title: "Yakin merubah tipe ${labelPrice.name}?", content: "Anda akan melakukan perubahan nama dari $_selectedName menjadi ${typePrice.text}", actionButton: true);
+                                            }
+                                          },
+                                          child: ButtonPrimary(
+                                            text: "Simpan",
+                                          ),
+                                        )
+                                      ),
+                                    ],
+                                  ),
+                                  Gap(10),
+                                  Center(
+                                    child: ShortDesc(text: "Klik bagian luar untuk keluar"),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                       child: Container(
                         margin: EdgeInsets.only(bottom: 5),
                         padding: EdgeInsets.all(10),
@@ -723,28 +825,28 @@ class _FormProductPageState extends State<FormProductPage> {
               
               if(isEdit == true) ... [
                 Gap(10),
-                Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: availableStock > 5 ? bgSuccess : bgDanger,
-                    border: Border.all(color: availableStock > 5 ? successColor : dangerColor),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tersisa $availableStock pcs untuk produk ini",
-                        style: TextStyle(
-                          color: availableStock > 5 ? successColor : dangerColor,
-                          fontWeight: FontWeight.w600
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/stock-detail', arguments: widget.product);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: availableStock > 5 ? bgSuccess : bgDanger,
+                      border: Border.all(color: availableStock > 5 ? successColor : dangerColor),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tersisa $availableStock pcs untuk produk ini",
+                          style: TextStyle(
+                            color: availableStock > 5 ? successColor : dangerColor,
+                            fontWeight: FontWeight.w600
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/stock-detail', arguments: widget.product);
-                        },
-                        child: Container(
+                        Container(
                           padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           decoration: BoxDecoration(
                             color: availableStock > 5 ? successColor : dangerColor,
@@ -753,9 +855,9 @@ class _FormProductPageState extends State<FormProductPage> {
                           child: Text("Mutasi" , style: TextStyle(
                             color: Colors.white
                           )),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Gap(10),

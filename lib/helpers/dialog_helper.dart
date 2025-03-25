@@ -12,13 +12,14 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Apakah Anda yakin ingin menghapus item $content?"),
+              Text("Apakah Anda yakin ingin menghapus $content?"),
               Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,6 +63,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
@@ -110,6 +112,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
@@ -160,6 +163,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
@@ -210,6 +214,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text("Konfirmasi", style: TextStyle(fontFamily: 'Lexend'),),
           content: Column(
@@ -263,6 +268,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text(title != "" ? '$title' : "Gagal"),
           content: Column(
@@ -318,6 +324,7 @@ class DialogHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           title: Text(title != "" ? '$title' : "Gagal"),
           content: Column(
