@@ -272,6 +272,7 @@ class _HomePageState extends State<HomePage> {
             Gap(10),
             buildSectionFeatures(),
             Gap(10),
+            if(transactions.length >= 3)
             buildTransactionHistory(),
           ],
         ),
@@ -687,21 +688,22 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/transaction/mutation');
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Transaksi Hari Ini", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                      ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
-                    ],
-                  ),
-                  Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Transaksi Hari Ini", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
+                  ],
+                ),
+                if(transactions.length >= 3)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/transaction/mutation');
+                  },
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Lihat Semua", style: TextStyle(
@@ -712,9 +714,9 @@ class _HomePageState extends State<HomePage> {
                       Gap(3),
                       Icon(Icons.arrow_forward_rounded, size: 10, color: primaryColor)
                     ],
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
             Gap(10),
             loadingLastUpdateTransaction == true ? CustomLoader.showCustomLoader() :
