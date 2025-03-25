@@ -3,6 +3,7 @@ class LabelPrice {
   final String? name;
   final int? userId;
   final int? status;
+  final int? productId;
   final double price;
 
   LabelPrice({
@@ -10,6 +11,7 @@ class LabelPrice {
     this.name, 
     this.userId, 
     this.status,
+    this.productId,
     required this.price
   });
 
@@ -19,12 +21,13 @@ class LabelPrice {
       name: json['name'],
       userId: json['user_id'],
       status: json['status'],
+      productId: json['product_id'],
       price: double.parse(json['price'] ?? 0),
     );
   }
 
   @override
   String toString() {
-    return 'LabelPrice(id: $id, name: $name, userId: $userId, price: $price, status: $status)';
+    return 'LabelPrice(id: $id, name: $name, userId: $userId, price: $price, product_id : $productId, status: $status)';
   }
 }

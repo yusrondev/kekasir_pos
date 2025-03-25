@@ -188,29 +188,68 @@ class ShortDescSM extends StatelessWidget {
   }
 }
 
-class PriceTag extends StatelessWidget {
+class PriceTag extends StatefulWidget {
   final String? text;
   final bool? haveType;
+
   const PriceTag({super.key, this.text, this.haveType});
 
   @override
+  State<PriceTag> createState() => _PriceTagState();
+}
+
+class _PriceTagState extends State<PriceTag> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    )..repeat(reverse: true);
+
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.5).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return widget.haveType == true
+        ? AnimatedBuilder(
+            animation: _opacityAnimation,
+            builder: (context, child) {
+              return Opacity(
+                opacity: _opacityAnimation.value,
+                child: _buildContainer(),
+              );
+            },
+          )
+        : _buildContainer();
+  }
+
+  Widget _buildContainer() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 3),
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      margin: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
-        color: haveType == true ? Color(0xfff9ca24) : bgSuccess,
+        color: widget.haveType == true ? const Color(0xfff9ca24) : bgSuccess,
         borderRadius: BorderRadius.circular(5),
-        // border: Border.all(color: successColor, width: 0.5)
       ),
       child: Text(
-        text ?? "",
+        widget.text ?? "",
         maxLines: 1,
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           overflow: TextOverflow.ellipsis,
-          color: haveType == true ? Color(0xff130f40) : successColor
+          color: widget.haveType == true ? const Color(0xff130f40) : successColor,
         ),
       ),
     );

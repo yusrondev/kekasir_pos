@@ -838,7 +838,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
                                   Row(
                                     children: [
-                                      Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                                      labelPrice.productId == 0 ? Text("Belum diatur", style: TextStyle(color: isSelected == true ? successColor : softBlack),) : Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
                                       if (isSelected) ... [
                                         Gap(5),
                                         Icon(Icons.check_circle, size: 15, color: successColor),

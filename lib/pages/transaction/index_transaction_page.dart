@@ -487,7 +487,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(vertical: 3),
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                       decoration: BoxDecoration(
                         color: Color(0xfff9ca24),
                         borderRadius: BorderRadius.circular(5),
@@ -499,7 +499,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                             "Menggunakan harga : ${toBeginningOfSentenceCase(_selectedName)}",
                             maxLines: 1,
                             style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
                               color: Color(0xff130f40)
