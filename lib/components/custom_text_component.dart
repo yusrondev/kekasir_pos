@@ -91,12 +91,13 @@ class PageTitle extends StatelessWidget {
         if(back == true) ... [
           GestureDetector(
             onTap: () {
-              Navigator.pop(context, true);
+              // Navigator.pop(context, true);
+              Navigator.pop(context);
             },
             child: Container(
               margin: EdgeInsets.only(right: 15),
-              width: 30,
-              height: 30,
+              width: 35,
+              height: 35,
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: Color(0xfff5f6fa),

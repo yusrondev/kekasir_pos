@@ -537,416 +537,425 @@ class _FormProductPageState extends State<FormProductPage> {
         backgroundColor: Colors.white,
         body: Form(
           key: _formKey,
-          child: ListView(
-            controller: mainListView,
-            padding: defaultPadding,
+          child: Column(
             children: [
-              PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
+              Padding(
+                padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+                child: PageTitle(text: widget.product == null ? "Tambah Produk" : "Edit Produk - ${widget.product!.name.length > 10 ? '${widget.product?.name.substring(0, 10)}...' : widget.product?.name } ", back: true),
+              ),
               Gap(10),
-              Column(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    height: 170,
-                    child: Row(
+              Expanded(
+                child: ListView(
+                  controller: mainListView,
+                  padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                  children: [
+                    Column(
                       children: [
-                        _image == null ? Gap(0) : ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.file(_image!, 
-                            width: 170,
-                            height: 155,
-                            fit: BoxFit.fitWidth
-                          )
-                        ),
-                        if(urlImage != null) ... [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              urlImage ?? "",
-                              width: 170,
-                              height: 155,
-                              fit: BoxFit.fitWidth,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/empty.png', 
+                        SizedBox(
+                          width: 170,
+                          height: 170,
+                          child: Row(
+                            children: [
+                              _image == null ? Gap(0) : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(_image!, 
                                   width: 170,
                                   height: 155,
                                   fit: BoxFit.fitWidth
-                                );
-                              },
-                            )
-                          ),
-                        ],
-                        if(hasBeenChange == false && urlImage == null) ... [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset("assets/images/empty.png",
-                              width: 170,
-                              height: 155,
-                              fit: BoxFit.fitWidth
-                            )
-                          ),
-                        ]
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 125,
-                    child: Container(
-                      padding: EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: ligthSky,
-                        border: Border.all(color: secondaryColor),
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.white,
-                              border: Border.all(color: secondaryColor)
-                            ),
-                            child: IconButton(
-                              icon: Icon(Icons.camera_alt_rounded, color: Color(0xff747d8c), size: 20,),
-                              onPressed: () => pickImage(ImageSource.camera),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.white,
-                              border: Border.all(color: secondaryColor)
-                            ),
-                            child: IconButton(
-                              icon: Icon(Icons.image_rounded, color: Color(0xff747d8c), size: 20,),
-                              onPressed: () => pickImage(ImageSource.gallery),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              CustomTextField(
-                border: true,
-                controller: nameController,
-                label: "Nama *",
-                placeholder: "Misalnya Snack...",
-                maxLine: 1,
-              ),
-              CustomTextField(
-                border: true,
-                controller: shortDescriptionController,
-                label: "Deskripsi Singkat",
-                placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
-                maxLine: 4,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: PriceField(
-                      controller: priceController,
-                      label: wordingPrice,
-                      shortDescription: "Harga per pcs",
-                      placeholder: "Misalnya 10.000...",
-                      maxLine: 1,
-                      border: true,
-                    ),
-                  ),
-                  Gap(10),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (_selectedName != "-" && isEditedPrice == true) {
-                          updateTypePrice();
-                        }else{
-                          if (_listPrice == false) {
-                            _listPrice = true;
-                          }else{
-                            _listPrice = false;
-                            _selectedName = "-";
-                            wordingPrice = "Harga Jual Produk (Normal)*";
-                            if (productId != 0) {
-                              priceController.text = formatRupiah(widget.product!.price);
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }else{
-                              priceController.text = "";
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }
-                          }
-                        }
-                      });
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 20),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: isEditedPrice == true ? primaryColor :ligthSky,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: isEditedPrice == true ? primaryColor :secondaryColor)
-                      ),
-                      child: Icon( isEditedPrice == true ? Icons.check : _listPrice == true ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded , color: isEditedPrice == true ? Colors.white : primaryColor,),
-                    ),
-                  )
-                ],
-              ),
-              if(_listPrice == true) ... [
-                if(labelPrices.isNotEmpty) ... [
-                  LabelSemiBold(text: "Daftar Tipe Harga"),
-                  ShortDesc(text: 'Harga produk akan otomatis mengikuti sesuai transaksi'),
-                  Gap(5),
-                ],
-                ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: labelPrices.length,
-                  itemBuilder: (context, index){
-                    final labelPrice = labelPrices[index];
-                    bool isSelected = _selectedName == labelPrice.name; 
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (_selectedName == labelPrice.name) {
-                            _selectedName = "-";
-                            wordingPrice = "Harga Jual Produk (Normal)*";
-                            if (productId != 0) {
-                              priceController.text = formatRupiah(widget.product!.price);
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }else{
-                              priceController.text = "";
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }
-                          }else{
-                            _selectedName = labelPrice.name;
-                            priceController.text = formatRupiah(labelPrice.price);
-                            isEditedPrice = false;
-                            wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
-                          }
-                        });
-                      },
-                      onLongPress: () {
-                        setState(() {
-                          typePrice.text = labelPrice.name ?? "";
-                          _oldValueType = labelPrice.id.toString();
-
-                          // default
-                          if (_selectedName == labelPrice.name) {
-                            if (productId != 0) {
-                              priceController.text = formatRupiah(widget.product!.price);
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }else{
-                              priceController.text = "";
-                              setState(() {
-                                isEditedPrice = false;
-                              });
-                            }
-                          }else{
-                            _selectedName = labelPrice.name;
-                            priceController.text = formatRupiah(labelPrice.price);
-                            isEditedPrice = false;
-                            wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
-                          }
-                        });
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              clipBehavior: Clip.hardEdge,
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomTextField(
-                                    label: "Sesuaikan tipe : ${labelPrice.name}",
-                                    shortDescription: "Anda dapat menghapus / merubah tipe harga ini",
-                                    controller: typePrice,
-                                    maxLength: 100,
-                                    border: true,
-                                    placeholder: "Misalnya Reseller...",
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType!), title: "Yakin menghapus tipe ${labelPrice.name}?", content: "Tipe harga ini akan dihapus untuk semua produk.", actionButton: true);
-                                          },
-                                          child: ButtonDangerOutline(
-                                            text: "Hapus",
-                                          ),
-                                        )
-                                      ),
-                                      Gap(5),
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if (_selectedName != typePrice.text) {
-                                              Navigator.pop(context);
-                                              DialogHelper.customDialog(context: context, onConfirm: () => updateNameType(_oldValueType!), title: "Yakin merubah tipe ${labelPrice.name}?", content: "Anda akan melakukan perubahan nama dari $_selectedName menjadi ${typePrice.text}", actionButton: true);
-                                            }
-                                          },
-                                          child: ButtonPrimary(
-                                            text: "Simpan",
-                                          ),
-                                        )
-                                      ),
-                                    ],
-                                  ),
-                                  Gap(10),
-                                  Center(
-                                    child: ShortDesc(text: "Klik bagian luar untuk keluar"),
-                                  )
-                                ],
+                                )
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: isSelected == true ? bgSuccess : ligthSky,
-                          border: Border.all(color: isSelected == true ? successColor : secondaryColor),
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
-                            Row(
-                              children: [
-                                Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
-                                if (isSelected) ... [
-                                  Gap(5),
-                                  Icon(Icons.check_circle, size: 15, color: successColor),
-                                ]
+                              if(urlImage != null) ... [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    urlImage ?? "",
+                                    width: 170,
+                                    height: 155,
+                                    fit: BoxFit.fitWidth,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/empty.png', 
+                                        width: 170,
+                                        height: 155,
+                                        fit: BoxFit.fitWidth
+                                      );
+                                    },
+                                  )
+                                ),
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                ),
-                CustomPaint(
-                  painter: DashedBorderPainter(),
-                  child: GestureDetector(
-                    onTap: () => showDialogAddPriceType(),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 5),
-                      padding: EdgeInsets.only(top: 10, bottom: 6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Center(child: Text("+ Tambah Tipe Harga", style: TextStyle(fontWeight: FontWeight.w600))))),
-                ),
-              ],
-              // adjust stock
-              Gap(5),
-              LineSM(),
-              Gap(5),
-              LabelSemiBold(text: labelStock),
-              ShortDesc(text: descStock, maxline: 2,),
-              
-              if(isEdit == true) ... [
-                Gap(10),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/stock-detail', arguments: widget.product);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: availableStock > 5 ? bgSuccess : bgDanger,
-                      border: Border.all(color: availableStock > 5 ? successColor : dangerColor),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Tersisa $availableStock pcs untuk produk ini",
-                          style: TextStyle(
-                            color: availableStock > 5 ? successColor : dangerColor,
-                            fontWeight: FontWeight.w600
+                              if(hasBeenChange == false && urlImage == null) ... [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset("assets/images/empty.png",
+                                    width: 170,
+                                    height: 155,
+                                    fit: BoxFit.fitWidth
+                                  )
+                                ),
+                              ]
+                            ],
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: availableStock > 5 ? successColor : dangerColor,
-                            borderRadius: BorderRadius.circular(5)
+                        SizedBox(
+                          width: 125,
+                          child: Container(
+                            padding: EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: ligthSky,
+                              border: Border.all(color: secondaryColor),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white,
+                                    border: Border.all(color: secondaryColor)
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.camera_alt_rounded, color: Color(0xff747d8c), size: 20,),
+                                    onPressed: () => pickImage(ImageSource.camera),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white,
+                                    border: Border.all(color: secondaryColor)
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.image_rounded, color: Color(0xff747d8c), size: 20,),
+                                    onPressed: () => pickImage(ImageSource.gallery),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Text("Mutasi" , style: TextStyle(
-                            color: Colors.white
-                          )),
                         )
                       ],
                     ),
-                  ),
+                    CustomTextField(
+                      border: true,
+                      controller: nameController,
+                      label: "Nama *",
+                      placeholder: "Misalnya Snack...",
+                      maxLine: 1,
+                    ),
+                    CustomTextField(
+                      border: true,
+                      controller: shortDescriptionController,
+                      label: "Deskripsi Singkat",
+                      placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
+                      maxLine: 4,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: PriceField(
+                            controller: priceController,
+                            label: wordingPrice,
+                            shortDescription: "Harga per pcs",
+                            placeholder: "Misalnya 10.000...",
+                            maxLine: 1,
+                            border: true,
+                          ),
+                        ),
+                        Gap(10),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (_selectedName != "-" && isEditedPrice == true) {
+                                updateTypePrice();
+                              }else{
+                                if (_listPrice == false) {
+                                  _listPrice = true;
+                                }else{
+                                  _listPrice = false;
+                                  _selectedName = "-";
+                                  wordingPrice = "Harga Jual Produk (Normal)*";
+                                  if (productId != 0) {
+                                    priceController.text = formatRupiah(widget.product!.price);
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }else{
+                                    priceController.text = "";
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }
+                                }
+                              }
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 20),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: isEditedPrice == true ? primaryColor :ligthSky,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: isEditedPrice == true ? primaryColor :secondaryColor)
+                            ),
+                            child: Icon( isEditedPrice == true ? Icons.check : _listPrice == true ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded , color: isEditedPrice == true ? Colors.white : primaryColor,),
+                          ),
+                        )
+                      ],
+                    ),
+                    if(_listPrice == true) ... [
+                      if(labelPrices.isNotEmpty) ... [
+                        LabelSemiBold(text: "Daftar Tipe Harga"),
+                        ShortDesc(text: 'Harga produk akan otomatis mengikuti sesuai transaksi'),
+                        Gap(5),
+                      ],
+                      ListView.builder(
+                        padding: EdgeInsets.all(0),
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: labelPrices.length,
+                        itemBuilder: (context, index){
+                          final labelPrice = labelPrices[index];
+                          bool isSelected = _selectedName == labelPrice.name; 
+                
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_selectedName == labelPrice.name) {
+                                  _selectedName = "-";
+                                  wordingPrice = "Harga Jual Produk (Normal)*";
+                                  if (productId != 0) {
+                                    priceController.text = formatRupiah(widget.product!.price);
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }else{
+                                    priceController.text = "";
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }
+                                }else{
+                                  _selectedName = labelPrice.name;
+                                  priceController.text = formatRupiah(labelPrice.price);
+                                  isEditedPrice = false;
+                                  wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
+                                }
+                              });
+                            },
+                            onLongPress: () {
+                              setState(() {
+                                typePrice.text = labelPrice.name ?? "";
+                                _oldValueType = labelPrice.id.toString();
+                
+                                // default
+                                if (_selectedName == labelPrice.name) {
+                                  if (productId != 0) {
+                                    priceController.text = formatRupiah(widget.product!.price);
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }else{
+                                    priceController.text = "";
+                                    setState(() {
+                                      isEditedPrice = false;
+                                    });
+                                  }
+                                }else{
+                                  _selectedName = labelPrice.name;
+                                  priceController.text = formatRupiah(labelPrice.price);
+                                  isEditedPrice = false;
+                                  wordingPrice = "Harga Jual Produk (${toBeginningOfSentenceCase(_selectedName)})*";
+                                }
+                              });
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    clipBehavior: Clip.hardEdge,
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextField(
+                                          label: "Sesuaikan tipe : ${labelPrice.name}",
+                                          shortDescription: "Anda dapat menghapus / merubah tipe harga ini",
+                                          controller: typePrice,
+                                          maxLength: 100,
+                                          border: true,
+                                          placeholder: "Misalnya Reseller...",
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType!), title: "Yakin menghapus tipe ${labelPrice.name}?", content: "Tipe harga ini akan dihapus untuk semua produk.", actionButton: true);
+                                                },
+                                                child: ButtonDangerOutline(
+                                                  text: "Hapus",
+                                                ),
+                                              )
+                                            ),
+                                            Gap(5),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  if (_selectedName != typePrice.text) {
+                                                    Navigator.pop(context);
+                                                    DialogHelper.customDialog(context: context, onConfirm: () => updateNameType(_oldValueType!), title: "Yakin merubah tipe ${labelPrice.name}?", content: "Anda akan melakukan perubahan nama dari $_selectedName menjadi ${typePrice.text}", actionButton: true);
+                                                  }
+                                                },
+                                                child: ButtonPrimary(
+                                                  text: "Simpan",
+                                                ),
+                                              )
+                                            ),
+                                          ],
+                                        ),
+                                        Gap(10),
+                                        Center(
+                                          child: ShortDesc(text: "Klik bagian luar untuk keluar"),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: isSelected == true ? bgSuccess : ligthSky,
+                                border: Border.all(color: isSelected == true ? successColor : secondaryColor),
+                                borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                                  Row(
+                                    children: [
+                                      Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                                      if (isSelected) ... [
+                                        Gap(5),
+                                        Icon(Icons.check_circle, size: 15, color: successColor),
+                                      ]
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      ),
+                      CustomPaint(
+                        painter: DashedBorderPainter(),
+                        child: GestureDetector(
+                          onTap: () => showDialogAddPriceType(),
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            padding: EdgeInsets.only(top: 10, bottom: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Center(child: Text("+ Tambah Tipe Harga", style: TextStyle(fontWeight: FontWeight.w600))))),
+                      ),
+                    ],
+                    // adjust stock
+                    Gap(5),
+                    LineSM(),
+                    Gap(5),
+                    LabelSemiBold(text: labelStock),
+                    ShortDesc(text: descStock, maxline: 2,),
+                    
+                    if(isEdit == true) ... [
+                      Gap(10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/stock-detail', arguments: widget.product);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: availableStock > 5 ? bgSuccess : bgDanger,
+                            border: Border.all(color: availableStock > 5 ? successColor : dangerColor),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Tersisa $availableStock pcs untuk produk ini",
+                                style: TextStyle(
+                                  color: availableStock > 5 ? successColor : dangerColor,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: availableStock > 5 ? successColor : dangerColor,
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+                                child: Text("Mutasi" , style: TextStyle(
+                                  color: Colors.white
+                                )),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Gap(10),
+                      CustomDropdownField(
+                        shortDescription: "Sesuaikan untuk tipe stok masuk atau keluar",
+                        label: "Tipe",
+                        hint: "Pilih salah satu",
+                        items: ["Masuk", "Keluar"],
+                        selectedValue: selectedValue,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedValue = newValue;
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              scrollToBottom();
+                            });
+                          });
+                        },
+                      ),
+                    ],
+                    isEdit == false ? Gap(10) : Gap(0),
+                    if(isEdit == false || selectedValue != null) ... [
+                      CustomTextFieldNumber(
+                        controller: quantity,
+                        label: "Jumlah Stok",
+                        placeholder: "Misalnya 20...",
+                        maxLength: 5,
+                        border: true,
+                      ),
+                      if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
+                        PriceField(
+                          controller: costController,
+                          label: "Total Harga Beli *",
+                          placeholder: "$storeQuantity",
+                          maxLine: 1,
+                          border: true,
+                        ),
+                      ],
+                      CustomTextField(
+                        border: true,
+                        maxLine: 3,
+                        maxLength: 150,
+                        controller: description,
+                        label: "Deskripsi",
+                        placeholder: "Misalnya karena barang rusak / stok awal (tidak wajib)",
+                      )
+                    ]
+                  ],
                 ),
-                Gap(10),
-                CustomDropdownField(
-                  shortDescription: "Sesuaikan untuk tipe stok masuk atau keluar",
-                  label: "Tipe",
-                  hint: "Pilih salah satu",
-                  items: ["Masuk", "Keluar"],
-                  selectedValue: selectedValue,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedValue = newValue;
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        scrollToBottom();
-                      });
-                    });
-                  },
-                ),
-              ],
-              isEdit == false ? Gap(10) : Gap(0),
-              if(isEdit == false || selectedValue != null) ... [
-                CustomTextFieldNumber(
-                  controller: quantity,
-                  label: "Jumlah Stok",
-                  placeholder: "Misalnya 20...",
-                  maxLength: 5,
-                  border: true,
-                ),
-                if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
-                  PriceField(
-                    controller: costController,
-                    label: "Total Harga Beli *",
-                    placeholder: "$storeQuantity",
-                    maxLine: 1,
-                    border: true,
-                  ),
-                ],
-                CustomTextField(
-                  border: true,
-                  maxLine: 3,
-                  maxLength: 150,
-                  controller: description,
-                  label: "Deskripsi",
-                  placeholder: "Misalnya karena barang rusak / stok awal (tidak wajib)",
-                )
-              ]
+              ),
             ],
           ),
         ),

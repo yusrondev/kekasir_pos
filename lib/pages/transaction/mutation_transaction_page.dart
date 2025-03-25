@@ -141,29 +141,38 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
           children: [
-            PageTitle(text: "Mutasi Transaksi", back: true),
-            Gap(15),
-            SearchTextField(placeholder: "Cari berdasarkan kode", controller: _codeController,),
-            Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: DatePickerField(label: "Dari tanggal", controller: _startDateController),
-                ),
-                Gap(10),
-                Expanded(
-                  child: DatePickerField(label: "Sampai tanggal", controller: _endDateController, minDate: _getStartDate())
-                ),
-              ],
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: PageTitle(text: "Mutasi Transaksi", back: true),
             ),
-            Gap(5),
-            LineSM(),
-            Gap(5),
-            buildMutationList(),
+            Gap(15),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                children: [
+                  SearchTextField(placeholder: "Cari berdasarkan kode", controller: _codeController,),
+                  Gap(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: DatePickerField(label: "Dari tanggal", controller: _startDateController),
+                      ),
+                      Gap(10),
+                      Expanded(
+                        child: DatePickerField(label: "Sampai tanggal", controller: _endDateController, minDate: _getStartDate())
+                      ),
+                    ],
+                  ),
+                  Gap(5),
+                  LineSM(),
+                  Gap(5),
+                  buildMutationList(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
