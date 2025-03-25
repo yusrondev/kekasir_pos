@@ -92,14 +92,27 @@ class _IndexStockPageState extends State<IndexStockPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
           children: [
-            PageTitle(text: "Mutasi Stok", back: true),
-            Gap(15),
-            SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: Column(
+                children: [
+                  PageTitle(text: "Mutasi Stok", back: true),
+                  Gap(15),
+                  SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
+                ],
+              ),
+            ),
             Gap(10),
-            buildListProduct(),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                children: [
+                  buildListProduct(),
+                ],
+              ),
+            )
           ],
         ),
       ),
