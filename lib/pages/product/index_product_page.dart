@@ -312,7 +312,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
                         color: primaryColor,
                         fontWeight: FontWeight.w600
                       ),
-                    )
+                    ),
+                    Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
                   ],
                 )
               ],
