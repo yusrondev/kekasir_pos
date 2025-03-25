@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> {
             Gap(10),
             buildSectionFeatures(),
             Gap(10),
-            if(transactions.length >= 3)
+            if(transactions.isNotEmpty)
             buildTransactionHistory(),
           ],
         ),
