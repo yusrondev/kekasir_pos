@@ -68,6 +68,16 @@ class ApiServiceTransaction {
     return [];
   }
 
+  Future<List<Transaction>> fetchLastUpdateTransaction() async {
+    final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?last_update=true'), headers: await _headers);
+
+    if (response.statusCode == 200) {
+      List data = json.decode(response.body)['data'];
+      return data.map((json) => Transaction.fromJson(json)).toList();
+    }
+    return [];
+  }
+
   Future<Map<String, dynamic>?> detailTransaction(int id) async {
     try {
       String? token = await getToken();

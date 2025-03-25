@@ -6,6 +6,8 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/web.dart';
@@ -58,6 +60,10 @@ class _HomePageState extends State<HomePage> {
   String grossProfit = "";
   String grossProfitLastMonth = "";
   String hpp = "";
+  bool loadingLastUpdateTransaction = true;
+
+
+  List<Transaction> transactions = [];
 
   Timer? _debounceHit;
 
@@ -72,6 +78,7 @@ class _HomePageState extends State<HomePage> {
     loadRevenueFromStorage(); // Ambil data dari storage dulu
     _debounceHit = Timer(Duration(milliseconds: 500), () {
       getRevenue(); // Update data dari API setelah 1 detik
+      fetchLastUpdateTransaction();
     });
 
     // Cek apakah user sudah melihat tutorial sebelumnya
@@ -87,6 +94,22 @@ class _HomePageState extends State<HomePage> {
         showTutorial();
       });
     }
+  }
+
+  Future<void> fetchLastUpdateTransaction() async {
+    final data = await ApiServiceTransaction().fetchLastUpdateTransaction();
+    try {
+      if (mounted) {
+        setState(() {
+          transactions = data;
+          loadingLastUpdateTransaction = false;
+        });
+      }
+    } catch (e) {
+      showErrorBottomSheet(context, e.toString());
+    }
+
+    Logger().d(transactions);
   }
 
   @override
@@ -226,6 +249,7 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: () async {
           await getRevenue(); // Update data saat refresh
+          await fetchLastUpdateTransaction();
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -247,6 +271,8 @@ class _HomePageState extends State<HomePage> {
             buildOtherIncome(),
             Gap(10),
             buildSectionFeatures(),
+            Gap(10),
+            buildTransactionHistory(),
           ],
         ),
       ),
@@ -306,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                 key: _revenueKey,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pendapatan bulan ini", style: TextStyle(fontSize: 14)),
+                  Text("Pendapatan Bulan Ini", style: TextStyle(fontSize: 14)),
                   thisMonthRevenue.isEmpty
                       ? Container(
                         margin: EdgeInsets.only(top: 10),
@@ -381,7 +407,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.only(top: 12, bottom: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -588,7 +614,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Ringkasan pendapatan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                  Text("Ringkasan Pendapatan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                   Icon(Icons.more_horiz, size: 20,),
                 ],
               ),
@@ -607,7 +633,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
+                          Text("Total Keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(grossProfit.toString(), style: TextStyle(
                             fontSize: 16,
@@ -630,7 +656,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
+                          Text("Total Belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
                           Gap(2),
                           Text(totalPurchases.toString(), style: TextStyle(
                             fontSize: 16,
@@ -647,6 +673,108 @@ class _HomePageState extends State<HomePage> {
           ),
         )
       ),
+    );
+  }
+
+  Widget buildTransactionHistory() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 14),
+      child: Container(
+        padding: EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/transaction/mutation');
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Transaksi Hari Ini", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
+                    ],
+                  ),
+                  Text("Lihat Semua", style: TextStyle(
+                    color: primaryColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600
+                  ))
+                ],
+              ),
+            ),
+            Gap(10),
+            loadingLastUpdateTransaction == true ? CustomLoader.showCustomLoader() :
+            ListView.builder(
+              padding: EdgeInsets.all(0),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: transactions.length,
+              itemBuilder: (context, index){
+                
+                final transaction = transactions[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/transaction/detail',
+                      arguments: transaction.id
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: secondaryColor),
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LabelSemiBold(text: transaction.code),
+                            Gap(3),
+                            Label(text: transaction.createdAt,)
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                PriceTag(text: '+ ${transaction.grandTotal}'),
+                                Row(
+                                  children: [
+                                    StockTag(text: transaction.paymentMethod),
+                                    if(transaction.labelPrice != null) ... [
+                                      Gap(5),
+                                      WarningTag(text: transaction.labelPrice),
+                                    ]
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+            )
+          ],
+        ),
+      )
     );
   }
 }
