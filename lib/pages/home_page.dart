@@ -701,11 +701,18 @@ class _HomePageState extends State<HomePage> {
                       ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
                     ],
                   ),
-                  Text("Lihat Semua", style: TextStyle(
-                    color: primaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600
-                  ))
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Lihat Semua", style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600
+                      )),
+                      Gap(3),
+                      Icon(Icons.arrow_forward_rounded, size: 10, color: primaryColor)
+                    ],
+                  )
                 ],
               ),
             ),
