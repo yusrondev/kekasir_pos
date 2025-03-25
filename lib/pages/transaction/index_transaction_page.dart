@@ -489,9 +489,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       margin: EdgeInsets.symmetric(vertical: 3),
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 7),
                       decoration: BoxDecoration(
-                        color: bgSuccess,
+                        color: Color(0xfff9ca24),
                         borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: successColor, width: 1)
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -503,7 +502,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
-                              color: successColor
+                              color: Color(0xff130f40)
                             ),
                           ),
                           GestureDetector(
@@ -517,7 +516,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                             child: Container(
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                color: successColor,
+                                color: Color(0xff130f40),
                                 borderRadius: BorderRadius.circular(100)
                               ),
                               child: Icon(Icons.close, size: 15, color: Colors.white,)
@@ -660,7 +659,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       ],
                       Row(
                         children: [
-                          PriceTag(text: formatRupiah(product.price)),
+                          PriceTag(text: formatRupiah(product.price), haveType : product.haveType),
                           Gap(5),
                           StockTag(text: 'Stok : ${product.availableStock.toString()}'),
                         ],

@@ -190,7 +190,8 @@ class ShortDescSM extends StatelessWidget {
 
 class PriceTag extends StatelessWidget {
   final String? text;
-  const PriceTag({super.key, this.text});
+  final bool? haveType;
+  const PriceTag({super.key, this.text, this.haveType});
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +199,7 @@ class PriceTag extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 3),
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
-        color: bgSuccess,
+        color: haveType == true ? Color(0xfff9ca24) : bgSuccess,
         borderRadius: BorderRadius.circular(5),
         // border: Border.all(color: successColor, width: 0.5)
       ),
@@ -209,7 +210,7 @@ class PriceTag extends StatelessWidget {
           fontSize: 13,
           fontWeight: FontWeight.w600,
           overflow: TextOverflow.ellipsis,
-          color: successColor
+          color: haveType == true ? Color(0xff130f40) : successColor
         ),
       ),
     );

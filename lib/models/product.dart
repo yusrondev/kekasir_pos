@@ -2,6 +2,7 @@ class Product {
   final int id, availableStock, quantity;
   final String code, name, shortDescription, image;
   final double price, nominalDiscount, finalPrice;
+  final bool haveType;
 
   Product({
     required this.id,
@@ -13,7 +14,8 @@ class Product {
     required this.availableStock,
     this.quantity = 0, // Default 0,
     required this.nominalDiscount,
-    required this.finalPrice
+    required this.finalPrice,
+    this.haveType = false
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Product {
       name: json['name'] ?? "",
       shortDescription: json['short_description'] ?? "",
       image: json['image'] ?? "",
+      haveType: json['have_type'],
       price: double.parse(json['price'] ?? 0),
       availableStock: json['available_stock'] ?? 0,
       quantity: json['quantity'] ?? 0,
@@ -39,6 +42,7 @@ class Product {
       shortDescription: shortDescription,
       image: image,
       price: price,
+      haveType: haveType,
       availableStock: availableStock,
       quantity: quantity ?? this.quantity,
       nominalDiscount: nominalDiscount,
@@ -48,6 +52,6 @@ class Product {
 
   @override
   String toString() {
-    return 'id: $id, code: $code, name: $name, price: $price, image: $image, quantity: $quantity';
+    return 'id: $id, code: $code, name: $name, price: $price, image: $image, quantity: $quantity, haveType: $haveType';
   }
 }
