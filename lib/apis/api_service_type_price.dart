@@ -112,9 +112,27 @@ class ApiServiceTypePrice {
     return [];
   }
 
-  Future<bool> deleteTypePrice(int id) async {
+  Future<bool> deleteTypePrice(String id) async {
     final response = await http.delete(Uri.parse('$apiUrl/type-price/$id'), headers: await _headers);
     return response.statusCode == 200;
+  }
+
+  Future<String?> updateNameType(String id, String name) async {
+    var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/type-price/update-name/$id'));
+    request.headers.addAll(await _headers);
+    request.fields['name'] = name;
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString(); // Baca body dari Stream
+
+    final jsonData = jsonDecode(responseBody);
+
+    Logger().d(response.statusCode);
+
+    if (response.statusCode != 200) {
+      return jsonData['message'] ?? "";
+    }
+    return null;
   }
 
 }

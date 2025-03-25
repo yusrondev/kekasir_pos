@@ -93,7 +93,7 @@ class _FormProductPageState extends State<FormProductPage> {
   int productId = 0;
   String? storeQuantity = "Masukkan harga...";
   String? _selectedName = "-";
-  int? _oldValueType;
+  String? _oldValueType;
 
   List<LabelPrice> labelPrices = [];
 
@@ -461,7 +461,7 @@ class _FormProductPageState extends State<FormProductPage> {
     }
   }  
 
-  deleteTypePrice(id) async {
+  deleteTypePrice(String id) async {
     try {
       await apiServiceTypePrice.deleteTypePrice(id);
       if (mounted) {
@@ -473,6 +473,49 @@ class _FormProductPageState extends State<FormProductPage> {
       }
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
+    }
+  }
+
+  Future<void> updateNameType(String id) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Mencegah dialog ditutup tanpa proses selesai
+      barrierColor: Colors.white.withValues(alpha: 0.8),
+      builder: (BuildContext context) {
+        return Center(
+          child: CustomLoader.showCustomLoader()
+        );
+      },
+    );
+    
+    try {
+      String? error = await apiServiceTypePrice.updateNameType(id, typePrice.text);
+      
+      if (error == null) {
+        if (mounted) { // Pastikan widget masih terpasang
+          Navigator.pop(context);
+          alertLottie(context, 'Berhasil memperbarui nama tipe!');
+          fetchLabelPrice(productId);
+          if (productId != 0) {
+            priceController.text = formatRupiah(widget.product!.price);
+          }
+          setState(() {
+            isEditedPrice = false;
+            _selectedName = "-";
+            wordingPrice = "Harga Jual Produk (Normal)*";
+          });
+        }
+      } else {
+        if (mounted) { // Pastikan widget masih te
+          showErrorBottomSheetCustom(context, error);
+        }
+      }
+
+    } catch (e) {
+      if (mounted) {
+        // ignore: use_build_context_synchronously
+        showErrorBottomSheetCustom(context, e.toString());
+      }
     }
   }
 
@@ -697,7 +740,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       onLongPress: () {
                         setState(() {
                           typePrice.text = labelPrice.name ?? "";
-                          _oldValueType = labelPrice.id;
+                          _oldValueType = labelPrice.id.toString();
 
                           // default
                           if (_selectedName == labelPrice.name) {
@@ -743,7 +786,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                       Expanded(
                                         child: GestureDetector(
                                           onTap: () {
-                                            DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType), title: "Yakin menghapus tipe ${labelPrice.name}?", content: "Tipe harga ini akan dihapus untuk semua produk.", actionButton: true);
+                                            DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType!), title: "Yakin menghapus tipe ${labelPrice.name}?", content: "Tipe harga ini akan dihapus untuk semua produk.", actionButton: true);
                                           },
                                           child: ButtonDangerOutline(
                                             text: "Hapus",
@@ -756,7 +799,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                           onTap: () {
                                             if (_selectedName != typePrice.text) {
                                               Navigator.pop(context);
-                                              DialogHelper.customDialog(context: context, onConfirm: () => deleteTypePrice(_oldValueType), title: "Yakin merubah tipe ${labelPrice.name}?", content: "Anda akan melakukan perubahan nama dari $_selectedName menjadi ${typePrice.text}", actionButton: true);
+                                              DialogHelper.customDialog(context: context, onConfirm: () => updateNameType(_oldValueType!), title: "Yakin merubah tipe ${labelPrice.name}?", content: "Anda akan melakukan perubahan nama dari $_selectedName menjadi ${typePrice.text}", actionButton: true);
                                             }
                                           },
                                           child: ButtonPrimary(
