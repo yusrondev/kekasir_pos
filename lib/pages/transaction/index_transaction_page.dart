@@ -240,7 +240,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
-                        minHeight: 100, // Tinggi minimum
+                        minHeight: 40, // Tinggi minimum
                         maxHeight: 190
                       ),
                       child: Scrollbar(
