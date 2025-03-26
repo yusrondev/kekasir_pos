@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildBackground() {
     return Container(
-      height: 150,
+      height: 140,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -322,6 +322,7 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: secondaryColor)
       ),
       child: Column(
         children: [
@@ -409,6 +410,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: secondaryColor)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -607,7 +609,8 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(15)
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: secondaryColor)
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -685,6 +688,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: secondaryColor)
         ),
         child: Column(
           children: [
