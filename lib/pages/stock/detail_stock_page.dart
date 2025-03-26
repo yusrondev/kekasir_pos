@@ -13,7 +13,6 @@ import 'package:kekasir/models/product.dart';
 import 'package:kekasir/models/stock.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
 
 class DetailStockPage extends StatefulWidget {
@@ -115,137 +114,147 @@ class _DetailStockPageState extends State<DetailStockPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
           children: [
-            PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 16 ? '${widget.product?.name.substring(0, 16)}...' : widget.product?.name } ", back: true),
-            Gap(15),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                border: Border.all(color: bgDanger),
-                color: Color(0xffFFF5E9),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Row(
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: 
+                PageTitle(text: "Detail Mutasi  - ${widget.product!.name.length > 16 ? '${widget.product?.name.substring(0, 16)}...' : widget.product?.name } ", back: true)
+            ),
+            Gap(10),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 20,),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: bgDanger),
+                      color: Color(0xffFFF5E9),
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline_rounded, size: 20,),
+                        Gap(5),
+                        Text("Kekasir : menggunakan metode FIFO", style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        )),
+                      ],
+                    ),
+                  ),
+                  Gap(10),
+                  LabelSemiBold(text: "Periode",),
+                  ShortDesc(text: "Anda dapat menyesuaikan periode mutasi",),
                   Gap(5),
-                  Text("Kekasir : menggunakan metode FIFO", style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                  )),
-                ],
-              ),
-            ),
-            Gap(10),
-            LabelSemiBold(text: "Periode",),
-            ShortDesc(text: "Anda dapat menyesuaikan periode mutasi",),
-            Gap(5),
-            GestureDetector(
-              onTap: () async => showDate(context: context),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: secondaryColor),
-                  borderRadius: BorderRadius.circular(8)
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.date_range, color: Color(0xffB1B9C3), size: 20,),
-                    Gap(5),
-                    _selected == null 
-                    ? Text(DateFormat('MMMM yyyy', 'id_ID').format(DateTime.now()), style: TextStyle(fontSize: 15))
-                    : Text(DateFormat('MMMM yyyy', 'id_ID').format(_selected!), style: TextStyle(fontSize: 15))
-                  ],
-                ),
-              ),
-            ),
-            Gap(10),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: secondaryColor),
-                color: ligthSky
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  LabelSemiBold(text: "Total Perhitungan"),
-                  Gap(8),
-                  buildCounting(),
-                ],
-              )
-            ),
-            Gap(10),
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: ligthSky,
-                border: Border.all(color: secondaryColor),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  LabelSemiBold(text: "Daftar Mutasi"),
-                  Gap(8),
-                  buildListDetailMutation(),
-                  if(previousMonth != 0 && isLoading != true) ... [
-                    LineXM(),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      padding: EdgeInsets.all(7),
+                  GestureDetector(
+                    onTap: () async => showDate(context: context),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
                         color: Colors.white,
                         border: Border.all(color: secondaryColor),
+                        borderRadius: BorderRadius.circular(8)
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(7),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: secondaryColor,
-                                    ),
-                                    child: Center(
-                                      child: Text("Sisa Stok", 
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12
-                                        )
-                                      ),
-                                    )
-                                  ),
-                                  Gap(10),
-                                  Center(
-                                    child: Text('$previousMonth Pcs', 
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14
-                                      )
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Label(text: "Dari bulan sebelumnya")
-                            ],
-                          ),
+                          Icon(Icons.date_range, color: Color(0xffB1B9C3), size: 20,),
+                          Gap(5),
+                          _selected == null 
+                          ? Text(DateFormat('MMMM yyyy', 'id_ID').format(DateTime.now()), style: TextStyle(fontSize: 15))
+                          : Text(DateFormat('MMMM yyyy', 'id_ID').format(_selected!), style: TextStyle(fontSize: 15))
                         ],
                       ),
                     ),
-                  ]
+                  ),
+                  Gap(10),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: secondaryColor),
+                      color: ligthSky
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelSemiBold(text: "Total Perhitungan"),
+                        Gap(8),
+                        buildCounting(),
+                      ],
+                    )
+                  ),
+                  Gap(10),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: ligthSky,
+                      border: Border.all(color: secondaryColor),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelSemiBold(text: "Daftar Mutasi"),
+                        Gap(8),
+                        buildListDetailMutation(),
+                        if(previousMonth != 0 && isLoading != true) ... [
+                          LineXM(),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            padding: EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              border: Border.all(color: secondaryColor),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(7),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            color: secondaryColor,
+                                          ),
+                                          child: Center(
+                                            child: Text("Sisa Stok", 
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12
+                                              )
+                                            ),
+                                          )
+                                        ),
+                                        Gap(10),
+                                        Center(
+                                          child: Text('$previousMonth Pcs', 
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14
+                                            )
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Label(text: "Dari bulan sebelumnya")
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]
+                      ],
+                    )
+                  ),
                 ],
-              )
+              ),
             ),
           ],
         ),
