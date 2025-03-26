@@ -490,7 +490,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                       decoration: BoxDecoration(
                         color: Color(0xfff9ca24),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -513,14 +513,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                 alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}"); 
                               });
                             },
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Color(0xff130f40),
-                                borderRadius: BorderRadius.circular(100)
-                              ),
-                              child: Icon(Icons.close, size: 15, color: Colors.white,)
-                            ),
+                            child: Icon(Icons.close, size: 20, color: Colors.black),
                           )
                         ],
                       ),
@@ -581,7 +574,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: secondaryColor)
+            border: Border.all(color: product.haveType == true ?  Color(0xfff9ca24): secondaryColor, width: 1)
           ),
           child: Row(
             children: [
