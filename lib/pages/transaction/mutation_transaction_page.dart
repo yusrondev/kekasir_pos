@@ -123,6 +123,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar:true,
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
         child: AppBar(
