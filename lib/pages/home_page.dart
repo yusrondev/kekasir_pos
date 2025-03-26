@@ -373,6 +373,7 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   'Bulan Kemarin',
                   style: TextStyle(
+                    fontWeight: FontWeight.w600,
                     color: primaryColor,
                   ),
                 ),
