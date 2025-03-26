@@ -32,6 +32,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   List<Transaction> transactions = [];
 
   Timer? _debounce;
+  String? grandTotal;
 
   bool loading = true;
 
@@ -107,11 +108,12 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     try {
       if (mounted) {
         setState(() {
-          transactions = data;
+          transactions = data.transactionList;
+          grandTotal = data.grandTotal;
           loading = false;
         });
 
-        Logger().d(transactions);
+        Logger().d(grandTotal);
 
       }
     } catch (e) {
@@ -145,7 +147,13 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
           children: [
             Padding(
               padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
-              child: PageTitle(text: "Mutasi Transaksi", back: true),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PageTitle(text: "Mutasi Transaksi", back: true),
+                  PriceTag(text: 'Total : $grandTotal',)
+                ],
+              ),
             ),
             Gap(15),
             Expanded(

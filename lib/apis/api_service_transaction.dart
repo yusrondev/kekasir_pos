@@ -58,24 +58,26 @@ class ApiServiceTransaction {
     }
   }
 
-  Future<List<Transaction>> fetchMutation(String startDate, String endDate, String code) async {
+  Future<TransactionData> fetchMutation(String startDate, String endDate, String code) async {
     final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?start_date=$startDate&end_date=$endDate&code=$code'), headers: await _headers);
 
     if (response.statusCode == 200) {
-      List data = json.decode(response.body)['data'];
-      return data.map((json) => Transaction.fromJson(json)).toList();
+      final data = json.decode(response.body)['data'];
+
+      return TransactionData.fromJson(data);
     }
-    return [];
+
+    return TransactionData(transactionList: [], grandTotal: "Rp 0");
   }
 
-  Future<List<Transaction>> fetchLastUpdateTransaction() async {
+  Future<TransactionData> fetchLastUpdateTransaction() async {
     final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?last_update=true'), headers: await _headers);
 
     if (response.statusCode == 200) {
-      List data = json.decode(response.body)['data'];
-      return data.map((json) => Transaction.fromJson(json)).toList();
+      final data = json.decode(response.body)['data'];
+      return TransactionData.fromJson(data);
     }
-    return [];
+    return TransactionData(transactionList: [], grandTotal: "Rp 0");
   }
 
   Future<Map<String, dynamic>?> detailTransaction(int id) async {

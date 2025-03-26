@@ -72,6 +72,28 @@ class Transaction {
   }
 }
 
+class TransactionData {
+  final List<Transaction> transactionList;
+  final String grandTotal;
+
+  TransactionData({
+    required this.transactionList,
+    required this.grandTotal
+  });
+
+  factory TransactionData.fromJson(Map<String, dynamic> json){
+    return TransactionData(
+      transactionList: (json['transaction'] as List).map((data) => Transaction.fromJson(data)).toList(),
+      grandTotal: json['grand_total']
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Transaction: $transactionList, Grand Total: $grandTotal';
+  }
+}
+
 class TransactionDetail {
   final int id;
   final int quantity;

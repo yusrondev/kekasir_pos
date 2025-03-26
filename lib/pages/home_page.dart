@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
     try {
       if (mounted) {
         setState(() {
-          transactions = data;
+          transactions = data.transactionList;
           loadingLastUpdateTransaction = false;
         });
       }
