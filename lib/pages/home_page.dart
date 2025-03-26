@@ -272,7 +272,6 @@ class _HomePageState extends State<HomePage> {
             Gap(10),
             buildSectionFeatures(),
             Gap(10),
-            if(transactions.isNotEmpty)
             buildTransactionHistory(),
           ],
         ),
@@ -698,89 +697,96 @@ class _HomePageState extends State<HomePage> {
                     ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
                   ],
                 ),
-                if(transactions.length >= 3)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/transaction/mutation');
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Lihat Semua", style: TextStyle(
-                        color: primaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600
-                      )),
-                      Gap(3),
-                      Icon(Icons.arrow_forward_rounded, size: 10, color: primaryColor)
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Gap(10),
-            loadingLastUpdateTransaction == true ? CustomLoader.showCustomLoader() :
-            ListView.builder(
-              padding: EdgeInsets.all(0),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: transactions.length,
-              itemBuilder: (context, index){
-                
-                final transaction = transactions[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/transaction/detail',
-                      arguments: transaction.id
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: secondaryColor),
-                      borderRadius: BorderRadius.circular(10)
-                    ),
+                if(transactions.length >= 3) ... [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/transaction/mutation');
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LabelSemiBold(text: transaction.code),
-                            Gap(3),
-                            Label(text: transaction.createdAt,)
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                PriceTag(text: '+ ${transaction.grandTotal}'),
-                                Row(
-                                  children: [
-                                    StockTag(text: transaction.paymentMethod),
-                                    if(transaction.labelPrice != null) ... [
-                                      Gap(5),
-                                      WarningTag(text: transaction.labelPrice),
-                                    ]
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
+                        Text("Lihat Semua", style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600
+                        )),
+                        Gap(3),
+                        Icon(Icons.arrow_forward_rounded, size: 10, color: primaryColor)
                       ],
                     ),
-                  ),
-                );
-              }
-            )
+                  )
+                ]
+              ],
+            ),
+            Gap(10),
+            loadingLastUpdateTransaction == true ? CustomLoader.showCustomLoader() : 
+            transactions.isNotEmpty ?
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: transactions.length,
+                itemBuilder: (context, index){
+                  
+                  final transaction = transactions[index];
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/transaction/detail',
+                        arguments: transaction.id
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: secondaryColor),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LabelSemiBold(text: transaction.code),
+                              Gap(3),
+                              Label(text: transaction.createdAt,)
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  PriceTag(text: '+ ${transaction.grandTotal}'),
+                                  Row(
+                                    children: [
+                                      StockTag(text: transaction.paymentMethod),
+                                      if(transaction.labelPrice != null) ... [
+                                        Gap(5),
+                                        WarningTag(text: transaction.labelPrice),
+                                      ]
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              )
+            : 
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Belum ada transaksi untuk hari ini ...", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff898F9F),)),
+              )
           ],
         ),
       )

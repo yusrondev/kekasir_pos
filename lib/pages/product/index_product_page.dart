@@ -255,6 +255,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.white),
                                           color: primaryColor,
                                           borderRadius: BorderRadius.circular(10)
                                         ),
@@ -265,7 +266,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                         ),
                                       ),
                                     ),
-                                    Gap(30),
+                                    Gap(20),
                                     GestureDetector(
                                       onTap: () {
                                         DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
@@ -274,6 +275,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.white),
                                           color: Color(0xffe74c3c),
                                           borderRadius: BorderRadius.circular(10)
                                         ),
