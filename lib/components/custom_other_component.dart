@@ -76,14 +76,47 @@ class _StockBadgeState extends State<StockBadge> {
       child: Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: widget.availableStock > 5 ?bgSuccess : dangerColor,
+          color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? Color(0xffe74c3c) : dangerColor,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(5),
             topRight: Radius.circular(5),
           )
         ),
         child: Text(
-          'Tersisa ${widget.availableStock.toString()} pcs',
+          widget.availableStock.toString() == "0" ? "Produk habis" : 'Tersisa ${widget.availableStock.toString()} pcs',
+          style: TextStyle(
+            color: widget.availableStock > 5 ? successColor : Colors.white,
+            fontSize: 13,
+            fontWeight: FontWeight.w600
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StockBadgeWithoutRadius extends StatefulWidget {
+  final int availableStock;
+
+  const StockBadgeWithoutRadius({super.key, required this.availableStock});
+
+  @override
+  State<StockBadgeWithoutRadius> createState() => _StockBadgeStateWithoutRadius();
+}
+
+class _StockBadgeStateWithoutRadius extends State<StockBadgeWithoutRadius> {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? Color(0xffe74c3c) : dangerColor,
+          borderRadius: BorderRadius.circular(5)
+        ),
+        child: Text(
+          widget.availableStock.toString() == "0" ? "Produk habis" : 'Tersisa ${widget.availableStock.toString()} pcs',
           style: TextStyle(
             color: widget.availableStock > 5 ? successColor : Colors.white,
             fontSize: 13,

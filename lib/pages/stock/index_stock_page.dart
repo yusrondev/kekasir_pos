@@ -186,7 +186,14 @@ class _IndexStockPageState extends State<IndexStockPage> {
                     ),
                   ],
                 ),
-                StockBadge(availableStock: product.availableStock),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    StockBadgeWithoutRadius(availableStock: product.availableStock),
+                    Gap(5),
+                    Icon(Icons.arrow_forward_ios_sharp, size: 13, color: darkColor,)
+                  ],
+                ),
               ],
             ),
           ),

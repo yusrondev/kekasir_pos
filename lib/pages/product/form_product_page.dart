@@ -888,7 +888,7 @@ class _FormProductPageState extends State<FormProductPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Tersisa $availableStock pcs untuk produk ini",
+                                availableStock == 0 ? "Produk ini telah habis" : "Tersisa $availableStock pcs untuk produk ini",
                                 style: TextStyle(
                                   color: availableStock > 5 ? successColor : dangerColor,
                                   fontWeight: FontWeight.w600
