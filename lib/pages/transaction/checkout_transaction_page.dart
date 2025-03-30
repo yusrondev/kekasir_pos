@@ -122,12 +122,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       if (paidNominal < gtFinal) {
         if (context.mounted) {
           closeLoadingDialog();
-          DialogHelper.customDialog(
-            context: context,
-            onConfirm: () {},
-            content: "Nominal pembayaran harus lebih dari grand total!",
-            actionButton: false,
-          );
+          alertLottie(context, "Nominal pembayaran harus lebih dari grand total!", "error");
         }
         return;
       }

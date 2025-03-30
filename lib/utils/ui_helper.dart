@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:kekasir/components/custom_text_component.dart';
 import 'package:lottie/lottie.dart';
 
 void showErrorBottomSheet(BuildContext context, String message) {
@@ -107,7 +106,7 @@ void alertLottie(BuildContext context, String message, [String? icon]) {
               ),
             ),
             Gap(5),
-            LabelSemiBold(text: message)
+            Center(child: Text(message, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w600),))
           ],
         ),
       );
