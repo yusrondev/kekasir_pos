@@ -396,6 +396,19 @@ class _FormProductPageState extends State<FormProductPage> {
         return;
       }      
 
+      int? parsedQuantity = int.tryParse(quantity.text);
+      if (parsedQuantity == 0 && selectedValue.toString().isNotEmpty) {
+        showErrorSnackbar(context, 'Pastikan jumlah stok tidak 0!');
+        Navigator.pop(context, true);
+        return;
+      }
+
+      if (quantity.text == "" && selectedValue.toString() != "null") {
+        showErrorSnackbar(context, 'Pastikan jumlah stok sudah terisi!');
+        Navigator.pop(context, true);
+        return;
+      }      
+
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
