@@ -25,100 +25,139 @@ class _IndexReportPageState extends State<IndexReportPage> {
   Map<String, dynamic>? dataMe;
   final dropDownKey = GlobalKey<DropdownSearchState>();
 
-  WebViewController? controller;
+  late WebViewController controller;
+  bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    // Initialize WebView controller dengan blank page
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar
+          },
+          onPageStarted: (String url) {
+            setState(() {
+              _isLoading = true;
+              _hasError = false;
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              _isLoading = false;
+              _hasError = true;
+            });
+            Logger().e('WebView Error: ${error.description}');
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('about:blank'));
+
     fetchUser();
   }
 
   @override
   void dispose() {
-    // Kembalikan orientasi ke portrait-only saat keluar dari halaman
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    // Tidak perlu dispose controller secara manual di versi terbaru
     super.dispose();
   }
 
   Future<void> fetchUser() async {
-    final data = await authService.fetchUser();
-    if (mounted) {
+    try {
+      final data = await authService.fetchUser();
+      if (mounted) {
+        setState(() {
+          dataMe = data;
+          _loadReportUrl(); // Load URL setelah data tersedia
+        });
+      }
+      Logger().d(dataMe);
+    } catch (e) {
+      Logger().e('Failed to fetch user: $e');
       setState(() {
-        dataMe = data;
-        _initWebView(); // Inisialisasi WebView setelah data tersedia
+        _hasError = true;
+        _isLoading = false;
       });
     }
-    Logger().d(dataMe);
   }
 
-   void _initWebView() {
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(
-          'https://kekasir-core.dewadev.id/report/product/${dataMe?['id'] ?? ''}'));
+  void _loadReportUrl() {
+    if (dataMe?['id'] != null) {
+      final url = 'https://kekasir-core.dewadev.id/report/product/${dataMe!['id']}';
+      controller.loadRequest(Uri.parse(url));
+    } else {
+      setState(() {
+        _hasError = true;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Widget _buildWebView() {
+    if (_hasError) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 50),
+          const SizedBox(height: 16),
+          const Text(
+            'Gagal memuat laporan',
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: _loadReportUrl,
+            child: const Text('Coba Lagi'),
+          ),
+        ],
+      );
+    }
+
+    return Stack(
+      children: [
+        WebViewWidget(controller: controller),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar:true,
+      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+        preferredSize: const Size.fromHeight(0),
         child: AppBar(
-          backgroundColor: primaryColor, // Warna status bar
-          elevation: 0, // Hilangkan bayangan
+          backgroundColor: primaryColor,
+          elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: primaryColor, // Warna status bar
-            statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+            statusBarColor: primaryColor,
+            statusBarIconBrightness: Brightness.light,
           ),
         ),
       ),
       backgroundColor: Colors.white,
-      body: DefaultTabController(
-        length: 2,
-        child: Padding(
-          padding: defaultPadding,
-          child: Column(
-            children: [
-              PageTitle(text: "Laporan", back: true,),
-              Gap(5),
-              const TabBar(
-                labelColor: primaryColor,
-                unselectedLabelColor: Colors.grey,
-                indicatorColor: primaryColor,
-                
-                tabs: [
-                  Tab(text: "Produk"),
-                  Tab(text: "Transaksi"),
-                ],
-              ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.only(top: 10),
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: TabBarView(
-                        children: [
-                          controller != null
-                          ? WebViewWidget(controller: controller!) // Gunakan 'controller!'
-                          : Center(child: CircularProgressIndicator()), // Tampilkan loading jika null
-                          Center(child: Icon(Icons.directions_transit, size: 100)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      body: Padding(
+        padding: defaultPadding,
+        child: Column(
+          children: [
+            PageTitle(text: "Laporan", back: true),
+            const Gap(5),
+            Expanded(
+              child: _buildWebView(),
+            ),
+          ],
         ),
       ),
     );
