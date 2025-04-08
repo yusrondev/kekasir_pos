@@ -471,19 +471,25 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 ),
                 if(stock.description != '' && stock.costPrice == 0) ... [
                   LineSM(),
-                  ShortDescSM(text : stock.description, maxline: 5,),
+                  SizedBox(width: 150,child: ShortDescSM(text : stock.description, maxline: 2,)),
                 ] else if(stock.description != '' && stock.costPrice != 0) ... [
                   LineSM(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ShortDescSM(text : stock.description, maxline: 5,),
+                      SizedBox(width: 150,child: ShortDescSM(text : stock.description, maxline: 2,)),
                       PriceTag(text: 'Harga beli : ${formatRupiah(stock.costPrice)}'),
                     ],
                   ),
                 ]else ... [
                   LineSM(),
-                  PriceTag(text: 'Harga beli : ${formatRupiah(stock.costPrice)}'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ShortDescSM(text : '-', maxline: 5,),
+                      PriceTag(text: 'Harga beli : ${formatRupiah(stock.costPrice)}'),
+                    ],
+                  ),
                 ]
               ],
             ),
