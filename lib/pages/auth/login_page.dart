@@ -139,12 +139,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void login() async {
     if (emailController.text == "") {
-      showErrorSnackbarCustom(context, 'Pastikan email sudah terisi!');
+      alertLottie(context, 'Pastikan email sudah terisi!', 'error');
       return;
     }
 
     if (passwordController.text == "") {
-      showErrorSnackbarCustom(context, 'Pastikan password sudah terisi!');
+      alertLottie(context, 'Pastikan password sudah terisi!', 'error');
       return;
     }
 
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             isLoading = false;
           });
-          showErrorSnackbarCustom(context, error);
+          alertLottie(context, error, 'error');
         }
       }
     } catch (e) {
@@ -189,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       // ignore: use_build_context_synchronously
-      showErrorSnackbarCustom(context, 'Tidak dapat membuka Whatsapp');
+      alertLottie(context, 'Tidak dapat membuka Whatsapp');
     }
   }
 
