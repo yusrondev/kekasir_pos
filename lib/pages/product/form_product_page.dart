@@ -368,44 +368,43 @@ class _FormProductPageState extends State<FormProductPage> {
         },
       );
 
+      if (quantity.text.isEmpty && isEdit == false) {
+        Navigator.pop(context, true);
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
+      }    
+
       String priceValue = _cleanCurrency(priceController.text);
       String costValue = _cleanCurrency(costController.text);
 
       if (nameController.text == "") {
-        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
       }
 
       if (priceController.text == "") {
-        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
       }      
 
       if (costController.text == "" && selectedValue.toString() == "Masuk") {
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
       }      
 
       if (costController.text == "" && isEdit == false) {
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
       }      
 
       int? parsedQuantity = int.tryParse(quantity.text);
       if (parsedQuantity == 0 && selectedValue.toString().isNotEmpty) {
-        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'error');
       }
 
       if (quantity.text == "" && selectedValue.toString() != "null") {
-        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
         Navigator.pop(context, true);
-        return;
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
       }      
 
       if (widget.product == null) {
@@ -423,22 +422,19 @@ class _FormProductPageState extends State<FormProductPage> {
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
-          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'error');
           Navigator.pop(context, true);
-          return;
+          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'error');
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
-          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'error');
           Navigator.pop(context, true);
-          return;
+          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'error');
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
-            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'error');
             Navigator.pop(context, true);
-            return;
+            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'error');
           }
         }
 
