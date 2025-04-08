@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -299,25 +300,33 @@ class _IndexProductPageState extends State<IndexProductPage> {
                   ),
                 ),
                 Gap(product.shortDescription == "" ? 20 : 7),
-                ProductName(text: product.name),
+                Expanded(child: ProductName(text: product.name)),
                 if(product.shortDescription != "") ... [
                   ShortDesc(text: product.shortDescription),
                 ],
                 LineSM(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      formatRupiah(product.price),
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: AutoSizeText(
+                          formatRupiah(product.price),
+                          style: TextStyle(
+                            fontSize: 17, // Ukuran maksimal
+                            color: primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 2, // Batasi menjadi 1 baris
+                          minFontSize: 8, // Ukuran minimal agar tetap terbaca
+                          overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
+                        )
                       ),
-                    ),
-                    Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
-                  ],
-                )
+                      Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
+                    ],
+                  ),
+                ),
+                Gap(7)
               ],
             ),
           ),

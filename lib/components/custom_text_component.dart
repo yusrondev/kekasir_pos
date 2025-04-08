@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/utils/colors.dart';
 
@@ -62,14 +63,15 @@ class LabelSemiBoldMD extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       text ?? "",
       maxLines: 1,
+      minFontSize: 12, // Ukuran font minimum agar tetap terbaca
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w600,
-        overflow: TextOverflow.ellipsis,
-        color: primary == true ? primaryColor : Colors.black
+        color: Colors.black,
       ),
     );
   }
@@ -129,14 +131,12 @@ class ProductName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       text ?? "",
-      maxLines: 1,
-      style: TextStyle(
-        fontSize: 17,
-        fontWeight: FontWeight.w600,
-        overflow: TextOverflow.ellipsis
-      ),
+      maxLines: 2, // Bisa dua baris
+      minFontSize: 8,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
     );
   }
 }
@@ -235,21 +235,24 @@ class _PriceTagState extends State<PriceTag> with SingleTickerProviderStateMixin
   }
 
   Widget _buildContainer() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-      decoration: BoxDecoration(
-        color: widget.haveType == true ? const Color(0xfff9ca24) : bgSuccess,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        widget.text ?? "",
-        maxLines: 1,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
+    return Flexible(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+        decoration: BoxDecoration(
+          color: widget.haveType == true ? const Color(0xfff9ca24) : bgSuccess,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: AutoSizeText(
+          widget.text ?? "",
+          maxLines: 1,
+          minFontSize: 10, // Ukuran minimum agar tetap terbaca
           overflow: TextOverflow.ellipsis,
-          color: widget.haveType == true ? const Color(0xff130f40) : successColor,
+          style: TextStyle(
+            fontSize: 13, // Ukuran default
+            fontWeight: FontWeight.w600,
+            color: widget.haveType == true ? const Color(0xff130f40) : successColor,
+          ),
         ),
       ),
     );
@@ -262,22 +265,25 @@ class StockTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 3),
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-      decoration: BoxDecoration(
-        color: lightColor,
-        borderRadius: BorderRadius.circular(5),
-        // border: Border.all(color: primaryColor, width: 0.5)
-      ),
-      child: Text(
-        text ?? "",
-        maxLines: 1,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
+    return Flexible(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 3),
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+        decoration: BoxDecoration(
+          color: lightColor,
+          borderRadius: BorderRadius.circular(5),
+          // border: Border.all(color: primaryColor, width: 0.5)
+        ),
+        child: AutoSizeText(
+          text ?? "",
+          maxLines: 1,
+          minFontSize: 10, // Menyesuaikan ukuran minimal agar tetap terbaca
           overflow: TextOverflow.ellipsis,
-          color: primaryColor
+          style: TextStyle(
+            fontSize: 13, // Ukuran default
+            fontWeight: FontWeight.w600,
+            color: primaryColor,
+          ),
         ),
       ),
     );

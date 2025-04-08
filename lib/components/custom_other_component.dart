@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -9,13 +10,13 @@ class LineSM extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Gap(7),
+        Gap(5),
         Container(
           height: 1,
           width: double.infinity,
           color: Color(0xffdfe4ea),
         ),
-        Gap(7),
+        Gap(5),
       ],
     );
   }
@@ -28,13 +29,13 @@ class Line extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Gap(7),
+        Gap(5),
         Container(
           height: 2,
           width: double.infinity,
           color: Color(0xffdfe4ea),
         ),
-        Gap(7),
+        Gap(5),
       ],
     );
   }
@@ -110,17 +111,34 @@ class _StockBadgeStateWithoutRadius extends State<StockBadgeWithoutRadius> {
     return Align(
       alignment: Alignment.topRight,
       child: Container(
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? Color(0xffe74c3c) : dangerColor,
-          borderRadius: BorderRadius.circular(5)
+        constraints: BoxConstraints(
+          minWidth: 50, // Sesuaikan ukuran minimal
+          maxWidth: 100, // Sesuaikan ukuran maksimal
         ),
-        child: Text(
-          widget.availableStock.toString() == "0" ? "Produk habis" : 'Tersisa ${widget.availableStock.toString()} pcs',
-          style: TextStyle(
-            color: widget.availableStock > 5 ? successColor : Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.w600
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: widget.availableStock > 5 
+              ? bgSuccess 
+              : widget.availableStock == 0 
+                ? Color(0xffe74c3c) 
+                : dangerColor,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: AutoSizeText(
+            widget.availableStock == 0 
+                ? "Produk habis" 
+                : 'Tersisa ${widget.availableStock} pcs',
+            maxLines: 1,
+            minFontSize: 8, // Ukuran minimal
+            wrapWords: false, // Hindari pemisahan kata
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: widget.availableStock > 5 ? successColor : Colors.white,
+              fontSize: 13, // Ukuran default
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),

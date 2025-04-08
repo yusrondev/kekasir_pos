@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -287,18 +288,26 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Stok Masuk", 
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                    Expanded(
+                      child: AutoSizeText(
+                        "Stok Masuk",
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                         overflow: TextOverflow.ellipsis,
-                      )
+                        minFontSize: 10,
+                      ),
                     ),
-                    Icon(Icons.arrow_downward_rounded, color: Colors.white, size: 15,)
+                    Icon(
+                      Icons.arrow_downward_rounded,
+                      color: Colors.white,
+                      size: 15,
+                    )
                   ],
-                ),
+                )
               ],
             ),
           ),
@@ -326,11 +335,18 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Stok Keluar", style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13
-                      )
+                    Expanded(
+                      child: AutoSizeText(
+                        "Stok Keluar",
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        minFontSize: 10,
+                      ),
                     ),
                     Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 15,)
                   ],
@@ -362,11 +378,18 @@ class _DetailStockPageState extends State<DetailStockPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Tersisa", style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        fontSize: 13
-                      )
+                    Expanded(
+                      child: AutoSizeText(
+                        "Tersisa",
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        minFontSize: 10,
+                      ),
                     ),
                     Icon(Icons.check, color: kekasirColor, size: 15,)
                   ],
