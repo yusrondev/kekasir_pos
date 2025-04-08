@@ -5,6 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -87,7 +88,9 @@ class _IndexReportPageState extends State<IndexReportPage> {
             const Gap(5),
             Expanded(
               child: dataMe == null
-                  ? const Center(child: CircularProgressIndicator()) // Tampilkan loading jika dataMe masih null
+                  ? Center(
+                    child: CustomLoader.showCustomLoader()
+                  )
                   : InAppWebView(
                       initialUrlRequest: URLRequest(
                         url: WebUri("https://kekasir-core.dewadev.id/report/product/${dataMe?['id'] ?? ''}"),
