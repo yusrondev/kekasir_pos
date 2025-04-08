@@ -12,6 +12,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 
 class FormDiscountPage extends StatefulWidget {
@@ -89,7 +90,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
       }
       showSuccessSnackbar(context, "Berhasil menyimpan promo!");
     }else{
-      showErrorSnackbar(context, "Opps ada yang salah!");
+      alertLottie(context, "Opps ada yang salah!", 'error');
     }
   }
 

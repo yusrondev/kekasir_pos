@@ -7,7 +7,6 @@ import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
-import 'package:kekasir/helpers/snackbar_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
@@ -119,7 +118,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         isLoading = false;
       });
-      showErrorSnackbar(context, "Format email tidak valid! Harus menggunakan domain @kekasir.com");
+      alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
       return;
     }
 
@@ -164,14 +163,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           errorMessage = errorList.join("\n");
         }
 
-        showErrorSnackbar(context, errorMessage);
+        alertLottie(context, errorMessage, "error");
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           isLoading = false;
         });
-        showErrorSnackbar(context, "Terjadi kesalahan: ${e.toString()}");
+        alertLottie(context, "Terjadi kesalahan: ${e.toString()}", "error");
       }
     }
   }
@@ -240,7 +239,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             onPressed: () {
               if (passwordController.text != "") {
                 if (passwordController.text.length < 6) {
-                  showErrorSnackbar(context, "Jumlah password minimal 6 karakter");
+                  alertLottie(context, "Jumlah password minimal 6 karakter", "error");
                   return;
                 }
                 showInputDialog();

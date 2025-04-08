@@ -125,7 +125,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       fetchCart(_selectedName.toString());
     } catch (e) {
       if (mounted) {
-        showErrorSnackbar(context, e.toString());
+        alertLottie(context, e.toString(), 'error');
       }
     }
   }
@@ -201,7 +201,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       fetchProducts(keyword.text, 'true', _selectedName.toString());
       closeLoadingDialog();
     } catch (e) {
-      showErrorSnackbar(context, e.toString());
+      alertLottie(context, e.toString(), 'error');
     }
   }
 

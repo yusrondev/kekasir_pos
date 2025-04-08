@@ -121,7 +121,7 @@ class _FormProductPageState extends State<FormProductPage> {
     quantity.addListener(() {
       String? wording = "";
       if (quantity.text != "") {
-        wording = "Dari ${quantity.text} pcs total harganya berapa?";
+        wording = "Total harga beli dari ${quantity.text} pcs...";
       }else{
         wording = "Masukkan harga...";
       }
@@ -373,38 +373,38 @@ class _FormProductPageState extends State<FormProductPage> {
       String costValue = _cleanCurrency(costController.text);
 
       if (nameController.text == "") {
-        showErrorSnackbar(context, 'Pastikan nama produk sudah terisi!');
+        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
         Navigator.pop(context, true);
         return;
       }
 
       if (priceController.text == "") {
-        showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
+        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
         Navigator.pop(context, true);
         return;
       }      
 
       if (costController.text == "" && selectedValue.toString() == "Masuk") {
-        showErrorSnackbar(context, 'Pastikan harga beli sudah terisi!');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         Navigator.pop(context, true);
         return;
       }      
 
       if (costController.text == "" && isEdit == false) {
-        showErrorSnackbar(context, 'Pastikan harga beli sudah terisi!');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         Navigator.pop(context, true);
         return;
       }      
 
       int? parsedQuantity = int.tryParse(quantity.text);
       if (parsedQuantity == 0 && selectedValue.toString().isNotEmpty) {
-        showErrorSnackbar(context, 'Pastikan jumlah stok tidak 0!');
+        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'error');
         Navigator.pop(context, true);
         return;
       }
 
       if (quantity.text == "" && selectedValue.toString() != "null") {
-        showErrorSnackbar(context, 'Pastikan jumlah stok sudah terisi!');
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
         Navigator.pop(context, true);
         return;
       }      
@@ -424,20 +424,20 @@ class _FormProductPageState extends State<FormProductPage> {
       } else {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
-          showErrorSnackbar(context, 'Jumlah melebihi stok yang tersedia!');
+          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'error');
           Navigator.pop(context, true);
           return;
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
-          showErrorSnackbar(context, 'Pastikan tipe penyesuaian sudah terpilih!');
+          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'error');
           Navigator.pop(context, true);
           return;
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
-            showErrorSnackbar(context, 'Pastikan jumlah stok produk sudah terisi!');
+            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'error');
             Navigator.pop(context, true);
             return;
           }
@@ -468,7 +468,7 @@ class _FormProductPageState extends State<FormProductPage> {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
-        showErrorSnackbar(context, 'Ada yang salah...');
+        alertLottie(context, 'Ada yang salah...', 'error');
       }
     }
   }  
@@ -976,12 +976,12 @@ class _FormProductPageState extends State<FormProductPage> {
         child: GestureDetector(
           onTap: () {
             if (nameController.text == "") {
-              showErrorSnackbar(context, 'Pastikan nama produk sudah terisi!');
+              alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
               return;
             }
 
             if (priceController.text == "") {
-              showErrorSnackbar(context, 'Pastikan harga produk sudah terisi!');
+              alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
               return;
             }
 

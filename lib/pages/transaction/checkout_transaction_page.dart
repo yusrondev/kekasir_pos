@@ -143,7 +143,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       }
     } catch (e) {
       if (context.mounted) {
-        showErrorSnackbar(context, e.toString());
+        alertLottie(context, e.toString(), 'error');
       }
     }
   }

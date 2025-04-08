@@ -51,7 +51,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
-      showErrorSnackbar(context, 'Tidak dapat membuka Whatsapp');
+      alertLottie(context, 'Tidak dapat membuka Whatsapp', 'error');
     }
   }
 
