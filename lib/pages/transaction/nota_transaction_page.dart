@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
+import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/logger.dart';
 
 class NotaTransactionPage extends StatefulWidget {
@@ -57,79 +58,77 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Expanded(
-          child: Receipt(
-            backgroundColor: Colors.white,
-            builder: (context) => Column(
-            children: [
-              Column(
-                children: [
-                  Image.asset(
-                    'assets/images/kekasir-black.png',
-                    width: 100,
-                  ),
-                  Gap(13),
-                  Text(data['code'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23),)
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 7),
-                width: double.infinity,
-                height: 2,
-                decoration: BoxDecoration(
-                  color: Colors.black
+        body: Receipt(
+          backgroundColor: Colors.white,
+          builder: (context) => Column(
+          children: [
+            Column(
+              children: [
+                Image.asset(
+                  'assets/images/kekasir-black.png',
+                  width: 100,
                 ),
+                Gap(13),
+                Text(data['code'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23),)
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 7),
+              width: double.infinity,
+              height: 2,
+              decoration: BoxDecoration(
+                color: Colors.black
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 160,child: Text(data['merchant_name'], style: TextStyle(fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200,child: Text(data['merchant_address'] ?? "", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)))
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(formattedDate, style: TextStyle(fontWeight: FontWeight.w600)),
-                          Text(formattedTime, style: TextStyle(fontWeight: FontWeight.w600))
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 7),
-                    width: double.infinity,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: Colors.black
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 160,child: Text(data['merchant_name'], style: TextStyle(fontWeight: FontWeight.w600))),
+                        SizedBox(width: 200,child: Text(data['merchant_address'] ?? "", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)))
+                      ],
                     ),
-                  ),
-                  buildProductList(),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 7),
-                    width: double.infinity,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: Colors.black
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(formattedDate, style: TextStyle(fontWeight: FontWeight.w600)),
+                        Text(formattedTime, style: TextStyle(fontWeight: FontWeight.w600))
+                      ],
                     ),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 7),
+                  width: double.infinity,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: Colors.black
                   ),
-                  buildpaymentSummary(),
-                  Gap(100)
-                ],
-              ),
-            ],
-          ), onInitialized: (ctrl) {
-            setState(() {
-              controller = ctrl;
-            });
-          }),
-        ),
+                ),
+                buildProductList(),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 7),
+                  width: double.infinity,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: Colors.black
+                  ),
+                ),
+                buildpaymentSummary(),
+                Gap(100)
+              ],
+            ),
+          ],
+        ), onInitialized: (ctrl) {
+          setState(() {
+            controller = ctrl;
+          });
+        }),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
           child: Row(
@@ -170,9 +169,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     final device = await FlutterBluetoothPrinter.selectDevice(context);
     if (device != null) {
       await controller!.print(address: device.address);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Struk dicetak!")));
+      alertLottie(context, "Struk dicetak!");
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal memilih printer")));
+      alertLottie(context, "Gagal memilih printer", "error");
     }
   }
 
@@ -199,7 +198,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                 ],
               ),
               Center(
-                child: Text('(${detail['quantity']})', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+                child: Text('(${detail['quantity']})', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22)),
               ),
               Center(child: Text(detail['sub_total'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22)))
             ],
