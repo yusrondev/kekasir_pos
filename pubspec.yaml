@@ -28,6 +28,7 @@ dependencies:
   internet_connection_checker: ^3.0.1
   flutter_inappwebview: ^6.0.0
   auto_size_text: ^3.0.0
+  flutter_bluetooth_printer: ^2.17.1
 
 dev_dependencies:
   flutter_test:

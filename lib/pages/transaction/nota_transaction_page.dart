@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_printer/flutter_bluetooth_printer_library.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/components/custom_button_component.dart';
-import 'package:kekasir/components/custom_other_component.dart';
-import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
-import 'package:kekasir/utils/variable.dart';
 import 'package:logger/logger.dart';
 
 class NotaTransactionPage extends StatefulWidget {
@@ -22,6 +20,8 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   String? discount;
   String? paid;
   String? change;
+
+  ReceiptController? controller;
 
   List details = [];
   
@@ -57,51 +57,78 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: ListView(
-          padding: defaultPadding,
-          children: [
-            Column(
-              children: [
-                Image.asset(
-                  'assets/images/kekasir-black.png',
-                  width: 60,
+        body: Expanded(
+          child: Receipt(
+            backgroundColor: Colors.white,
+            builder: (context) => Column(
+            children: [
+              Column(
+                children: [
+                  Image.asset(
+                    'assets/images/kekasir-black.png',
+                    width: 100,
+                  ),
+                  Gap(13),
+                  Text(data['code'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23),)
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 7),
+                width: double.infinity,
+                height: 2,
+                decoration: BoxDecoration(
+                  color: Colors.black
                 ),
-                Gap(13),
-                Label(text: data['code'],)
-              ],
-            ),
-            LineSM(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 160,child: LabelSemiBold(text: data['merchant_name'])),
-                        SizedBox(width: 160,child: Text(data['merchant_address'] ?? "", style: TextStyle(fontSize: 12),))
-                      ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 160,child: Text(data['merchant_name'], style: TextStyle(fontWeight: FontWeight.w600))),
+                          SizedBox(width: 200,child: Text(data['merchant_address'] ?? "", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)))
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(formattedDate, style: TextStyle(fontWeight: FontWeight.w600)),
+                          Text(formattedTime, style: TextStyle(fontWeight: FontWeight.w600))
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 7),
+                    width: double.infinity,
+                    height: 2,
+                    decoration: BoxDecoration(
+                      color: Colors.black
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        LabelSemiBold(text: formattedDate),
-                        ShortDesc(text: formattedTime)
-                      ],
+                  ),
+                  buildProductList(),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 7),
+                    width: double.infinity,
+                    height: 2,
+                    decoration: BoxDecoration(
+                      color: Colors.black
                     ),
-                  ],
-                ),
-                LineSM(),
-                LabelSemiBold(text: "Daftar Pesanan",),
-                buildProductList(),
-                LineSM(),
-                LabelSemiBold(text: "Detail Pembayaran",),
-                buildpaymentSummary()
-              ],
-            ),
-          ],
+                  ),
+                  buildpaymentSummary(),
+                  Gap(100)
+                ],
+              ),
+            ],
+          ), onInitialized: (ctrl) {
+            setState(() {
+              controller = ctrl;
+            });
+          }),
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
@@ -125,7 +152,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               Expanded(
                 child: GestureDetector(
                   onTap: () { 
-                    
+                    printReceipt();
                   },
                   child: ButtonPrimary(
                     text: "Cetak",
@@ -137,6 +164,16 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
         ),
       ),
     );
+  }
+
+  Future<void> printReceipt() async {
+    final device = await FlutterBluetoothPrinter.selectDevice(context);
+    if (device != null) {
+      await controller!.print(address: device.address);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Struk dicetak!")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal memilih printer")));
+    }
   }
 
   Widget buildProductList() {
@@ -157,16 +194,14 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 120,child: Text('${detail['product']['name']}')),
-                      Label(text:'(${detail['quantity']})'),
-                    ],
-                  ),
-                  Label(text: detail['product']['price'],)
+                  SizedBox(width: 150,child: Text('${detail['product']['name']}', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23))),
+                  Text(detail['product']['price'],style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
                 ],
               ),
-              LabelSemiBold(text: detail['sub_total'],)
+              Center(
+                child: Text('(${detail['quantity']})', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+              ),
+              Center(child: Text(detail['sub_total'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22)))
             ],
           ),
         );
@@ -183,38 +218,43 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Sub Total"),
-              LabelSemiBold(text: subTotal,)
+              Text("Sub Total", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23)),
+              Text(subTotal.toString(),style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
             ],
           ),
+          Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Diskon"),
-              LabelSemiBold(text: discount,)
+              Text("Diskon", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23)),
+              Text(discount.toString(),style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
             ],
           ),
+          Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Grand Total"),
-              LabelSemiBold(text: grandTotal,)
+              Text("Grand Total", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23)),
+              Text(grandTotal.toString(),style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
             ],
           ),
+          Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Dibayar"),
-              LabelSemiBold(text: paid,)
+              Text("Dibayar", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23)),
+              Text(paid.toString(),style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
             ],
           ),
+          Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Label(text: "Kembalian"),
-              LabelSemiBold(text: change,)
+              Text("Kembalian", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 23)),
+              Text(change.toString(),style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22))
             ],
           ),
+          Gap(5),
         ],
       ),
     );
