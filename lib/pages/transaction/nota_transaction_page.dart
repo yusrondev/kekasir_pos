@@ -86,13 +86,21 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 160,child: Text(data['merchant_name'], style: TextStyle(fontWeight: FontWeight.w600))),
-                        SizedBox(width: 200,child: Text(data['merchant_address'] ?? "", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)))
-                      ],
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data['merchant_name'], style: TextStyle(fontWeight: FontWeight.w600)),
+                          Text(
+                            data['merchant_address'] ?? "",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis, // Tambahkan ini agar teks yang kepanjangan dipotong
+                            maxLines: 2, // Batas jumlah baris
+                          )
+                        ],
+                      ),
                     ),
+                    Gap(5),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -166,12 +174,22 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   }
 
   Future<void> printReceipt() async {
+    if (controller == null) {
+      alertLottie(context, "Printer tidak terhubung!", "error");
+      return;
+    }
+
     final device = await FlutterBluetoothPrinter.selectDevice(context);
-    if (device != null) {
+    if (device == null) {
+      alertLottie(context, "Gagal memilih printer", "error");
+      return;
+    }
+
+    try {
       await controller!.print(address: device.address);
       alertLottie(context, "Struk dicetak!");
-    } else {
-      alertLottie(context, "Gagal memilih printer", "error");
+    } catch (e) {
+      alertLottie(context, "Gagal mencetak struk: $e", "error");
     }
   }
 
