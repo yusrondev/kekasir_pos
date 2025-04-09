@@ -102,7 +102,7 @@ void alertLottie(BuildContext context, String message, [String? icon]) {
                 "assets/animations/$icon.json",
                 width: 60,
                 frameRate: const FrameRate(90),
-                repeat: false
+                repeat: icon == 'info' ? true : false
               ),
             ),
             Gap(5),

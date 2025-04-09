@@ -370,7 +370,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
       if (quantity.text.isEmpty && isEdit == false) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'info');
       }    
 
       String priceValue = _cleanCurrency(priceController.text);
@@ -378,33 +378,33 @@ class _FormProductPageState extends State<FormProductPage> {
 
       if (nameController.text == "") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'info');
       }
 
       if (priceController.text == "") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'info');
       }      
 
       if (costController.text == "" && selectedValue.toString() == "Masuk") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'info');
       }      
 
       if (costController.text == "" && isEdit == false) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'info');
       }      
 
       int? parsedQuantity = int.tryParse(quantity.text);
       if (parsedQuantity == 0 && selectedValue.toString().isNotEmpty) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'error');
+        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'info');
       }
 
       if (quantity.text == "" && selectedValue.toString() != "null") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'info');
       }      
 
       if (widget.product == null) {
@@ -423,18 +423,18 @@ class _FormProductPageState extends State<FormProductPage> {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
           Navigator.pop(context, true);
-          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'error');
+          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'info');
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
           Navigator.pop(context, true);
-          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'error');
+          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'info');
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
             Navigator.pop(context, true);
-            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'error');
+            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'info');
           }
         }
 
@@ -971,12 +971,12 @@ class _FormProductPageState extends State<FormProductPage> {
         child: GestureDetector(
           onTap: () {
             if (nameController.text == "") {
-              alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
+              alertLottie(context, 'Pastikan nama produk sudah terisi!', 'info');
               return;
             }
 
             if (priceController.text == "") {
-              alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
+              alertLottie(context, 'Pastikan harga produk sudah terisi!', 'info');
               return;
             }
 
