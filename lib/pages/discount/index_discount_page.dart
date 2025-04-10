@@ -98,7 +98,33 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
             PageTitle(text: "Diskon Produk"),
             Gap(15),
             SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
-            Gap(10),
+            Gap(5),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(vertical: 3),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Halaman ini masih dalam tahap pengembangan 😉",
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      color: Colors.white
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Gap(5),
             buildListProducts(),
           ],
         ),

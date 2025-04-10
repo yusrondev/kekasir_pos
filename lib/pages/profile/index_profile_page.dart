@@ -219,7 +219,12 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
                     ],
                   ),
-                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  Row(
+                    children: [
+                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+                    ],
+                  )
                 ],
               ),
               LineXM(),
@@ -236,7 +241,12 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       Text("Notifikasi Sistem", style: TextStyle(fontWeight: FontWeight.w600),),
                     ],
                   ),
-                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  Row(
+                    children: [
+                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+                    ],
+                  )
                 ],
               ),
               LineXM(),
@@ -253,7 +263,12 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       Text("Bantuan", style: TextStyle(fontWeight: FontWeight.w600),),
                     ],
                   ),
-                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  Row(
+                    children: [
+                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+                    ],
+                  )
                 ],
               ),
               LineXM(),
@@ -269,7 +284,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                           width: 20,
                         ),
                         Gap(10),
-                        Text("Hubungi Admin Kekasir", style: TextStyle(fontWeight: FontWeight.w600),),
+                        Text("Hubungi Kekasir", style: TextStyle(fontWeight: FontWeight.w600),),
                       ],
                     ),
                     Icon(Icons.keyboard_arrow_right_outlined, size: 15)
@@ -312,7 +327,12 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       Text("Pengaturan", style: TextStyle(fontWeight: FontWeight.w600),),
                     ],
                   ),
-                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  Row(
+                    children: [
+                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+                    ],
+                  )
                 ],
               ),
               LineXM(),
@@ -328,6 +348,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                     ),
                     Gap(10),
                     Expanded(child: Text("Keluar", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C)))),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
                   ],
                 ),
               ),
