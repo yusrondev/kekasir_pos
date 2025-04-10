@@ -119,7 +119,7 @@ class DialogHelper {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Apakah Anda yakin ingin keluar?"),
+              Text("Apakah Anda yakin ingin keluar dari akun ini?"),
               Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

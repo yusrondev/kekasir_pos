@@ -652,7 +652,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     children: [
                       LabelSemiBoldMD(text: product.name),
                       if(product.shortDescription != "") ... [
-                        ShortDesc(text: product.shortDescription, maxline: 2)
+                        ShortDesc(text: product.shortDescription, maxline: 1)
                       ]else ... [
                         Gap(2)
                       ],

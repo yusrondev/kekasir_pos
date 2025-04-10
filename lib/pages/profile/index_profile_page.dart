@@ -177,7 +177,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                 ),
                 child: Text(
                   textAlign: TextAlign.center,
-                  "Edit Profil",
+                  "Ubah Profil",
                   style: TextStyle(
                     color: primaryColor
                   ),
@@ -347,7 +347,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                       width: 17,
                     ),
                     Gap(10),
-                    Expanded(child: Text("Keluar", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C)))),
+                    Expanded(child: Text("Logout", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C)))),
                     Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
                   ],
                 ),
