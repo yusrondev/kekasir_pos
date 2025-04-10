@@ -344,7 +344,14 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   LabelSemiBold(
                     text: "Jumlah Pembelian",
                   ),
-                  StockTag(text: 'Tersedia : ${availableStock.toString()}')
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primaryColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('Tersedia : ${availableStock.toString()}', style: TextStyle(color: primaryColor, fontSize: 13, fontWeight: FontWeight.w600)),
+                  )
                 ],
               ),
               Gap(10),
@@ -366,7 +373,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Colors.white,
-                    hintText: "Masukkan jumlah...",
+                    hintText: "Maksimal ${availableStock.toString()} ...",
                   ),
                   onSubmitted: (value) {
                     int? val = int.tryParse(value);
@@ -684,7 +691,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           ),
                         ),
                         SizedBox(
-                          width: 50,
+                          width: 40,
                           height: 20,
                           child: TextField(
                             readOnly: true,
