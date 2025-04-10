@@ -702,7 +702,7 @@ class _HomePageState extends State<HomePage> {
                     ShortDesc(text: "Menampilkan 3 transaksi terakhir",),
                   ],
                 ),
-                if(transactions.length > 3) ... [
+                if(transactions.length >= 3) ... [
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/transaction/mutation');
