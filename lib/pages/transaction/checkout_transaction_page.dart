@@ -262,13 +262,13 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     ),
                     Gap(10),
                     SizedBox(
-                      width: 130,
+                      width: 100,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Label(text: cartItem.productName),
                           if (cartItem.productShortDescription != "") ...[
-                            ShortDesc(text: cartItem.productShortDescription),
+                            ShortDesc(text: cartItem.productShortDescription, maxline: 1),
                           ] else ...[
                             Gap(2),
                           ],
@@ -276,15 +276,16 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                         ],
                       ),
                     ),
-                    Gap(5),
+                    Gap(10),
                     SizedBox(
+                      width: 50,
                       // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,
                         child: LabelSemiBold(text: '${cartItem.quantity}x'),
                       ),
                     ),
-                    Gap(25),
+                    Gap(10),
                     Expanded(
                       // Pastikan subtotal punya lebar tetap
                       child: Align(

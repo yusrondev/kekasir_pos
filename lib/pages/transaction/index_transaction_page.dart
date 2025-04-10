@@ -668,7 +668,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   ),
                 ),
               ),
-              Gap(5),
+              Gap(20),
               // Bagian Quantity (Plus Minus)
               Column(
                 children: [
