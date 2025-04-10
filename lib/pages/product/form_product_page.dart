@@ -937,7 +937,7 @@ class _FormProductPageState extends State<FormProductPage> {
                     if(isEdit == false || selectedValue != null) ... [
                       CustomTextFieldNumber(
                         controller: quantity,
-                        label: "Jumlah Stok",
+                        label: "Jumlah Stok *",
                         placeholder: "Misalnya 20...",
                         maxLength: 5,
                         border: true,
