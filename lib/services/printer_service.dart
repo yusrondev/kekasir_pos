@@ -20,6 +20,10 @@ class PrinterService {
   Future<bool> connect(BluetoothDevice device) async {
     try {
       _isConnected = await _printer.connect(device);
+      if (_isConnected) {
+        await _printer.disconnect();
+      }
+      _isConnected = await _printer.connect(device);
       return _isConnected;
     } catch (e) {
       _isConnected = false;

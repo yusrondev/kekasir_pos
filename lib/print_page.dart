@@ -256,9 +256,9 @@ class _PrintPageState extends State<PrintPage> {
     );
   }
 
-  // @override
-  // void dispose() {
-  //   _printerService.disconnect();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _printerService.disconnect();
+    super.dispose();
+  }
 }
