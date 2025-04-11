@@ -161,6 +161,8 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       _isConnected = success; // Perbarui status koneksi berdasarkan hasil
     });
 
+    Logger().d(_isConnecting);
+
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
       if (mounted) {
