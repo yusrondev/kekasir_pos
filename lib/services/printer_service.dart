@@ -1,7 +1,6 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/logger.dart';
 
 class PrinterService {
