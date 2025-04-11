@@ -18,7 +18,8 @@ import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
 import 'package:kekasir/pages/transaction/detail_mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
-import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
+// import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
+import 'package:kekasir/print_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Tambahkan ini
 
@@ -101,7 +102,7 @@ class MainApp extends StatelessWidget {
           return DetailMutationTransactionPage(id : id);
         },
         '/checkout' : (context) => CheckoutTransactionPage(),
-        '/nota' : (context) => NotaTransactionPage(),
+        '/nota' : (context) => PrintPage(),
         '/form-discount' : (context) { 
           final product = ModalRoute.of(context)!.settings.arguments as Product;
           return FormDiscountPage(product : product);
