@@ -67,6 +67,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   Future<void> _initPrinterSetup() async {
     await _loadDevices();
     await _loadSelectedDevice();
+    if (mounted) {
+      alertLottie(context, "Transaksi berhasil dibuat!");
+    }
   }
   
   @override
@@ -116,7 +119,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
         merchantAddress: transaction['merchant_address'],
         transactionDate: transactionDate,
         transactionTime : transactionTime
-      );
+      ).then((_){
+        alertLottie(context, "Berhasil dicetak!");
+      });
     } catch (e) {
       _logger.e('Print error: $e');
       if (mounted) {
@@ -204,10 +209,6 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           setState(() {
             _selectedDevice = device;
             _isConnected = true;
-
-            if (mounted) {
-              alertLottie(context, "Transaksi berhasil dibuat!");
-            }
           });
           
           // Auto-connect jika diperlukan
@@ -263,19 +264,34 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   }
 
   Future<void> _removeSelectedDevice() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    await _printerService.disconnect();
-    
-    await prefs.remove('printer_name'); 
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Tambahkan pengecekan koneksi sebelum disconnect
+      if (_printerService.isConnected) {
+        try {
+          await _printerService.disconnect();
+          debugPrint("Disconnect berhasil");
+        } catch (e) {
+          debugPrint("Error saat disconnect: $e");
+          // Socket mungkin sudah closed, kita lanjutkan saja
+        }
+      }
+      
+      await prefs.remove('printer_name');
 
-    setState(() {
-      _selectedDevice = null;
-      _isConnected = false;
-    });
-    
-    if (mounted) {
-      alertLottie(context, "Printer telah diputus");
+      if (mounted) {
+        setState(() {
+          _selectedDevice = null;
+          _isConnected = false;
+        });
+        alertLottie(context, "Printer telah diputus");
+      }
+    } catch (e) {
+      debugPrint("Error dalam _removeSelectedDevice: $e");
+      if (mounted) {
+        alertLottie(context, "Gagal memutus printer");
+      }
     }
   }
 
@@ -284,6 +300,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white,
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.8, // Batasi tinggi maksimal 80% layar
@@ -295,7 +312,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Pilih Printer',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
                 const Divider(height: 1),
@@ -314,9 +331,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                           itemBuilder: (context, index) {
                             final device = _devices[index];
                             return ListTile(
-                              leading: const Icon(Icons.print),
-                              title: Text(device.name ?? 'Unknown Device'),
-                              subtitle: Text(device.address ?? ''),
+                              leading: Icon(Icons.bluetooth, color: _selectedDevice?.address == device.address ? Colors.green : primaryColor, size: 20,),
+                              title: Text(device.name ?? 'Unknown Device', style: TextStyle(color: _selectedDevice?.address == device.address ? Colors.green : Colors.black),),
+                              subtitle: Text(device.address ?? '', style: TextStyle(color: _selectedDevice?.address == device.address ? Colors.green : Colors.black),),
                               trailing: _selectedDevice?.address == device.address
                                   ? const Icon(Icons.check, color: Colors.green)
                                   : null,
@@ -331,9 +348,14 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                 const Divider(height: 1),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('TUTUP'),
+                  child: SizedBox(
+                    width: 200,
+                    child: ButtonPrimary(
+                      text: "Tutup",
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
                 ),
               ],
