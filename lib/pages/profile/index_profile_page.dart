@@ -415,6 +415,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
         if (mounted) { // Pastikan widget masih terpasang
           setState(() {
             isLoading = false;
+            passwordController.text = "";
           });
 
           Navigator.pop(context);
