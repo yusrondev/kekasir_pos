@@ -32,10 +32,6 @@ class PrinterService {
     }
   }
 
-  String truncate(String text, int length) {
-    return text.length > length ? text.substring(0, length - 3) + "..." : text;
-  }
-
   Future<void> printReceipt({
     required String invoiceNumber,
     required List<Map<String, dynamic>> items,
