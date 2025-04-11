@@ -213,9 +213,9 @@ class _FormProductPageState extends State<FormProductPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomTextField(
-                  label: "Tipe Harga",
+                  label: "Nama Tipe Harga",
                   controller: labelPrice,
-                  placeholder: "Misalnya Harga Reseller...",
+                  placeholder: "Masukkan Nama...",
                   border: true,
                 ),
                 Row(
