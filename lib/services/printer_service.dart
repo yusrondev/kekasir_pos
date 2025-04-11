@@ -1,4 +1,5 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -6,7 +7,7 @@ class PrinterService {
   final BlueThermalPrinter _printer = BlueThermalPrinter.instance;
   final NumberFormat _currencyFormat = NumberFormat.currency(
     locale: 'id',
-    symbol: 'Rp ',
+    symbol: ' ',
     decimalDigits: 0,
   );
 
@@ -27,62 +28,65 @@ class PrinterService {
     }
   }
 
+  String truncate(String text, int length) {
+    return text.length > length ? text.substring(0, length - 3) + "..." : text;
+  }
+
   Future<void> printReceipt({
     required String invoiceNumber,
     required List<Map<String, dynamic>> items,
-    required num total,  // changed from double to num
-    required num payment, // changed from double to num
-    required num change,  // changed from double to num
+    required num total,
+    required num payment,
+    required num change,
+    required String? merchantName,
+    required String? merchantAddress,
+    required String? transactionDate,
+    required String? transactionTime,
   }) async {
+    ByteData bytesAsset = await rootBundle.load("assets/images/black-white-kekasir.png");
+    Uint8List imageBytesFromAsset = bytesAsset.buffer
+        .asUint8List(bytesAsset.offsetInBytes, bytesAsset.lengthInBytes);
+
     // Header Toko
-    _printer.printCustom("TOKO MAJU JAYA", 2, 1);
-    _printer.printCustom("Jl. Contoh No. 123", 1, 1);
-    _printer.printCustom("Telp: 0812-3456-7890", 1, 1);
-    _printer.printNewLine();
-
-    // Garis pemisah
-    _printer.printCustom("------------------------------", 1, 1);
-    
-    // Info Nota
-    _printer.printLeftRight("NOTA:", invoiceNumber, 1);
-    _printer.printLeftRight(
-      "TANGGAL:", 
-      DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()), 
-      1
-    );
-    _printer.printNewLine();
-
-    // Header Item
-    _printer.printCustom("------------------------------", 1, 1);
-    _printer.printLeftRight("ITEM", "HARGA", 1);
-    _printer.printCustom("------------------------------", 1, 1);
-
-    // Daftar Item
-    for (var item in items) {
-      _printer.printLeftRight(
-        "${item['name']} (${item['qty']}x)", 
-        _currencyFormat.format(item['price']), 
-        0
-      );
-      if (item['note'] != null) {
-        _printer.printCustom("  Catatan: ${item['note']}", 0, 0);
-      }
+    _printer.printCustom(merchantName.toString(), 1, 1);
+    if (merchantAddress != null) {
+      _printer.printCustom(merchantAddress.toString(), 1, 1);
     }
 
+    // Garis pemisah
+    _printer.printCustom('#$invoiceNumber', 1, 1);
+    _printer.printCustom("-------------------------------", 1, 1);
+    
+    // Info Nota
+    _printer.printLeftRight(transactionDate.toString(), transactionTime.toString(), 1);
+    _printer.printCustom("-------------------------------", 1, 1);
+    // Daftar Item
+    for (var item in items) {
+      _printer.printCustom(item['name'], 1, 0); // Cetak nama barang di satu baris
+      _printer.printLeftRight(
+        "${_currencyFormat.format(item['price'])} (${item['qty']}x)", 
+        _currencyFormat.format(item['sub_total']), 
+        1
+      );
+    }
+
+
     // Total Pembayaran
-    _printer.printCustom("------------------------------", 1, 1);
-    _printer.printLeftRight("SUBTOTAL:", _currencyFormat.format(total), 1);
+    _printer.printCustom("-------------------------------", 1, 1);
+    _printer.printLeftRight("GRAND TOTAL:", _currencyFormat.format(total), 1);
     _printer.printLeftRight("TUNAI:", _currencyFormat.format(payment), 1);
     _printer.printLeftRight("KEMBALI:", _currencyFormat.format(change), 1);
-    _printer.printCustom("------------------------------", 1, 1);
+    _printer.printCustom("-------------------------------", 1, 1);
     _printer.printNewLine();
 
     // Footer
     _printer.printCustom("Terima kasih telah berbelanja", 1, 1);
-    _printer.printCustom("Barang yang sudah dibeli", 1, 1);
-    _printer.printCustom("tidak dapat ditukar/dikembalikan", 1, 1);
-    _printer.printNewLine();
-    _printer.printNewLine();
+    // _printer.printCustom("Barang yang sudah dibeli", 1, 1);
+    // _printer.printCustom("tidak dapat ditukar/dikembalikan", 1, 1);
+    _printer.printCustom("Sistem ini didukung oleh", 1, 1);
+    _printer.printImageBytes(imageBytesFromAsset); //image from Asset
+    // _printer.printNewLine();
+    // _printer.printNewLine();
 
     // Cut paper (jika printer support)
     _printer.paperCut();

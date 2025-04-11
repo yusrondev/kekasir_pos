@@ -1,8 +1,12 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:kekasir/components/custom_button_component.dart';
+import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/services/printer_service.dart';
+import 'package:kekasir/utils/variable.dart';
 import 'package:logger/logger.dart';
-// import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart'; // Added for json.decode
@@ -29,6 +33,8 @@ class _PrintPageState extends State<PrintPage> {
   String discount = '0';
   String paid = '0';
   String change = '0';
+  String transactionDate = '';
+  String transactionTime = '';
 
   dynamic details; // Changed to dynamic to handle both List and Map
   Map<String, dynamic>? transaction;
@@ -50,9 +56,9 @@ class _PrintPageState extends State<PrintPage> {
       if (transaction != null) {
         data = transaction!['data'][0];
 
-        // DateTime parsedDate = DateTime.parse(data['created_at']).toLocal();
-        // String formattedDate = DateFormat("d MMMM yyyy", "id_ID").format(parsedDate);
-        // String formattedTime = DateFormat("HH:mm", "id_ID").format(parsedDate);
+        DateTime parsedDate = DateTime.parse(data['created_at']).toLocal();
+        String formattedDate = DateFormat("d/MM/yyyy", "id_ID").format(parsedDate);
+        String formattedTime = DateFormat("HH:mm", "id_ID").format(parsedDate);
 
         setState(() {
           subTotal = data['sub_total']?.toString() ?? '0';
@@ -61,6 +67,8 @@ class _PrintPageState extends State<PrintPage> {
           paid = data['paid']?.toString() ?? '0';
           change = data['change']?.toString() ?? '0';
           details = data['details'];
+          transactionDate = formattedDate;
+          transactionTime = formattedTime;
           
           // Convert details to items right after setting details
           items = convertDetailsToItems(details);
@@ -137,6 +145,9 @@ class _PrintPageState extends State<PrintPage> {
           'price': int.tryParse(
             (item['price']?.toString() ?? '0').replaceAll(RegExp(r'[^0-9]'), '')
           ) ?? 0,
+          'sub_total': int.tryParse(
+            (item['sub_total']?.toString() ?? '0').replaceAll(RegExp(r'[^0-9]'), '')
+          ) ?? 0,
           if (product['description']?.toString().isNotEmpty ?? false)
             'note': product['description'].toString()
         };
@@ -156,6 +167,10 @@ class _PrintPageState extends State<PrintPage> {
         total: int.tryParse(grandTotal.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
         payment: int.tryParse(paid.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
         change: int.tryParse(change.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
+        merchantName: data['merchant_name'],
+        merchantAddress: data['merchant_address'],
+        transactionDate: transactionDate,
+        transactionTime : transactionTime
       );
     } catch (e) {
       _logger.e('Print error: $e');
@@ -174,9 +189,8 @@ class _PrintPageState extends State<PrintPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cetak Nota')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: defaultPadding,
         child: Column(
           children: [
             DropdownButton<BluetoothDevice>(
@@ -201,17 +215,6 @@ class _PrintPageState extends State<PrintPage> {
                   : const Text('Hubungkan Printer'),
             ),
             
-            const SizedBox(height: 32),
-            
-            ElevatedButton.icon(
-              onPressed: _isPrinting ? null : _printTest,
-              icon: const Icon(Icons.print),
-              label: const Text('Cetak Nota'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-              ),
-            ),
-            
             if (_isPrinting) ...[
               const SizedBox(height: 16),
               const CircularProgressIndicator(),
@@ -220,12 +223,42 @@ class _PrintPageState extends State<PrintPage> {
           ],
         ),
       ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () { 
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => AppLayout()),
+                    (route) => false, // Menghapus semua route yang ada
+                  );
+                },
+                child: ButtonPrimaryOutline(
+                  text: "Selesai",
+                )
+              ),
+            ),
+            Gap(10),
+            Expanded(
+              child: GestureDetector(
+                onTap: _isPrinting ? null : _printTest,
+                child: ButtonPrimary(
+                  text: "Cetak",
+                )
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  @override
-  void dispose() {
-    _printerService.disconnect();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _printerService.disconnect();
+  //   super.dispose();
+  // }
 }
