@@ -19,8 +19,6 @@ import 'package:kekasir/pages/transaction/detail_mutation_transaction_page.dart'
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
-// import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
-import 'package:kekasir/print_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Tambahkan ini
 
