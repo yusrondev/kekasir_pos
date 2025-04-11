@@ -139,4 +139,21 @@ class AuthService {
       };
     }
   }
+
+  Future<String?> resetData(String password) async {
+
+    var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/user/reset-data'));
+    request.headers.addAll(await _headers);
+    request.fields['password'] = password;
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString(); // Baca body dari Stream
+
+    final jsonData = jsonDecode(responseBody);
+
+    if (response.statusCode != 200) {
+      return jsonData['message'] ?? "";
+    }
+    return null;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/auth_service.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
@@ -23,6 +24,8 @@ class IndexProfilePage extends StatefulWidget {
 class _IndexProfilePageState extends State<IndexProfilePage> {
 
   Map<String, dynamic>? dataMe;
+
+  TextEditingController passwordController = TextEditingController();
 
   AuthService authService = AuthService();
   final String? version = dotenv.env['APP_VERSION'];
@@ -299,6 +302,47 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
 
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Text("Pengolahan Data", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
+        ),
+
+        Gap(5),
+
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xffE7E7E7)),
+            color: Color(0xffF3F3F3),
+            borderRadius: BorderRadius.circular(20)
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.restart_alt_rounded, color: Color(0xffE74C3C), size: 23),
+                        Gap(10),
+                        Text("Atur Ulang", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
+                      ],
+                    ),
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+
+        Gap(20),
+
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
           child: Text("Preferensi", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
         ),
 
@@ -357,6 +401,108 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
         ),
         
       ]
+    );
+  }
+
+  Future<void> processResetData() async{
+
+    try {
+      String? error = await authService.resetData(
+        passwordController.text
+      );
+
+      if (error == null) {
+        if (mounted) { // Pastikan widget masih terpasang
+          setState(() {
+            isLoading = false;
+          });
+
+          Navigator.pop(context);
+          // berhasil
+          alertLottie(context, "Data berhasil direset!");
+        }
+      } else {
+        if (mounted) { // Pastikan widget masih terpasang
+          setState(() {
+            isLoading = false;
+          });
+          alertLottie(context, error, 'error');
+        }
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      showErrorBottomSheet(context, e.toString());
+    }
+  }
+  
+  void showInputDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black54, // Agar tetap fokus ke dialog
+      useSafeArea: false, // Menghindari batas layar
+      builder: (context) {
+        return AlertDialog(
+          clipBehavior: Clip.hardEdge,
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Masukkan Password", style: TextStyle(fontWeight: FontWeight.w600)),
+              Text("Demi keamanan mohon konfirmasi password Anda."),
+              Gap(10),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: secondaryColor),
+                ),
+                child: TextField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: InputBorder.none,
+                    hintText: "******"
+                  ),
+                ),
+              ),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: (){
+                        if (passwordController.text.isEmpty) {
+                          alertLottie(context, "Password tidak boleh kosong!", "error");
+                          return;
+                        }
+
+                        processResetData();
+                      },
+                      child: ButtonPrimary(
+                        text: "Proses",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }
