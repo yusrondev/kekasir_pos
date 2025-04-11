@@ -152,7 +152,7 @@ class AuthService {
     final jsonData = jsonDecode(responseBody);
 
     if (response.statusCode != 200) {
-      return jsonData['message'] ?? "";
+      return jsonData['msg'] ?? "";
     }
     return null;
   }
