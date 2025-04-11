@@ -8,7 +8,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
-import 'package:kekasir/utils/variable.dart';
+// import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 
 class IndexReportPage extends StatefulWidget {
@@ -81,7 +81,7 @@ class _IndexReportPageState extends State<IndexReportPage> {
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: defaultPadding,
+        padding: EdgeInsets.symmetric(vertical: 45),
         child: Column(
           children: [
             PageTitle(text: "Laporan", back: true),
