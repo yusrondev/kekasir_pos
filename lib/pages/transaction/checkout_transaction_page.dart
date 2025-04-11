@@ -138,7 +138,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
       if (context.mounted) {
         closeLoadingDialog();
-        Navigator.pushNamed(context, '/transaction/detail', arguments: transactionData['data'][0]['id']);
+        Navigator.pushNamed(context, '/nota', arguments: transactionData['data'][0]['id']);
       }
     } catch (e) {
       if (context.mounted) {

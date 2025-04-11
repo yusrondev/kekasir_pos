@@ -97,7 +97,7 @@ class PrinterService {
   }
 
   Future<void> disconnect() async {
-    if (!_isConnected) return;
+    // if (!_isConnected) return;
     
     try {
       await _printer.disconnect();

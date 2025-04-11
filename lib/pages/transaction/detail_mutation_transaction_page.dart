@@ -10,7 +10,6 @@ import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
-import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/services/printer_service.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -39,6 +38,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
   BluetoothDevice? _selectedDevice;
   bool _isConnecting = false;
+  bool _isConnected = false;
   bool _isPrinting = false;
 
   String subTotal = '0';
@@ -59,8 +59,13 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
     _debounceHit = Timer(Duration(milliseconds: 500), () {
       detailTransaction();
     });
-    _loadDevices();
-    _loadSelectedDevice();
+    // Pastikan load devices selesai sebelum load selected device
+    _initPrinterSetup();
+  }
+
+  Future<void> _initPrinterSetup() async {
+    await _loadDevices();
+    await _loadSelectedDevice();
   }
   
   @override
@@ -126,8 +131,22 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   }
 
   Future<void> _loadDevices() async {
-    final devices = await _printerService.getPairedDevices();
-    setState(() => _devices = devices);
+    try {
+      final devices = await _printerService.getPairedDevices();
+      if (mounted) {
+        setState(() {
+          _devices = devices;
+          _logger.d('Devices loaded: ${devices.length} devices');
+        });
+      }
+    } catch (e) {
+      _logger.e('Error loading devices: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memuat daftar printer: ${e.toString()}')),
+        );
+      }
+    }
   }
 
   Future<void> _connectDevice() async {
@@ -135,15 +154,19 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
     setState(() => _isConnecting = true);
 
-    // Putuskan koneksi jika sebelumnya sudah terkoneksi
-    await _printerService.disconnect();
-
-    // Coba hubungkan kembali
     final success = await _printerService.connect(_selectedDevice!);
-    setState(() => _isConnecting = false);
+    setState(() {
+      _isConnecting = false;
+      _isConnected = success; // Perbarui status koneksi berdasarkan hasil
+    });
 
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Printer berhasil terhubung')),
+        );
+      }
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,23 +178,50 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
   Future<void> _saveSelectedDevice(BluetoothDevice device) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('printer_address', device.address ?? '');
+    await prefs.setString('printer_name', device.name ?? ''); // Store name instead of address
+    setState(() {
+      _isConnected = true;
+    });
   }
   
-  // Fungsi untuk memuat perangkat terakhir yang tersimpan
   Future<void> _loadSelectedDevice() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedAddress = prefs.getString('printer_address');
+    if (_devices.isEmpty) {
+      _logger.w('Devices list is empty');
+      return;
+    }
 
-    if (savedAddress != null) {
+    final prefs = await SharedPreferences.getInstance();
+    final savedName = prefs.getString('printer_name');
+
+    _logger.d('Saved printer name: $savedName');
+    _logger.d('Available devices: $_devices');
+
+    if (savedName != null) {
       for (var device in _devices) {
-        if (device.address == savedAddress) {
-          setState(() => _selectedDevice = device);
-          _connectDevice(); // Auto-connect jika ditemukan
-          break;
+        if (device.name == savedName) {
+          _logger.d('Found saved device: ${device.name}');
+          setState(() {
+            _selectedDevice = device;
+            _isConnected = true;
+          });
+          
+          // Auto-connect jika diperlukan
+          // final isConnected = await _printerService.isConnected;
+          // if (!isConnected) {
+          //   await _connectDevice();
+          // }
+          // break;
         }
       }
     }
+
+    // Update connection status
+    // final isConnected = await _printerService.isConnected;
+    // if (mounted) {
+    //   setState(() {
+    //     _isConnected = isConnected;
+    //   });
+    // }
   }
 
   List<Map<String, dynamic>> convertDetailsToItems(dynamic details) {
@@ -210,14 +260,85 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   Future<void> _removeSelectedDevice() async {
     final prefs = await SharedPreferences.getInstance();
     
-    // Pastikan printer benar-benar terputus sebelum menghapus dari penyimpanan
     await _printerService.disconnect();
     
-    // Hapus data printer dari penyimpanan
-    await prefs.remove('printer_address'); 
+    await prefs.remove('printer_name'); 
 
-    // Reset selected device di UI
-    setState(() => _selectedDevice = null);
+    setState(() {
+      _selectedDevice = null;
+      _isConnected = false;
+    });
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Printer telah diputus')),
+      );
+    }
+  }
+
+  Future<void> _showPrinterSelectionDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.8, // Batasi tinggi maksimal 80% layar
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Pilih Printer',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded( // Gunakan Expanded agar ListView bisa scroll
+                  child: _devices.isEmpty
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text('Tidak ada printer yang terdeteksi'),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: _devices.length,
+                          itemBuilder: (context, index) {
+                            final device = _devices[index];
+                            return ListTile(
+                              leading: const Icon(Icons.print),
+                              title: Text(device.name ?? 'Unknown Device'),
+                              subtitle: Text(device.address ?? ''),
+                              trailing: _selectedDevice?.address == device.address
+                                  ? const Icon(Icons.check, color: Colors.green)
+                                  : null,
+                              onTap: () {
+                                setState(() => _selectedDevice = device);
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                ),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('TUTUP'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -253,53 +374,100 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
               buildListCart(),
               buildPayment(),
               LineXM(),
-              LabelSemiBold(text: "Konfigurasi Printer"),
-              DropdownButton<BluetoothDevice>(
-                value: _selectedDevice,
-                hint: const Text('Pilih Printer'),
-                items: _devices.map((device) {
-                  return DropdownMenuItem(
-                    value: device,
-                    child: Text(device.name ?? 'Unknown Device'),
-                  );
-                }).toList(),
-                onChanged: (device) => setState(() => _selectedDevice = device),
-                isExpanded: true,
-              ),
-              
-              ElevatedButton(
-                onPressed: _selectedDevice == null || _isConnecting 
-                    ? null 
-                    : _connectDevice,
-                child: _isConnecting
-                    ? const CircularProgressIndicator()
-                    : const Text('Hubungkan Printer'),
-              ),
-              
-              if (_isPrinting) ...[
-                const SizedBox(height: 16),
-                const CircularProgressIndicator(),
-                const Text('Sedang mencetak...'),
-              ],
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: ligthSky,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: secondaryColor)
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LabelSemiBold(text: "Konfigurasi Printer"),
+                    ShortDesc(text: "Sesuaikan perangkat printer Anda",),
+                    if (_devices.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'Tidak ada printer yang terdeteksi',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () async {
+                              await _loadDevices(); // Refresh devices list
+                              // ignore: use_build_context_synchronously
+                              _showPrinterSelectionDialog(context);
+                            },
+                            icon: const Icon(Icons.print, color: primaryColor),
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: lightColor, // Warna background
+                              foregroundColor: primaryColor, // Warna teks/icon
+                              side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Border radius
+                              ),
+                            ),
+                            label: Text(
+                              _selectedDevice?.name ?? 'Pilih Printer',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        if (_isConnected)
+                          ElevatedButton(
+                            onPressed: _removeSelectedDevice,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xffe74c3c), // Ubah warna background
+                              foregroundColor: Colors.white, // Warna teks/icon
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Border radius
+                                side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
+                              ),
+                              elevation: 0
+                            ),
+                            child: const Text('Putuskan', style: TextStyle(fontWeight: FontWeight.w600)),
+                          )
+                        else
+                          ElevatedButton(
+                            onPressed: _selectedDevice == null ? null : _connectDevice,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor, // Ubah warna background
+                              foregroundColor: Colors.white, // Warna teks/icon
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Border radius
+                                side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                              ),
+                              elevation: 0
+                            ),
+                            child: const Text('Hubungkan', style: TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           )
         ],
       ),
-      bottomNavigationBar: Padding(
+      bottomNavigationBar: isLoader != true ? Padding(
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
         child: Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: () { 
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => AppLayout()),
-                    (route) => false, // Menghapus semua route yang ada
-                  );
+                  Navigator.pop(context);
                 },
                 child: ButtonPrimaryOutline(
-                  text: "Selesai",
+                  text: "Kembali",
                 )
               ),
             ),
@@ -312,13 +480,9 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                 )
               ),
             ),
-            // ElevatedButton(
-            //   onPressed: _selectedDevice == null ? null : _removeSelectedDevice,
-            //   child: Text('Putuskan Koneksi Printer'),
-            // ),
           ],
         ),
-      ),
+      ) : null,
     );
   }
 

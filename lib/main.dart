@@ -18,6 +18,7 @@ import 'package:kekasir/pages/transaction/checkout_transaction_page.dart';
 import 'package:kekasir/pages/transaction/detail_mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
+import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 // import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 import 'package:kekasir/print_page.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -102,7 +103,10 @@ class MainApp extends StatelessWidget {
           return DetailMutationTransactionPage(id : id);
         },
         '/checkout' : (context) => CheckoutTransactionPage(),
-        '/nota' : (context) => PrintPage(),
+        '/nota' : (context) {
+          final id = ModalRoute.of(context)!.settings.arguments;
+          return NotaTransactionPage(id : id);
+        },
         '/form-discount' : (context) { 
           final product = ModalRoute.of(context)!.settings.arguments as Product;
           return FormDiscountPage(product : product);
