@@ -143,9 +143,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     } catch (e) {
       _logger.e('Error loading devices: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memuat daftar printer: ${e.toString()}')),
-        );
+        alertLottie(context, 'Gagal memuat daftar printer: ${e.toString()}', 'error');
       }
     }
   }
@@ -166,15 +164,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Printer berhasil terhubung')),
-        );
+        alertLottie(context, 'Printer berhasil terhubung');
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal menghubungkan printer')),
-        );
+        alertLottie(context, 'Gagal menghubungkan printer', 'error');
       }
     }
   }
@@ -206,6 +200,10 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           setState(() {
             _selectedDevice = device;
             _isConnected = true;
+
+            if (mounted) {
+              alertLottie(context, "Transaksi berhasil dibuat!");
+            }
           });
           
           // Auto-connect jika diperlukan
@@ -273,9 +271,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     });
     
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Printer telah diputus')),
-      );
+      alertLottie(context, "Printer telah diputus");
     }
   }
 
