@@ -152,6 +152,10 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
     setState(() => _isConnecting = true);
 
+    if (_printerService.isConnected) {
+      await _printerService.disconnect();
+    }
+
     final success = await _printerService.connect(_selectedDevice!);
     setState(() {
       _isConnecting = false;
@@ -543,8 +547,10 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LabelSemiBold(text: cartItem['product']['name']),
-                          ShortDesc(text: cartItem['product']['short_description'],),
+                          Label(text: cartItem['product']['name']),
+                          if(cartItem['product']['short_description'] != null) ... [
+                            ShortDesc(text: cartItem['product']['short_description'],),
+                          ],
                           Label(text: cartItem['price'].toString()),
                         ],
                       ),

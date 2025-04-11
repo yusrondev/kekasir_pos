@@ -262,7 +262,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     ),
                     Gap(10),
                     SizedBox(
-                      width: 100,
+                      width: 130,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -278,7 +278,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     ),
                     Gap(10),
                     SizedBox(
-                      width: 50,
+                      // width: 50,
                       // Ganti Expanded dengan SizedBox untuk jumlah item
                       child: Align(
                         alignment: Alignment.topRight,

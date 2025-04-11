@@ -102,7 +102,7 @@ class PrinterService {
       Logger().d('Disconnection error: $e');
       _isConnected = false;
       // Optional: lempar exception jika diperlukan di level UI
-      throw Exception('Gagal memutuskan koneksi: ${e.toString()}');
+      // throw Exception('Gagal memutuskan koneksi: ${e.toString()}');
     }
   }
 
