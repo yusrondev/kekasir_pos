@@ -706,15 +706,18 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(vertical: 11),
                               hintStyle: TextStyle(
-                              color: Color(0xffB1B9C3), 
-                              fontSize: 16,
-                              )
+                                color: Color(0xffB1B9C3),
+                                fontSize: 16,
+                              ),
                             ),
+                            onTap: () {
+                              showInputDialog(index, product.availableStock); // Pindahkan ke sini
+                            },
                             onChanged: (value) {
                               setState(() {
                                 int? val = int.tryParse(value);
                                 if (val == null || val < 0) {
-                                  quantities[index] = 0; // Minimal 0
+                                  quantities[index] = 0;
                                 } else {
                                   quantities[index] = val;
                                 }
