@@ -122,7 +122,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
         transactionDate: transactionDate,
         transactionTime : transactionTime
       ).then((_){
-        alertLottie(context, "Berhasil dicetak!");
+        // alertLottie(context, "Berhasil dicetak!");
       });
     } catch (e) {
       _logger.e('Print error: $e');

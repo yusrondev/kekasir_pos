@@ -118,7 +118,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
         transactionDate: transactionDate,
         transactionTime : transactionTime
       ).then((_){
-        alertLottie(context, "Berhasil dicetak!");
+        // alertLottie(context, "Berhasil dicetak!");
       });
     } catch (e) {
       _logger.e('Print error: $e');
