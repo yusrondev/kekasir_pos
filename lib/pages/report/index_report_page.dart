@@ -81,7 +81,7 @@ class _IndexReportPageState extends State<IndexReportPage> {
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 45),
+        padding: EdgeInsets.symmetric(vertical: 45, horizontal: 5),
         child: Column(
           children: [
             PageTitle(text: "Laporan", back: true),

@@ -307,35 +307,35 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
 
         Gap(5),
 
-        Container(
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            border: Border.all(color: Color(0xffE7E7E7)),
-            color: Color(0xffF3F3F3),
-            borderRadius: BorderRadius.circular(20)
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
-                },
-                child: Row(
+        GestureDetector(
+          onTap: () {
+            DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
+          },
+          child: Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              border: Border.all(color: Color(0xffE7E7E7)),
+              color: Color(0xffF3F3F3),
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.restart_alt_rounded, color: Color(0xffE74C3C), size: 23),
+                        Icon(Icons.restart_alt_rounded, color: Color(0xffE74C3C), size: 20),
                         Gap(10),
                         Text("Atur Ulang", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
                       ],
                     ),
                     Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
                   ],
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
 

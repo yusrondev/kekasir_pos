@@ -77,7 +77,7 @@ class _StockBadgeState extends State<StockBadge> {
       child: Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? Color(0xffe74c3c) : dangerColor,
+          color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? Color(0xfff1f2f6) : Color(0xffe74c3c),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(5),
             topRight: Radius.circular(5),
@@ -86,7 +86,7 @@ class _StockBadgeState extends State<StockBadge> {
         child: Text(
           widget.availableStock.toString() == "0" ? "Produk habis" : 'Tersisa ${widget.availableStock.toString()} pcs',
           style: TextStyle(
-            color: widget.availableStock > 5 ? successColor : Colors.white,
+            color: widget.availableStock > 5 ? successColor : widget.availableStock == 0 ? Colors.black : Colors.white,
             fontSize: 13,
             fontWeight: FontWeight.w600
           ),
@@ -120,8 +120,8 @@ class _StockBadgeStateWithoutRadius extends State<StockBadgeWithoutRadius> {
           color: widget.availableStock > 5 
               ? bgSuccess 
               : widget.availableStock == 0 
-                ? Color(0xffe74c3c) 
-                : dangerColor,
+                ? Color(0xfff1f2f6) 
+                : Color(0xffe74c3c),
           borderRadius: BorderRadius.circular(5),
         ),
         child: FittedBox(
@@ -135,7 +135,7 @@ class _StockBadgeStateWithoutRadius extends State<StockBadgeWithoutRadius> {
             wrapWords: false, // Hindari pemisahan kata
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: widget.availableStock > 5 ? successColor : Colors.white,
+              color: widget.availableStock > 5 ? successColor : widget.availableStock == 0 ? Colors.black : Colors.white,
               fontSize: 13, // Ukuran default
               fontWeight: FontWeight.w600,
             ),
