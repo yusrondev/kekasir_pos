@@ -40,6 +40,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   bool _isConnecting = false;
   bool _isConnected = false;
   bool _isPrinting = false;
+  bool _isProcessing = false;
 
   String subTotal = '0';
   String grandTotal = '0';
@@ -105,6 +106,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   Future<void> _printTest() async {
     setState(() => _isPrinting = true);
     try {
+      await _connectDevice();
       await _printerService.printReceipt(
         invoiceNumber: '${transaction['code']}',
         items: items,
@@ -154,9 +156,9 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
     setState(() => _isConnecting = true);
 
-    if (_printerService.isConnected) {
+    // if (_printerService.isConnected) {
       await _printerService.disconnect();
-    }
+    // }
 
     final success = await _printerService.connect(_selectedDevice!);
     setState(() {
@@ -168,13 +170,13 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
-      if (mounted) {
-        alertLottie(context, 'Printer berhasil terhubung');
-      }
+      // if (mounted) {
+      //   alertLottie(context, 'Printer berhasil terhubung');
+      // }
     } else {
-      if (mounted) {
-        alertLottie(context, 'Gagal menghubungkan printer', 'error');
-      }
+      // if (mounted) {
+      //   alertLottie(context, 'Gagal menghubungkan printer', 'error');
+      // }
     }
   }
 
@@ -208,11 +210,11 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
           });
           
           // Auto-connect jika diperlukan
-          // final isConnected = await _printerService.isConnected;
-          // if (!isConnected) {
-          //   await _connectDevice();
-          // }
-          // break;
+          final isConnected = await _printerService.isConnected;
+          if (!isConnected) {
+            await _connectDevice();
+          }
+          break;
         }
       }
     }
@@ -317,7 +319,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                       ? const Center(
                           child: Padding(
                             padding: EdgeInsets.all(16.0),
-                            child: Text('Tidak ada printer yang terdeteksi'),
+                            child: Text('Tidak ada printer yang terdeteksi / Bluetooth belum aktif', textAlign: TextAlign.center,),
                           ),
                         )
                       : ListView.builder(
@@ -411,7 +413,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Tidak ada printer yang terdeteksi',
+                          'Tidak ada printer yang terdeteksi / Bluetooth belum aktif',
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
@@ -443,7 +445,19 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                         const SizedBox(width: 10),
                         if (_isConnected)
                           ElevatedButton(
-                            onPressed: _removeSelectedDevice,
+                            onPressed: _isProcessing ? null : () async {
+                              setState(() {
+                                _isProcessing = true;
+                              });
+
+                              try {
+                                await _removeSelectedDevice(); // Pastikan ini adalah fungsi async
+                              } finally {
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xffe74c3c), // Ubah warna background
                               foregroundColor: Colors.white, // Warna teks/icon
@@ -457,13 +471,25 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                           )
                         else
                           ElevatedButton(
-                            onPressed: _selectedDevice == null ? null : _connectDevice,
+                            onPressed: (_selectedDevice == null || _isProcessing) ? null : () async {
+                              setState(() {
+                                _isProcessing = true;
+                              });
+
+                              try {
+                                await _connectDevice(); // Pastikan ini juga async
+                              } finally {
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor, // Ubah warna background
                               foregroundColor: Colors.white, // Warna teks/icon
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10), // Border radius
-                                side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                                // side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
                               ),
                               elevation: 0
                             ),

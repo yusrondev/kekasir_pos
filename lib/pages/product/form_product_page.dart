@@ -117,12 +117,23 @@ class _FormProductPageState extends State<FormProductPage> {
       fetchLabelPrice(productId);
     }
 
+    String formatRupiahV2(int number) {
+      final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+      return formatter.format(number);
+    }
+
     quantity.addListener(() {
-      String? wording = "";
-      if (quantity.text != "") {
-        wording = "Total harga beli dari ${quantity.text} pcs...";
-      }else{
-        wording = "Masukkan harga...";
+      String wording = "";
+
+      int? parsedPrice = int.tryParse(priceController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      int? parsedQuantity = int.tryParse(quantity.text);
+
+      if (parsedPrice != null && parsedQuantity != null) {
+        int total = parsedPrice * parsedQuantity;
+        String totalFormatted = formatRupiahV2(total);
+        wording = "Misalnya $totalFormatted untuk $parsedQuantity pcs...";
+      } else {
+        wording = "Masukkan harga dan jumlah yang valid...";
       }
 
       setState(() {
@@ -959,7 +970,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       if(selectedValue.toString() == "Masuk" || isEdit == false) ... [
                         PriceField(
                           controller: costController,
-                          label: "Total Harga Beli *",
+                          label: "Total Harga Beli ${quantity.text != "" ? 'Dari ${quantity.text} Pcs' : ''} *",
                           placeholder: "$storeQuantity",
                           maxLine: 1,
                           border: true,

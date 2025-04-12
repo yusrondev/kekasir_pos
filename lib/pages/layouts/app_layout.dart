@@ -17,16 +17,48 @@ class AppLayout extends StatefulWidget {
   State<AppLayout> createState() => _AppLayoutState();
 }
 
-class _AppLayoutState extends State<AppLayout> {
+class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
   late InternetConnectionChecker _connectionChecker;
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _animations;
   bool isDialogOpen = false;
   int _selectedIndex = 0;
 
    @override
   void initState() {
     super.initState();
+    _controllers = List.generate(menu.length, (index) {
+      return AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 300),
+      );
+    });
+
+    _animations = _controllers.map((controller) {
+      return TweenSequence([
+        TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.1).chain(CurveTween(curve: Curves.easeOut)), weight: 50),
+        TweenSequenceItem(tween: Tween(begin: 1.1, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 50),
+      ]).animate(controller);
+    }).toList();
+
     _connectionChecker = InternetConnectionChecker.createInstance();
     _checkInternetConnection(); // Cek internet saat aplikasi dimulai
+    
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    _controllers[index].forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   void _checkInternetConnection() {
@@ -128,12 +160,6 @@ class _AppLayoutState extends State<AppLayout> {
     },
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   Future<bool> _onWillPop() async {
     return await showDialog(
       context: context,
@@ -213,38 +239,43 @@ class _AppLayoutState extends State<AppLayout> {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: menu.map((item) {
-              int index = menu.indexOf(item);
+            children: menu.asMap().entries.map((entry) {
+              int index = entry.key;
+              var item = entry.value;
+
               return GestureDetector(
                 onTap: () => _onItemTapped(index),
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(1000),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        _selectedIndex == index ? item['icon_active'] : item['icon'],
-                        width: 24,
-                        height: 24,
-                      ),
-                      const Gap(2),
-                      Text(
-                        item['page_name'],
-                        style: TextStyle(
-                          color: _selectedIndex == index ? primaryColor : secondaryColor,
-                          fontSize: 12,
-                          fontWeight: _selectedIndex == index ? FontWeight.w600 : FontWeight.normal
+                child: ScaleTransition(
+                  scale: _animations[index],
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(1000),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          _selectedIndex == index ? item['icon_active'] : item['icon'],
+                          width: 24,
+                          height: 24,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 2),
+                        Text(
+                          item['page_name'],
+                          style: TextStyle(
+                            color: _selectedIndex == index ? primaryColor : Color(0xff9CA9EE),
+                            fontSize: 12,
+                            fontWeight: _selectedIndex == index ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             }).toList(),
-          ),
+          )
         ),
       ),
     );

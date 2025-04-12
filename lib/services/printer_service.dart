@@ -54,11 +54,12 @@ class PrinterService {
     }
 
     // Garis pemisah
-    _printer.printCustom('#$invoiceNumber', 1, 1);
     _printer.printCustom("-------------------------------", 1, 1);
     
     // Info Nota
-    _printer.printLeftRight(transactionDate.toString(), transactionTime.toString(), 1);
+    _printer.printLeftRight("Nota    :", invoiceNumber, 1);
+    _printer.printLeftRight("Tanggal :", transactionDate.toString(), 1);
+    _printer.printLeftRight("Jam     :", transactionTime.toString(), 1);
     _printer.printCustom("-------------------------------", 1, 1);
     // Daftar Item
     for (var item in items) {

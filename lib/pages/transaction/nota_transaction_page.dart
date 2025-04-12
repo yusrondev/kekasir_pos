@@ -41,6 +41,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   bool _isConnecting = false;
   bool _isConnected = false;
   bool _isPrinting = false;
+  bool _isProcessing = false;
 
   String subTotal = '0';
   String grandTotal = '0';
@@ -109,6 +110,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   Future<void> _printTest() async {
     setState(() => _isPrinting = true);
     try {
+      await _connectDevice();
       await _printerService.printReceipt(
         invoiceNumber: '${transaction['code']}',
         items: items,
@@ -158,9 +160,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
 
     setState(() => _isConnecting = true);
 
-    if (_printerService.isConnected) {
+    // if (_printerService.isConnected) {
       await _printerService.disconnect();
-    }
+    // }
 
     final success = await _printerService.connect(_selectedDevice!);
     setState(() {
@@ -172,13 +174,13 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
 
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
-      if (mounted) {
-        alertLottie(context, 'Printer berhasil terhubung');
-      }
+      // if (mounted) {
+      //   alertLottie(context, 'Printer berhasil terhubung');
+      // }
     } else {
-      if (mounted) {
-        alertLottie(context, 'Gagal menghubungkan printer', 'error');
-      }
+      // if (mounted) {
+      //   alertLottie(context, 'Gagal menghubungkan printer', 'error');
+      // }
     }
   }
 
@@ -212,11 +214,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           });
           
           // Auto-connect jika diperlukan
-          // final isConnected = await _printerService.isConnected;
-          // if (!isConnected) {
-          //   await _connectDevice();
-          // }
-          // break;
+          final isConnected = await _printerService.isConnected;
+          if (!isConnected) {
+            await _connectDevice();
+          }
+          break;
         }
       }
     }
@@ -321,7 +323,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                       ? const Center(
                           child: Padding(
                             padding: EdgeInsets.all(16.0),
-                            child: Text('Tidak ada printer yang terdeteksi'),
+                            child: Text('Tidak ada printer yang terdeteksi / Bluetooth belum aktif', textAlign: TextAlign.center,),
                           ),
                         )
                       : ListView.builder(
@@ -368,184 +370,217 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar:true,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
-        child: AppBar(
-          backgroundColor: primaryColor, // Warna status bar
-          elevation: 0, // Hilangkan bayangan
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: primaryColor, // Warna status bar
-            statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+    return WillPopScope(
+      onWillPop: () async {
+        return await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AppLayout()),
+          (route) => false, // Menghapus semua route yang ada
+        );
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar:true,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
+          child: AppBar(
+            backgroundColor: primaryColor, // Warna status bar
+            elevation: 0, // Hilangkan bayangan
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: primaryColor, // Warna status bar
+              statusBarIconBrightness: Brightness.light, // Ikon status bar terang
+            ),
           ),
         ),
-      ),
-      body: isLoader == true ?
-        Center(child: CustomLoader.showCustomLoader()) : ListView(
-        padding: defaultPadding,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => AppLayout()),
-                          (route) => false, // Menghapus semua route yang ada
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 15),
-                        width: 35,
-                        height: 35,
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Color(0xfff5f6fa),
-                          borderRadius: BorderRadius.circular(100)
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Icon(Icons.arrow_back_ios, size: 15)
-                        ),
-                      )
-                    ),
-                  Text(
-                    "Detail Transaksi",
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600
-                    ),
-                  ),
-                ],
-              ),
-              Label(text: transaction['created_at'],)
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gap(15),
-              buildListCart(),
-              buildPayment(),
-              LineXM(),
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: ligthSky,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: secondaryColor)
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: isLoader == true ?
+          Center(child: CustomLoader.showCustomLoader()) : ListView(
+          padding: defaultPadding,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
-                    LabelSemiBold(text: "Konfigurasi Printer"),
-                    ShortDesc(text: "Sesuaikan perangkat printer Anda",),
-                    if (_devices.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          'Tidak ada printer yang terdeteksi',
-                          style: TextStyle(color: Colors.red),
-                        ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => AppLayout()),
+                            (route) => false, // Menghapus semua route yang ada
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 15),
+                          width: 35,
+                          height: 35,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Color(0xfff5f6fa),
+                            borderRadius: BorderRadius.circular(100)
+                          ),
+                          child: Container(
+                            margin: EdgeInsets.only(left: 5),
+                            child: Icon(Icons.arrow_back_ios, size: 15)
+                          ),
+                        )
                       ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () async {
-                              await _loadDevices(); // Refresh devices list
-                              // ignore: use_build_context_synchronously
-                              _showPrinterSelectionDialog(context);
-                            },
-                            icon: const Icon(Icons.print, color: primaryColor),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: lightColor, // Warna background
-                              foregroundColor: primaryColor, // Warna teks/icon
-                              side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Border radius
-                              ),
-                            ),
-                            label: Text(
-                              _selectedDevice?.name ?? 'Pilih Printer',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        if (_isConnected)
-                          ElevatedButton(
-                            onPressed: _removeSelectedDevice,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xffe74c3c), // Ubah warna background
-                              foregroundColor: Colors.white, // Warna teks/icon
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Border radius
-                                side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
-                              ),
-                              elevation: 0
-                            ),
-                            child: const Text('Putuskan', style: TextStyle(fontWeight: FontWeight.w600)),
-                          )
-                        else
-                          ElevatedButton(
-                            onPressed: _selectedDevice == null ? null : _connectDevice,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor, // Ubah warna background
-                              foregroundColor: Colors.white, // Warna teks/icon
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Border radius
-                                side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
-                              ),
-                              elevation: 0
-                            ),
-                            child: const Text('Hubungkan', style: TextStyle(fontWeight: FontWeight.w600)),
-                          ),
-                      ],
+                    Text(
+                      "Detail Transaksi",
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600
+                      ),
                     ),
                   ],
                 ),
-              )
-            ],
-          )
-        ],
-      ),
-      bottomNavigationBar: isLoader != true ? Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
-        child: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () { 
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => AppLayout()),
-                    (route) => false, // Menghapus semua route yang ada
-                  );
-                },
-                child: ButtonPrimaryOutline(
-                  text: "Selesai",
-                )
-              ),
+                Label(text: transaction['created_at'],)
+              ],
             ),
-            Gap(10),
-            Expanded(
-              child: GestureDetector(
-                onTap: _isPrinting ? null : _printTest,
-                child: ButtonPrimary(
-                  text: "Cetak",
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gap(15),
+                buildListCart(),
+                buildPayment(),
+                LineXM(),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: ligthSky,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: secondaryColor)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LabelSemiBold(text: "Konfigurasi Printer"),
+                      ShortDesc(text: "Sesuaikan perangkat printer Anda",),
+                      if (_devices.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'Tidak ada printer yang terdeteksi / Bluetooth belum aktif',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+                                await _loadDevices(); // Refresh devices list
+                                // ignore: use_build_context_synchronously
+                                _showPrinterSelectionDialog(context);
+                              },
+                              icon: const Icon(Icons.print, color: primaryColor),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: lightColor, // Warna background
+                                foregroundColor: primaryColor, // Warna teks/icon
+                                side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10), // Border radius
+                                ),
+                              ),
+                              label: Text(
+                                _selectedDevice?.name ?? 'Pilih Printer',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          if (_isConnected)
+                            ElevatedButton(
+                              onPressed: _isProcessing ? null : () async {
+                                setState(() {
+                                  _isProcessing = true;
+                                });
+      
+                                try {
+                                  await _removeSelectedDevice(); // Pastikan ini adalah fungsi async
+                                } finally {
+                                  setState(() {
+                                    _isProcessing = false;
+                                  });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xffe74c3c), // Ubah warna background
+                                foregroundColor: Colors.white, // Warna teks/icon
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10), // Border radius
+                                  side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
+                                ),
+                                elevation: 0
+                              ),
+                              child: const Text('Putuskan', style: TextStyle(fontWeight: FontWeight.w600)),
+                            )
+                          else
+                            ElevatedButton(
+                              onPressed: (_selectedDevice == null || _isProcessing) ? null : () async {
+                                setState(() {
+                                  _isProcessing = true;
+                                });
+      
+                                try {
+                                  await _connectDevice(); // Pastikan ini juga async
+                                } finally {
+                                  setState(() {
+                                    _isProcessing = false;
+                                  });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor, // Ubah warna background
+                                foregroundColor: Colors.white, // Warna teks/icon
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10), // Border radius
+                                  side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                                ),
+                                elevation: 0
+                              ),
+                              child: const Text('Hubungkan', style: TextStyle(fontWeight: FontWeight.w600)),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 )
-              ),
-            ),
+              ],
+            )
           ],
         ),
-      ) : null,
+        bottomNavigationBar: isLoader != true ? Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 30),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () { 
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => AppLayout()),
+                      (route) => false, // Menghapus semua route yang ada
+                    );
+                  },
+                  child: ButtonPrimaryOutline(
+                    text: "Selesai",
+                  )
+                ),
+              ),
+              Gap(10),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _isPrinting ? null : _printTest,
+                  child: ButtonPrimary(
+                    text: "Cetak",
+                  )
+                ),
+              ),
+            ],
+          ),
+        ) : null,
+      ),
     );
   }
 

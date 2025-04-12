@@ -467,7 +467,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   Gap(10),
                   Row(
                     children: [
-                      Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword)),
+                      Expanded(child: SearchTextField(placeholder: labelPrices.isNotEmpty ? "Cari produk..." : "Cari berdasarkan nama produk...", controller: keyword)),
                       if(labelPrices.isNotEmpty) ... [
                         Gap(5),
                         GestureDetector(
@@ -479,7 +479,12 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: secondaryColor)
                             ),
-                            child: Icon(Icons.settings, size: 20),
+                            child: Row(
+                              children: [
+                                Text(_selectedName.toString().isNotEmpty ? _selectedName.toString() : "Tipe Harga", style: TextStyle(fontSize: 14),),
+                                Icon(Icons.arrow_drop_down_rounded, size: 20),
+                              ],
+                            ),
                           ),
                         )
                       ]
