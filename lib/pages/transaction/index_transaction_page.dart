@@ -234,8 +234,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   children: [
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
-                    ShortDesc(text: "Otomatis menggunakan harga normal"),
-                    ShortDesc(text: "jika produk tidak memiliki tipe harga terkait"),
+                    Text("Otomatis menggunakan harga normal", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                    Text("jika produk tidak memiliki tipe harga terkait", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
@@ -293,10 +293,10 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
+                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_capitalize(_selectedName.toString())}", onPressed: () {
                             fetchProducts(keyword.text, "true", _selectedName.toString());
                             Navigator.pop(context);
-                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}");
+                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_capitalize(_selectedName.toString())}");
                           })
                         )
                       ],

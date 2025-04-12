@@ -5,10 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
+import 'package:kekasir/apis/api_service_type_price.dart';
+import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
@@ -24,12 +27,16 @@ class MutationTransactionPage extends StatefulWidget {
 
 class _MutationTransactionPageState extends State<MutationTransactionPage> {
   ApiServiceTransaction apiServiceTransaction = ApiServiceTransaction();
+  ApiServiceTypePrice apiServiceTypePrice = ApiServiceTypePrice();
 
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
 
   List<Transaction> transactions = [];
+  List<LabelPrice> labelPrices = [];
+  String? _selectedName = "";
+  String? _selectedId = "";
 
   Timer? _debounce;
   String? grandTotal;
@@ -47,7 +54,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     _startDateController.text = today;
     _endDateController.text = today;
 
-    fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
+    fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
 
     _startDateController.addListener(_validateDates);
     _endDateController.addListener(_validateDates);
@@ -62,9 +69,23 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
 
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 800), () {
-        fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
+        fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
       });
     });
+
+    fetchLabelPrice(0);
+  }
+
+  Future<void> fetchLabelPrice(productId) async {
+    final data = await apiServiceTypePrice.fetchLabelPrice(productId);
+
+    if (mounted) { // Cek apakah widget masih ada sebelum setState
+      setState(() {
+        labelPrices = data;
+      });
+
+      Logger().d(labelPrices);
+    }
   }
 
   void _validateDates() {
@@ -77,7 +98,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
         _endDateController.text = _startDateController.text; // Reset ke start date
       }
       
-      fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
+      fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
     }
   }
 
@@ -103,8 +124,8 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     super.dispose();
   }
 
-  Future<void> fetchMutation(String startDate, String endDate, String code) async {
-    final data = await ApiServiceTransaction().fetchMutation(startDate, endDate, code);
+  Future<void> fetchMutation(String startDate, String endDate, String code, [String? selectedId]) async {
+    final data = await ApiServiceTransaction().fetchMutation(startDate, endDate, code, selectedId);
     try {
       if (mounted) {
         setState(() {
@@ -119,6 +140,114 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
     }
+  }
+
+  String _capitalize(String text) {
+    if (text.isEmpty) return "";
+    return '${text[0].toUpperCase()}${text.substring(1)}';
+  }
+
+  void showDialogListPriceType() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.4), // Atur tingkat 
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return AlertDialog(
+              clipBehavior: Clip.hardEdge,
+              backgroundColor: Colors.white,
+              content: Container(
+                width: 100,
+                constraints: BoxConstraints(
+                  minHeight: 100, // Tinggi minimum
+                  maxHeight: 350
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LabelSemiBold(text: "Pilih Tipe Harga"),
+                    Gap(2),
+                    Text("Sesuaikan filter menggunakan tipe harga", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                    LineXM(),
+                    Container(
+                      constraints: BoxConstraints(
+                        minHeight: 40, // Tinggi minimum
+                        maxHeight: 190
+                      ),
+                      child: Scrollbar(
+                        thumbVisibility: true, // Agar scrollbar selalu terlihat
+                        thickness: 3, // Ketebalan scrollbar
+                        radius: Radius.circular(10), // Membuat scrollbar lebih halus
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.all(0),
+                          itemCount: labelPrices.length,
+                          itemBuilder: (context, index){
+                            final labelPrice = labelPrices[index];
+                            bool isSelected = _selectedName == labelPrice.name; 
+                                    
+                            return GestureDetector(
+                              onTap: () {
+                                setModalState(() {
+                                  if (_selectedName == labelPrice.name) {
+                                    _selectedName = "";
+                                    _selectedId = "";
+                                  }else{
+                                    _selectedName = labelPrice.name;
+                                    _selectedId = labelPrice.id.toString();
+                                  }
+                                });
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: isSelected == true ? bgSuccess : Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: isSelected == true ? successColor : secondaryColor)
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(_capitalize(labelPrice.name.toString()), style: TextStyle(
+                                      color: isSelected == true ? successColor : Colors.black,
+                                      fontWeight: FontWeight.w600
+                                    )),
+                                    if(isSelected)
+                                    Icon(Icons.check_circle, size: 15, color: successColor,)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                        ),
+                      ),
+                    ),
+                    Gap(10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
+                            fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
+                            Navigator.pop(context);
+                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}");
+                          })
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -139,7 +268,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
       ),
       body: loading == true ? Center(child: CustomLoader.showCustomLoader()) : RefreshIndicator(
         onRefresh: () async {
-          await fetchMutation(_startDateController.text, _endDateController.text, _codeController.text);
+          await fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
         },
         color: primaryColor,
         backgroundColor: Colors.white,
@@ -160,7 +289,31 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
               child: ListView(
                 padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
                 children: [
-                  SearchTextField(placeholder: "Cari berdasarkan kode", controller: _codeController,),
+                  Row(
+                    children: [
+                      Expanded(child: SearchTextField(placeholder: "Cari berdasarkan kode", controller: _codeController,)),
+                      if(labelPrices.isNotEmpty) ... [
+                        Gap(5),
+                        GestureDetector(
+                          onTap: () => showDialogListPriceType(),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: ligthSky,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: secondaryColor)
+                            ),
+                            child: Row(
+                              children: [
+                                Text(_selectedName.toString().isNotEmpty ? toBeginningOfSentenceCase(_selectedName.toString()) : "Tipe Harga", style: TextStyle(fontSize: 14),),
+                                Icon(Icons.arrow_drop_down_rounded, size: 20),
+                              ],
+                            ),
+                          ),
+                        )
+                      ]
+                    ],
+                  ),
                   Gap(10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
