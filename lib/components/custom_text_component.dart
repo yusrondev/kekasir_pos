@@ -318,6 +318,11 @@ class WarningTag extends StatelessWidget {
   final String? text;
   const WarningTag({super.key, this.text});
 
+  String _capitalize(String text) {
+    if (text.isEmpty) return "";
+    return '${text[0].toUpperCase()}${text.substring(1)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -328,7 +333,7 @@ class WarningTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
-        text ?? "",
+        _capitalize(text!),
         maxLines: 1,
         style: TextStyle(
           fontSize: 13,
