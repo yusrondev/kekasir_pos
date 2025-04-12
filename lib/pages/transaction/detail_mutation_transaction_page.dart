@@ -132,6 +132,11 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
         setState(() => _isPrinting = false);
       }
     }
+
+    await Future.delayed(Duration(seconds: 10));
+    setState(() {
+      _isPrinting = false;
+    });
   }
 
   Future<void> _loadDevices() async {
@@ -522,9 +527,15 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
             Expanded(
               child: GestureDetector(
                 onTap: _isPrinting ? null : _printTest,
-                child: ButtonPrimary(
-                  text: "Cetak",
-                )
+                child: AbsorbPointer(
+                  absorbing: _isPrinting,
+                  child: Opacity(
+                    opacity: _isPrinting ? 0.5 : 1.0,
+                    child: ButtonPrimary(
+                      text: "Cetak",
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
