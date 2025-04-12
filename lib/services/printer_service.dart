@@ -66,7 +66,8 @@ class PrinterService {
       _printer.printCustom("-------------------------------", 1, 1);
 
       // Daftar Item
-      for (var item in items) {
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
         String name = _sanitizeText(item['name']);
         _printer.printCustom(name, 1, 0);
         _printer.printLeftRight(
@@ -74,11 +75,16 @@ class PrinterService {
           _formatCurrency(item['sub_total']),
           1,
         );
+        if (i < items.length - 1) {
+          _printer.printNewLine();
+        }
         await Future.delayed(Duration(milliseconds: 100));
       }
 
       _printer.printCustom("-------------------------------", 1, 1);
       _printer.printLeftRight("Grand Total :", _formatCurrency(total), 1);
+      _printer.printCustom("-------------------------------", 1, 1);
+      _printer.printLeftRight("Pembayaran", "", 1);
       _printer.printLeftRight("Tunai       :", _formatCurrency(payment), 1);
       _printer.printLeftRight("Kembalian   :", _formatCurrency(change), 1);
       _printer.printCustom("-------------------------------", 1, 1);

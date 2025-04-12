@@ -58,6 +58,17 @@ class ApiServiceTransaction {
     }
   }
 
+  Future<int> checkExpired() async {
+    final url = Uri.parse("$apiUrl/transaction/revenue");
+
+    final response = await http.get(
+      url,
+      headers: await _headers
+    );
+
+    return response.statusCode;
+  }
+
   Future<TransactionData> fetchMutation(String startDate, String endDate, String code) async {
     final response = await http.get(Uri.parse('$apiUrl/transaction/mutation?start_date=$startDate&end_date=$endDate&code=$code'), headers: await _headers);
 
