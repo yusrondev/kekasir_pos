@@ -1,10 +1,11 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 class PrinterService {
+  final NumberFormat _rupiahFormatter = NumberFormat.decimalPattern('id_ID');
   final BlueThermalPrinter _printer = BlueThermalPrinter.instance;
-
   bool _isConnected = false;
 
   Future<List<BluetoothDevice>> getPairedDevices() async {
@@ -24,7 +25,7 @@ class PrinterService {
   }
 
   String _formatCurrency(num value) {
-    return value.toStringAsFixed(0);
+    return _rupiahFormatter.format(value); // contoh: 15000 => "15.000"
   }
 
   String _sanitizeText(String input) {
