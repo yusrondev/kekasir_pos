@@ -164,6 +164,7 @@ class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        clipBehavior: Clip.hardEdge,
         backgroundColor: Colors.white,
         title: Text('Konfirmasi Keluar', style: TextStyle(fontFamily: 'Lexend'),),
         content: Column(

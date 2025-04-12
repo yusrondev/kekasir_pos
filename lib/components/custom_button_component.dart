@@ -21,7 +21,10 @@ class ButtonPrimary extends StatelessWidget {
         backgroundColor: primaryColor, // Warna background
         side: BorderSide(color: primaryColor, width: 1), // Warna & ketebalan garis
         foregroundColor: Colors.white, // Warna teks & ikon
-        padding: EdgeInsets.symmetric(vertical: 13)
+        padding: EdgeInsets.symmetric(vertical: 13),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Atur border radius di sini
+        ),
       ),
       child: Text(text ?? "", style: TextStyle(
         color: Colors.white,
@@ -47,7 +50,10 @@ class ButtonPrimaryOutline extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: primaryColor, width: 1), // Warna & ketebalan garis
         foregroundColor: primaryColor, // Warna teks & ikon
-        padding: EdgeInsets.symmetric(vertical: 13)
+        padding: EdgeInsets.symmetric(vertical: 13),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Atur border radius di sini
+        ),
       ),
       onPressed: onPressed,
       child: Text(text ?? "", style: TextStyle(

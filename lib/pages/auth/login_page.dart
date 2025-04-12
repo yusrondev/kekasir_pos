@@ -197,6 +197,7 @@ class _LoginPageState extends State<LoginPage> {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        clipBehavior: Clip.hardEdge,
         backgroundColor: Colors.white,
         title: Text('Konfirmasi Keluar', style: TextStyle(fontFamily: 'Lexend'),),
         content: Column(
