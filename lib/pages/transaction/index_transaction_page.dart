@@ -335,109 +335,94 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         return AlertDialog(
           clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
-          content: SizedBox(
-             width: double.maxFinite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: AutoSizeText(
-                        "Jumlah Pembelian",
-                        maxLines: 1,
-                        minFontSize: 12, // Ukuran font minimum agar tetap terbaca
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      )
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Jumlah Pembelian", style: TextStyle(fontWeight: FontWeight.w600)),
+                  Container(
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primaryColor),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: primaryColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Flexible(child: AutoSizeText('Tersedia : ${availableStock.toString()}', minFontSize: 11, style: TextStyle(color: primaryColor, fontSize: 13, fontWeight: FontWeight.w600))),
-                    )
-                  ],
+                    child: Text('Tersedia : ${availableStock.toString()}', style: TextStyle(color: primaryColor)),
+                  )
+                ],
+              ),
+              Gap(10),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: secondaryColor),
                 ),
-                Gap(10),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: secondaryColor),
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Hanya angka
+                    FilteringTextInputFormatter.deny(RegExp(r'\s')), // Mencegah spasi
+                  ],
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Maksimal ${availableStock.toString()} ...",
                   ),
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly, // Hanya angka
-                      FilteringTextInputFormatter.deny(RegExp(r'\s')), // Mencegah spasi
-                    ],
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(10),
-                      border: InputBorder.none,
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: "Maksimal ${availableStock.toString()} ...",
-                    ),
-                    onSubmitted: (value) {
-                      int? val = int.tryParse(value);
-                      if (val != null) {
-                        setState(() {
-                          quantities[index] = val.clamp(0, availableStock);
-                        });
+                  onSubmitted: (value) {
+                    int? val = int.tryParse(value);
+                    if (val != null) {
+                      setState(() {
+                        quantities[index] = val.clamp(0, availableStock);
+                      });
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
                         Navigator.pop(context);
-                      }
-                    },
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
                   ),
-                ),
-                Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
+                  Gap(5),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        int? val = int.tryParse(controller.text);
+                        if (val != null) {
                           Navigator.pop(context);
-                        },
-                        child: ButtonPrimaryOutline(
-                          text: "Batal",
-                        ),
-                      )
-                    ),
-                    Gap(5),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          int? val = int.tryParse(controller.text);
-                          if (val != null) {
-                            Navigator.pop(context);
-                            if (val != quantities[index]) {  
-                              showLoadingDialog(context);
-                              setState(() {
-                                quantities[index] = val.clamp(0, availableStock);
-                                _updateCart(index, quantities[index]);
-                              });
-                            }
+                          if (val != quantities[index]) {  
+                            showLoadingDialog(context);
+                            setState(() {
+                              quantities[index] = val.clamp(0, availableStock);
+                              _updateCart(index, quantities[index]);
+                            });
                           }
-                        },
-                        child: ButtonPrimary(
-                          text: "Simpan",
-                        ),
-                      )
-                    ),
-                  ],
-                )
-              ],
-            ),
+                        }
+                      },
+                      child: ButtonPrimary(
+                        text: "Simpan",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
           ),
         );
       },

@@ -73,9 +73,9 @@ class PrinterService {
 
     // Total Pembayaran
     _printer.printCustom("-------------------------------", 1, 1);
-    _printer.printLeftRight("GRAND TOTAL :", _currencyFormat.format(total), 1);
-    _printer.printLeftRight("TUNAI       :", _currencyFormat.format(payment), 1);
-    _printer.printLeftRight("KEMBALI     :", _currencyFormat.format(change), 1);
+    _printer.printLeftRight("Grand Total :", _currencyFormat.format(total), 1);
+    _printer.printLeftRight("Tunai       :", _currencyFormat.format(payment), 1);
+    _printer.printLeftRight("Kembalian   :", _currencyFormat.format(change), 1);
     _printer.printCustom("-------------------------------", 1, 1);
     _printer.printNewLine();
 
