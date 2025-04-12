@@ -170,10 +170,12 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     // }
 
     final success = await _printerService.connect(_selectedDevice!);
-    setState(() {
-      _isConnecting = false;
-      _isConnected = success; // Perbarui status koneksi berdasarkan hasil
-    });
+    if (mounted) {
+      setState(() {
+          _isConnecting = false;
+          _isConnected = success; // Perbarui status koneksi berdasarkan hasil
+      });
+    }
 
     Logger().d(_isConnecting);
 
