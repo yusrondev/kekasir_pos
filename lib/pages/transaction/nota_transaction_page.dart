@@ -108,6 +108,10 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   }
 
   Future<void> _printTest() async {
+    if (_isConnected == false) {
+      alertLottie(context, "Printer belum terhubung!", "error");
+      return;
+    }
     setState(() => _isPrinting = true);
     try {
       await _connectDevice();
