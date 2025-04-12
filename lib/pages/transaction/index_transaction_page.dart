@@ -481,7 +481,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                             ),
                             child: Row(
                               children: [
-                                Text(_selectedName.toString().isNotEmpty ? _selectedName.toString() : "Tipe Harga", style: TextStyle(fontSize: 14),),
+                                Text(_selectedName.toString().isNotEmpty ? toBeginningOfSentenceCase(_selectedName.toString()) : "Tipe Harga", style: TextStyle(fontSize: 14),),
                                 Icon(Icons.arrow_drop_down_rounded, size: 20),
                               ],
                             ),
@@ -519,7 +519,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                               setState(() {
                                 _selectedName = "";
                                 fetchProducts(keyword.text, "true", _selectedName.toString());
-                                alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}"); 
+                                alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${toBeginningOfSentenceCase(_selectedName.toString())}"); 
                               });
                             },
                             child: Icon(Icons.close, size: 20, color: Colors.black),
