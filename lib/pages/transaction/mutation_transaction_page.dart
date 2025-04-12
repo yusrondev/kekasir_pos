@@ -173,6 +173,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
                     Text("Sesuaikan filter menggunakan tipe harga", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                    Text("Klik lagi tipe harga untuk batal memilih", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
@@ -235,7 +236,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                           child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
                             fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
                             Navigator.pop(context);
-                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_selectedName.toString()}");
+                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke semua tipe harga" : "Beralih ke harga ${_selectedName.toString()}");
                           })
                         )
                       ],
