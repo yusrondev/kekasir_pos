@@ -209,7 +209,7 @@ class PriceField extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(8),
+            LengthLimitingTextInputFormatter(9),
           ], 
           maxLength: maxLength,
           maxLines: maxLine,
