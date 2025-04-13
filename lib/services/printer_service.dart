@@ -1,5 +1,6 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -102,6 +103,31 @@ class PrinterService {
         Logger().w("Gagal load gambar: $e");
       }
 
+      _printer.printNewLine();
+      _printer.printNewLine();
+      _printer.printNewLine();
+    } catch (e) {
+      Logger().e("Print error: $e");
+    }
+  }
+
+  Future<void> printbarcode({
+    required String url,
+  }) async {
+    if (!_isConnected) {
+      Logger().w("Printer tidak terkoneksi");
+      return;
+    }
+
+    var response = await http.get(Uri.parse(url));
+    Uint8List bytesNetwork = response.bodyBytes;
+    Uint8List imageBytesFromNetwork = bytesNetwork.buffer
+        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
+
+    try {
+      // Header Toko
+      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printNewLine();
       _printer.printNewLine();
       _printer.printNewLine();
       _printer.printNewLine();

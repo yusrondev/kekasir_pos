@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/apis/api_service_type_price.dart';
+import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
@@ -16,11 +18,13 @@ import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/label_price.dart';
 import 'package:kekasir/models/product.dart';
+import 'package:kekasir/services/printer_service.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:logger/web.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class FormProductPage extends StatefulWidget {
@@ -76,7 +80,9 @@ class _FormProductPageState extends State<FormProductPage> {
 
   final ScrollController mainListView= ScrollController();
 
+  AuthService authService = AuthService();
   ApiServiceTypePrice apiServiceTypePrice = ApiServiceTypePrice();
+  final PrinterService _printerService = PrinterService();
 
   File? _image;
   String? urlImage;
@@ -97,11 +103,19 @@ class _FormProductPageState extends State<FormProductPage> {
   String? result;
 
   List<LabelPrice> labelPrices = [];
+  List<BluetoothDevice> _devices = [];
+
+  BluetoothDevice? _selectedDevice;
+  bool _isConnecting = false;
+  bool _isConnected = false;
+  bool _isPrinting = false;
+  bool _isProcessing = false;
+  bool _showPrinterSetup = false;
 
   @override
   void initState() {
     super.initState();
-
+    _initPrinterSetup();
     if (widget.product != null) {
       nameController.text = widget.product!.name;
       codeController.text = widget.product!.code;
@@ -152,6 +166,11 @@ class _FormProductPageState extends State<FormProductPage> {
         }
       });
     });
+  }
+
+  Future<void> _initPrinterSetup() async {
+    await _loadDevices();
+    await _loadSelectedDevice();
   }
 
   @override
@@ -557,6 +576,225 @@ class _FormProductPageState extends State<FormProductPage> {
     }
   }
 
+  Future<void> _printTest() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final storeId = prefs.getString('store_id');
+
+    if (_isConnected == false) {
+      alertLottie(context, "Printer belum terhubung!", "error");
+      return;
+    }
+    setState(() => _isPrinting = true);
+    try {
+
+      dynamic barcode = await authService.getBarcode(storeId ?? "");
+
+      await _connectDevice();
+      await _printerService.printbarcode(
+        url: barcode['url']
+      ).then((_){
+        // alertLottie(context, "Berhasil dicetak!");
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPrinting = false);
+      }
+    }
+
+    await Future.delayed(Duration(seconds: 10));
+    if(mounted){
+      setState(() {
+        _isPrinting = false;
+      });
+    }
+  }
+
+  Future<void> _loadDevices() async {
+    try {
+      final devices = await _printerService.getPairedDevices();
+      if (mounted) {
+        setState(() {
+          _devices = devices;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        alertLottie(context, 'Gagal memuat daftar printer: ${e.toString()}', 'error');
+      }
+    }
+  }
+
+  Future<void> _connectDevice() async {
+    if (_selectedDevice == null) return;
+
+    setState(() => _isConnecting = true);
+
+    // if (_printerService.isConnected) {
+      await _printerService.disconnect();
+    // }
+
+    final success = await _printerService.connect(_selectedDevice!);
+    if (mounted) {
+      setState(() {
+          _isConnecting = false;
+          _isConnected = success; // Perbarui status koneksi berdasarkan hasil
+      });
+    }
+
+    Logger().d(_isConnecting);
+
+    if (success) {
+      await _saveSelectedDevice(_selectedDevice!);
+    }
+  }
+
+  Future<void> _saveSelectedDevice(BluetoothDevice device) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_name', device.name ?? ''); // Store name instead of address
+    if (mounted) {
+      setState(() {
+        _isConnected = true;
+      });
+    }
+  }
+  
+  Future<void> _loadSelectedDevice() async {
+    if (_devices.isEmpty) {
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final savedName = prefs.getString('printer_name');
+
+    if (savedName != null) {
+      for (var device in _devices) {
+        if (device.name == savedName) {
+          setState(() {
+            _selectedDevice = device;
+            _isConnected = true;
+          });
+          
+          // Auto-connect jika diperlukan
+          final isConnected = await _printerService.isConnected;
+          if (!isConnected) {
+            await _connectDevice();
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  Future<void> _removeSelectedDevice() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Tambahkan pengecekan koneksi sebelum disconnect
+      if (_printerService.isConnected) {
+        try {
+          await _printerService.disconnect();
+          debugPrint("Disconnect berhasil");
+        } catch (e) {
+          debugPrint("Error saat disconnect: $e");
+          // Socket mungkin sudah closed, kita lanjutkan saja
+        }
+      }
+      
+      await prefs.remove('printer_name');
+
+      if (mounted) {
+        setState(() {
+          _selectedDevice = null;
+          _isConnected = false;
+        });
+        alertLottie(context, "Printer telah diputus");
+      }
+    } catch (e) {
+      debugPrint("Error dalam _removeSelectedDevice: $e");
+      if (mounted) {
+        alertLottie(context, "Gagal memutus printer");
+      }
+    }
+  }
+
+  Future<void> _showPrinterSelectionDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.8, // Batasi tinggi maksimal 80% layar
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Pilih Printer',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded( // Gunakan Expanded agar ListView bisa scroll
+                  child: _devices.isEmpty
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text('Tidak ada printer yang terdeteksi / Bluetooth belum aktif', textAlign: TextAlign.center,),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: _devices.length,
+                          itemBuilder: (context, index) {
+                            final device = _devices[index];
+                            return ListTile(
+                              leading: Icon(Icons.bluetooth, color: _selectedDevice?.address == device.address ? Colors.green : primaryColor, size: 20,),
+                              title: Text(device.name ?? 'Unknown Device', style: TextStyle(color: _selectedDevice?.address == device.address ? Colors.green : Colors.black),),
+                              subtitle: Text(device.address ?? '', style: TextStyle(color: _selectedDevice?.address == device.address ? Colors.green : Colors.black),),
+                              trailing: _selectedDevice?.address == device.address
+                                  ? const Icon(Icons.check, color: Colors.green)
+                                  : null,
+                              onTap: () {
+                                setState(() => _selectedDevice = device);
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        ),
+                ),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 200,
+                    child: ButtonPrimary(
+                      text: "Tutup",
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -674,6 +912,7 @@ class _FormProductPageState extends State<FormProductPage> {
                         )
                       ],
                     ),
+                    Gap(10),
                     Row(
                       children: [
                         Expanded(child: CustomTextField(
@@ -704,9 +943,6 @@ class _FormProductPageState extends State<FormProductPage> {
                               setState(() {
                                 codeController.text = scannedCode;
                               });
-                            } else {
-                              // Bisa tampilkan snackbar/toast jika user batal
-                              alertLottie(context, 'Scanning dibatalkan atau tidak berhasil', 'error');
                             }
                           },
                           child: Container(
@@ -718,9 +954,181 @@ class _FormProductPageState extends State<FormProductPage> {
                             ),
                             child: Icon(Icons.qr_code_scanner_rounded, color: Colors.white,),
                           ),
-                        )
+                        ),
                       ],
                     ),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: primaryColor),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Buat barcode Anda sendiri",
+                                    style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 200,
+                                    child: Text(
+                                      "Produk Anda tidak memiliki barcode? \nkami bantu untuk membuatkannya",
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    _showPrinterSetup = _showPrinterSetup == true ? false : true;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.circular(5)
+                                  ),
+                                  child: Text(_showPrinterSetup == true ? "Batal" : "Buat" , style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14
+                                  )),
+                                ),
+                              )
+                            ],
+                          ),
+                          if(_showPrinterSetup == true) ... [
+                            Gap(10),
+                            LinePrimary(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                LabelSemiBold(text: "Konfigurasi Printer"),
+                                ShortDesc(text: "Sesuaikan perangkat printer Anda",),
+                                if (_devices.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      'Tidak ada printer yang terdeteksi / Bluetooth belum aktif',
+                                      style: TextStyle(color: Colors.red, fontSize: 12),
+                                    ),
+                                  ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton.icon(
+                                        onPressed: () async {
+                                          await _loadDevices(); // Refresh devices list
+                                          // ignore: use_build_context_synchronously
+                                          _showPrinterSelectionDialog(context);
+                                        },
+                                        icon: const Icon(Icons.print, color: primaryColor),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: lightColor, // Warna background
+                                          foregroundColor: primaryColor, // Warna teks/icon
+                                          side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10), // Border radius
+                                          ),
+                                        ),
+                                        label: Text(
+                                          _selectedDevice?.name ?? 'Pilih Printer',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    if (_isConnected)
+                                      ElevatedButton(
+                                        onPressed: _isProcessing ? null : () async {
+                                          setState(() {
+                                            _isProcessing = true;
+                                          });
+                            
+                                          try {
+                                            await _removeSelectedDevice(); // Pastikan ini adalah fungsi async
+                                          } finally {
+                                            setState(() {
+                                              _isProcessing = false;
+                                            });
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xffe74c3c), // Ubah warna background
+                                          foregroundColor: Colors.white, // Warna teks/icon
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10), // Border radius
+                                            side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
+                                          ),
+                                          elevation: 0
+                                        ),
+                                        child: const Text('Putuskan', style: TextStyle(fontWeight: FontWeight.w600)),
+                                      )
+                                    else
+                                      ElevatedButton(
+                                        onPressed: (_selectedDevice == null || _isProcessing) ? null : () async {
+                                          setState(() {
+                                            _isProcessing = true;
+                                          });
+                            
+                                          try {
+                                            await _connectDevice(); // Pastikan ini juga async
+                                          } finally {
+                                            setState(() {
+                                              _isProcessing = false;
+                                            });
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor, // Ubah warna background
+                                          foregroundColor: Colors.white, // Warna teks/icon
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10), // Border radius
+                                            // side: BorderSide(color: primaryColor, width: 1), // Warna dan ketebalan border
+                                          ),
+                                          elevation: 0
+                                        ),
+                                        child: const Text('Hubungkan', style: TextStyle(fontWeight: FontWeight.w600)),
+                                      ),
+                                      Gap(5),
+                                      ElevatedButton(
+                                        onPressed: _printTest,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: bgSuccess, // Ubah warna background
+                                          foregroundColor: successColor, // Warna teks/icon
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10), // Border radius
+                                            side: BorderSide(color: successColor, width: 1), // Warna dan ketebalan border
+                                          ),
+                                          elevation: 0
+                                        ),
+                                        child: const Text('Cetak', style: TextStyle(fontWeight: FontWeight.w600)),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    Gap(5),
+                    LineSM(),
+                    Gap(5),
                     CustomTextField(
                       border: true,
                       controller: nameController,

@@ -60,6 +60,25 @@ class LineXM extends StatelessWidget {
   }
 }
 
+class LinePrimary extends StatelessWidget {
+  const LinePrimary({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Gap(10),
+        Container(
+          height: 1,
+          width: double.infinity,
+          color: primaryColor,
+        ),
+        Gap(10),
+      ],
+    );
+  }
+}
+
 class StockBadge extends StatefulWidget {
   final int availableStock;
 

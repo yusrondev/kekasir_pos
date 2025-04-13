@@ -432,7 +432,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
                           'Tidak ada printer yang terdeteksi / Bluetooth belum aktif',
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: Colors.red, fontSize: 12),
                         ),
                       ),
                     Row(

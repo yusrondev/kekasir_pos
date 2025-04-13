@@ -429,7 +429,6 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

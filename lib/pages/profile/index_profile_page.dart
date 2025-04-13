@@ -93,7 +93,6 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
