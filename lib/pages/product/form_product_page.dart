@@ -594,7 +594,11 @@ class _FormProductPageState extends State<FormProductPage> {
       await _printerService.printbarcode(
         url: barcode['url']
       ).then((_){
-        // alertLottie(context, "Berhasil dicetak!");
+        if (mounted) {
+          setState(() {
+            codeController.text = barcode['code'];
+          });
+        }
       });
     } catch (e) {
       if (mounted) {
@@ -1011,13 +1015,19 @@ class _FormProductPageState extends State<FormProductPage> {
                             ],
                           ),
                           if(_showPrinterSetup == true) ... [
-                            Gap(10),
                             LinePrimary(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                LabelSemiBold(text: "Konfigurasi Printer"),
-                                ShortDesc(text: "Sesuaikan perangkat printer Anda",),
+                                LabelSemiBold(text: "Konfigurasi Printer", primary: true,),
+                                Text(
+                                  "Sesuaikan perangkat printer Anda",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: primaryColor,
+                                    overflow: TextOverflow.ellipsis
+                                  ),
+                                ),
                                 if (_devices.isEmpty)
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 8),
@@ -1106,17 +1116,22 @@ class _FormProductPageState extends State<FormProductPage> {
                                       ),
                                       Gap(5),
                                       ElevatedButton(
-                                        onPressed: _printTest,
+                                        onPressed: _isPrinting ? null : _printTest,
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: bgSuccess, // Ubah warna background
                                           foregroundColor: successColor, // Warna teks/icon
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10), // Border radius
-                                            side: BorderSide(color: successColor, width: 1), // Warna dan ketebalan border
                                           ),
                                           elevation: 0
                                         ),
-                                        child: const Text('Cetak', style: TextStyle(fontWeight: FontWeight.w600)),
+                                        child: AbsorbPointer(
+                                          absorbing: _isPrinting,
+                                          child: Opacity(
+                                            opacity: _isPrinting ? 0.5 : 1.0,
+                                            child: const Text('Cetak', style: TextStyle(fontWeight: FontWeight.w600))
+                                          ),
+                                        ),
                                       ),
                                   ],
                                 ),
