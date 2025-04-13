@@ -39,7 +39,7 @@ class _QrScannerButtonState extends State<QrScannerButton> {
         backButtonIcon: Icon(Icons.arrow_back_ios),
       ),
       isShowFlashIcon: true,
-      delayMillis: 300,
+      delayMillis: 500,
       cameraFace: CameraFace.back,
     );
 
