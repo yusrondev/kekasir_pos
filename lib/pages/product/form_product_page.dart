@@ -976,12 +976,13 @@ class _FormProductPageState extends State<FormProductPage> {
                     Gap(10),
                     Row(
                       children: [
-                        Expanded(child: CustomTextField(
+                        Expanded(child: CustomTextFieldNumber(
                           border: true,
                           controller: codeController,
                           label: "Kode Produk",
                           shortDescription: "Jika tidak diisi, Kekasir akan otomatis membuatkan kode.",
                           placeholder: "Misalnya 3495083 (tidak wajib)...",
+                          maxLength: 12,
                           maxLine: 1,
                         )),
                         Gap(5),
