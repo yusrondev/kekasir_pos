@@ -101,6 +101,7 @@ class _FormProductPageState extends State<FormProductPage> {
   String? _selectedName = "-";
   String? _oldValueType;
   String? result;
+  String? codeProduct;
 
   List<LabelPrice> labelPrices = [];
   List<BluetoothDevice> _devices = [];
@@ -111,6 +112,7 @@ class _FormProductPageState extends State<FormProductPage> {
   bool _isPrinting = false;
   bool _isProcessing = false;
   bool _showPrinterSetup = false;
+  bool _triggerBtnPrint = false;
 
   @override
   void initState() {
@@ -119,6 +121,7 @@ class _FormProductPageState extends State<FormProductPage> {
     if (widget.product != null) {
       nameController.text = widget.product!.name;
       codeController.text = widget.product!.code;
+      codeProduct = widget.product!.code;
       priceController.text = formatRupiah(widget.product!.price);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
@@ -592,14 +595,48 @@ class _FormProductPageState extends State<FormProductPage> {
 
       await _connectDevice();
       await _printerService.printbarcode(
-        url: barcode['url']
+        url: barcode['url'],
+        name : nameController.text
       ).then((_){
         if (mounted) {
           setState(() {
             codeController.text = barcode['code'];
+            codeProduct = barcode['code'];
           });
         }
       });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPrinting = false);
+      }
+    }
+
+    await Future.delayed(Duration(seconds: 10));
+    if(mounted){
+      setState(() {
+        _isPrinting = false;
+      });
+    }
+  }
+
+  Future<void> _rePrint() async {
+    if (_isConnected == false) {
+      alertLottie(context, "Printer belum terhubung!", "error");
+      return;
+    }
+    setState(() => _isPrinting = true);
+    try {
+      await _connectDevice();
+      await _printerService.rePrint(
+        url: codeProduct.toString(),
+        name : nameController.text
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -653,6 +690,26 @@ class _FormProductPageState extends State<FormProductPage> {
     }
 
     Logger().d(_isConnecting);
+
+    if (success) {
+      await _saveSelectedDevice(_selectedDevice!);
+      if (mounted) {
+        if (_triggerBtnPrint == true) {
+          alertLottie(context, 'Berhasil menghubungkan printer');
+        }
+      }
+    } else {
+      if (mounted) {
+        if (_triggerBtnPrint == true) {
+          alertLottie(context, 'Gagal menghubungkan printer', 'error');
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {
+        _triggerBtnPrint = false;
+      });
+    }
 
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
@@ -923,6 +980,7 @@ class _FormProductPageState extends State<FormProductPage> {
                           border: true,
                           controller: codeController,
                           label: "Kode Produk",
+                          shortDescription: "Jika tidak diisi, Kekasir akan otomatis membuatkan kode.",
                           placeholder: "Misalnya 3495083 (tidak wajib)...",
                           maxLine: 1,
                         )),
@@ -950,7 +1008,7 @@ class _FormProductPageState extends State<FormProductPage> {
                             }
                           },
                           child: Container(
-                            margin: EdgeInsets.only(top: 8),
+                            margin: EdgeInsets.only(top: 20),
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: primaryColor, // Warna background
@@ -972,28 +1030,28 @@ class _FormProductPageState extends State<FormProductPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Buat barcode Anda sendiri",
-                                    style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.w600
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Buat barcode Anda sendiri",
+                                      style: TextStyle(
+                                        color: primaryColor,
+                                        fontWeight: FontWeight.w600
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 200,
-                                    child: Text(
-                                      "Produk Anda tidak memiliki barcode? \nkami bantu untuk membuatkannya",
+                                    Text(
+                                      "Produk Anda tidak memiliki barcode? kami bantu untuk membuatkannya",
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: primaryColor,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              Gap(50),
                               GestureDetector(
                                 onTap: (){
                                   setState(() {
@@ -1001,15 +1059,12 @@ class _FormProductPageState extends State<FormProductPage> {
                                   });
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                  padding: EdgeInsets.symmetric(horizontal: 7, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: primaryColor,
                                     borderRadius: BorderRadius.circular(5)
                                   ),
-                                  child: Text(_showPrinterSetup == true ? "Batal" : "Buat" , style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14
-                                  )),
+                                  child: _showPrinterSetup == true ? Icon(Icons.keyboard_arrow_up_rounded, color: Colors.white, size: 20,) : Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 20,)
                                 ),
                               )
                             ],
@@ -1023,7 +1078,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                 Text(
                                   "Sesuaikan perangkat printer Anda",
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     color: primaryColor,
                                     overflow: TextOverflow.ellipsis
                                   ),
@@ -1061,14 +1116,14 @@ class _FormProductPageState extends State<FormProductPage> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    Gap(5),
                                     if (_isConnected)
                                       ElevatedButton(
                                         onPressed: _isProcessing ? null : () async {
                                           setState(() {
                                             _isProcessing = true;
                                           });
-                            
+                                                                  
                                           try {
                                             await _removeSelectedDevice(); // Pastikan ini adalah fungsi async
                                           } finally {
@@ -1082,7 +1137,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                           foregroundColor: Colors.white, // Warna teks/icon
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10), // Border radius
-                                            side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
+                                            // side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
                                           ),
                                           elevation: 0
                                         ),
@@ -1093,8 +1148,9 @@ class _FormProductPageState extends State<FormProductPage> {
                                         onPressed: (_selectedDevice == null || _isProcessing) ? null : () async {
                                           setState(() {
                                             _isProcessing = true;
+                                            _triggerBtnPrint = true;
                                           });
-                            
+                                                                  
                                           try {
                                             await _connectDevice(); // Pastikan ini juga async
                                           } finally {
@@ -1114,14 +1170,29 @@ class _FormProductPageState extends State<FormProductPage> {
                                         ),
                                         child: const Text('Hubungkan', style: TextStyle(fontWeight: FontWeight.w600)),
                                       ),
-                                      Gap(5),
-                                      ElevatedButton(
+                                  ],
+                                ),
+                                LinePrimary(),
+                                Text(
+                                  "Anda bisa cetak dan buat barcode atau cetak ulang barcode",
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: primaryColor,
+                                    overflow: TextOverflow.ellipsis
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
                                         onPressed: _isPrinting ? null : _printTest,
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: bgSuccess, // Ubah warna background
                                           foregroundColor: successColor, // Warna teks/icon
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10), // Border radius
+                                            side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
                                           ),
                                           elevation: 0
                                         ),
@@ -1129,12 +1200,35 @@ class _FormProductPageState extends State<FormProductPage> {
                                           absorbing: _isPrinting,
                                           child: Opacity(
                                             opacity: _isPrinting ? 0.5 : 1.0,
-                                            child: const Text('Cetak', style: TextStyle(fontWeight: FontWeight.w600))
+                                            child: Text('Buat Barcode', style: TextStyle(fontWeight: FontWeight.w600))
                                           ),
                                         ),
                                       ),
+                                    ),
+                                    Gap(5),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: _isPrinting ? null : _rePrint,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white, // Ubah warna background
+                                          foregroundColor: successColor, // Warna teks/icon
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10), // Border radius
+                                            side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
+                                          ),
+                                          elevation: 0
+                                        ),
+                                        child: AbsorbPointer(
+                                          absorbing: _isPrinting,
+                                          child: Opacity(
+                                            opacity: _isPrinting ? 0.5 : 1.0,
+                                            child: Text('Cetak Ulang', style: TextStyle(fontWeight: FontWeight.w600))
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
-                                ),
+                                )
                               ],
                             ),
                           ],
@@ -1156,7 +1250,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       controller: shortDescriptionController,
                       label: "Deskripsi Singkat",
                       placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
-                      maxLine: 4,
+                      maxLength : 100,
                     ),
                     Row(
                       children: [
@@ -1347,7 +1441,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   Text(toBeginningOfSentenceCase(labelPrice.name) ?? "", style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
                                   Row(
                                     children: [
-                                      labelPrice.productId == 0 && labelPrice.price == 0 ? Text("Belum diatur", style: TextStyle(color: isSelected == true ? successColor : softBlack),) : Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
+                                      labelPrice.productId == 0 && labelPrice.price == 0 ? Text("Harga belum diatur", style: TextStyle(color: isSelected == true ? successColor : softBlack),) : Text(formatRupiah(labelPrice.price), style: TextStyle(fontWeight: FontWeight.w600, color: isSelected == true ? successColor : Colors.black)),
                                       if (isSelected) ... [
                                         Gap(5),
                                         Icon(Icons.check_circle, size: 15, color: successColor),
@@ -1455,7 +1549,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       CustomTextField(
                         border: true,
                         maxLine: 3,
-                        maxLength: 150,
+                        maxLength: 200,
                         controller: description,
                         label: "Deskripsi",
                         placeholder: "Misalnya karena barang rusak / stok awal (tidak wajib)",

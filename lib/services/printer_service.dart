@@ -113,6 +113,7 @@ class PrinterService {
 
   Future<void> printbarcode({
     required String url,
+    required String name,
   }) async {
     if (!_isConnected) {
       Logger().w("Printer tidak terkoneksi");
@@ -127,6 +128,36 @@ class PrinterService {
     try {
       // Header Toko
       _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printNewLine();
+      _printer.printCustom(name, 1, 1);
+      _printer.printNewLine();
+      _printer.printNewLine();
+      _printer.printNewLine();
+      _printer.printNewLine();
+    } catch (e) {
+      Logger().e("Print error: $e");
+    }
+  }
+
+  Future<void> rePrint({
+    required String url,
+    required String name,
+  }) async {
+    if (!_isConnected) {
+      Logger().w("Printer tidak terkoneksi");
+      return;
+    }
+
+    var response = await http.get(Uri.parse('https://kekasir-core.dewadev.id/storage/images/products/barcodes/$url.png'));
+    Uint8List bytesNetwork = response.bodyBytes;
+    Uint8List imageBytesFromNetwork = bytesNetwork.buffer
+        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
+
+    try {
+      // Header Toko
+      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printNewLine();
+      _printer.printCustom(name, 1, 1);
       _printer.printNewLine();
       _printer.printNewLine();
       _printer.printNewLine();

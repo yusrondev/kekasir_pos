@@ -10,6 +10,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -27,11 +28,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController oldPasswordController = TextEditingController();
 
   bool isLoading = false;
+  String checkOwner = '';
 
   @override
   void initState() {
     super.initState();
-    
+    getUserInfo();
     // Ambil dataMe dari arguments jika ada
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataMe = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
@@ -41,6 +43,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         nameController.text = dataMe['name'];
         addressController.text = dataMe['address'] ?? "";
       }
+    });
+  }
+
+  Future<void> getUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkOwner = prefs.getString("is_owner") ?? "0";
     });
   }
 
@@ -200,20 +209,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Gap(15),
           CustomTextField(
             controller: nameController,
-            label: "Nama Toko",
+            label: checkOwner == "1" ? "Nama Toko" : "Nama",
             placeholder: "Misalnya kekasir...",
             maxLine: 1,
             maxLength: 100,
             border: true,
           ),
-          CustomTextField(
-            controller: addressController,
-            label: "Alamat",
-            placeholder: "Misalnya Jalan Pemuda...",
-            maxLine: 3,
-            maxLength: 255,
-            border: true,
-          ),
+          if(checkOwner == "1")
+            CustomTextField(
+              controller: addressController,
+              label: "Alamat",
+              placeholder: "Misalnya Jalan Pemuda...",
+              maxLine: 3,
+              maxLength: 255,
+              border: true,
+            ),
           CustomTextField(
             controller: emailController,
             label: "Email",

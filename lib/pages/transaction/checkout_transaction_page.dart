@@ -38,6 +38,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
 
   int selectedIndex = -1;
   String selectedName = "";
+  String selectedNominal = "";
 
   final List<String> nominalList = [
     "Uang Pas",
@@ -458,17 +459,43 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               ),
                                             ),
                                             onChanged: (value) {
-                                              final formatted = _formatCurrency(
-                                                value,
-                                              );
+                                              final paid = value.replaceAll(RegExp(r'[^0-9]'), '');
+                                              final paidSelected = selectedNominal.replaceAll(RegExp(r'[^0-9]'), '');
+                                              final paidGrandTotal = grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+
+                                              if (paid != paidSelected) {
+                                                setModalState(() {
+                                                  selectedIndex = -1;
+                                                });
+                                              }
+                                              if (paid == "5000") {
+                                                setModalState(() {
+                                                  selectedIndex = 1;
+                                                });
+                                              }
+                                              if (paid == "10000") {
+                                                setModalState(() {
+                                                  selectedIndex = 2;
+                                                });
+                                              }
+                                              if (paid == "20000") {
+                                                setModalState(() {
+                                                  selectedIndex = 3;
+                                                });
+                                              }
+                                              if (paid == paidGrandTotal) {
+                                                setModalState(() {
+                                                  selectedIndex = 0;
+                                                });
+                                              }
+
+                                              final formatted = _formatCurrency(value);
                                               nominalCustomer.value = TextEditingValue(
                                                 text: formatted,
-                                                selection:
-                                                    TextSelection.collapsed(
-                                                      offset: formatted.length,
-                                                    ),
+                                                selection: TextSelection.collapsed(offset: formatted.length),
                                               );
-                                            },
+                                            }
+
                                           ),
                                         ),
                                       ),
@@ -516,8 +543,10 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               selectedIndex = index;
 
                                               if (index == 0) {
+                                                selectedNominal = grandTotal;
                                                 nominalCustomer.text = grandTotal;
                                               } else {
+                                                selectedNominal = nominalList[index];
                                                 nominalCustomer.text = nominalList[index];
                                               }
                                             });

@@ -42,6 +42,8 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
   String? grandTotal;
 
   bool loading = true;
+  bool selectedPriceType = false;
+  bool flagShowSaveBtn = false;
 
   @override
   void initState() {
@@ -199,6 +201,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                                     _selectedName = "";
                                     _selectedId = "";
                                   }else{
+                                    flagShowSaveBtn = true;
                                     _selectedName = labelPrice.name;
                                     _selectedId = labelPrice.id.toString();
                                   }
@@ -219,8 +222,11 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                                       color: isSelected == true ? successColor : Colors.black,
                                       fontWeight: FontWeight.w600
                                     )),
-                                    if(isSelected)
-                                    Icon(Icons.check_circle, size: 15, color: successColor,)
+                                    if(isSelected) ... [
+                                      Icon(Icons.check_circle, size: 15, color: successColor,)
+                                    ] else ... [
+                                      Icon(Icons.keyboard_arrow_right_rounded, size: 15, color: primaryColor,)
+                                    ]
                                   ],
                                 ),
                               ),
@@ -230,17 +236,41 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                       ),
                     ),
                     Gap(10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
-                            fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
-                            Navigator.pop(context);
-                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke semua tipe harga" : "Beralih ke harga ${_selectedName.toString()}");
-                          })
+                    if(flagShowSaveBtn == true)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_selectedName.toString()}", onPressed: () {
+                              if(_selectedName.toString() != ""){
+                                setState(() {
+                                  selectedPriceType = true;
+                                  flagShowSaveBtn = false;
+                                });
+                              }
+                              fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
+                              Navigator.pop(context);
+                              alertLottie(context, _selectedName.toString() == "" ? "Beralih ke semua tipe harga" : "Beralih ke harga ${_selectedName.toString()}");
+                            })
+                          )
+                        ],
+                      ),
+                    if(_selectedName.toString() != "" && selectedPriceType == true)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ButtonPrimaryOutline(text: "Beralih ke harga normal", onPressed: () {
+                              setState(() {
+                                _selectedId = "";
+                                _selectedName = "";
+                                selectedPriceType = false;
+                              });
+                              fetchMutation(_startDateController.text, _endDateController.text, _codeController.text, _selectedId);
+                              Navigator.pop(context);
+                              alertLottie(context, "Beralih ke harga normal");
+                            }
+                          )
                         )
-                      ],
-                    )
+                      ])
                   ],
                 ),
               ),

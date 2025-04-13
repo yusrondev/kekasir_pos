@@ -41,6 +41,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   bool _isConnected = false;
   bool _isPrinting = false;
   bool _isProcessing = false;
+  bool _triggerBtnPrint = false;
 
   String subTotal = '0';
   String grandTotal = '0';
@@ -185,13 +186,22 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
     if (success) {
       await _saveSelectedDevice(_selectedDevice!);
-      // if (mounted) {
-      //   alertLottie(context, 'Printer berhasil terhubung');
-      // }
+      if (mounted) {
+        if (_triggerBtnPrint == true) {
+          alertLottie(context, 'Berhasil menghubungkan printer');
+        }
+      }
     } else {
-      // if (mounted) {
-      //   alertLottie(context, 'Gagal menghubungkan printer', 'error');
-      // }
+      if (mounted) {
+        if (_triggerBtnPrint == true) {
+          alertLottie(context, 'Gagal menghubungkan printer', 'error');
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {
+        _triggerBtnPrint = false;
+      });
     }
   }
 
@@ -481,7 +491,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                               foregroundColor: Colors.white, // Warna teks/icon
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10), // Border radius
-                                side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
+                                // side: BorderSide(color: Color(0xffe74c3c), width: 1), // Warna dan ketebalan border
                               ),
                               elevation: 0
                             ),
@@ -492,6 +502,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                             onPressed: (_selectedDevice == null || _isProcessing) ? null : () async {
                               setState(() {
                                 _isProcessing = true;
+                                _triggerBtnPrint = true;
                               });
 
                               try {

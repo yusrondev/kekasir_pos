@@ -39,12 +39,15 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   int totalItem = 0;
   bool isLoadCart = false;
   bool isLoadProduct = true;
+  bool selectedPriceType = false;
+  bool flagShowSaveBtn = false;
   BuildContext? _dialogContext;
 
   TextEditingController keyword = TextEditingController();
   Timer? _debounce;
   Timer? _debounceHit;
   String? _selectedName = "";
+  String? pendingBarcode;
 
   @override
   void initState() {
@@ -98,6 +101,15 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
           quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
         });
         fetchCart(_selectedName.toString());
+        if (pendingBarcode != null) {
+          final index = products.indexWhere((p) => p.code == pendingBarcode);
+          if (index != -1) {
+            if (quantities[index] < products[index].availableStock) {
+              _increment(index); // Panggil fungsi agar semua efek ikut berjalan
+            }
+          }
+          pendingBarcode = null;
+        }
       }
     } catch (e) {
       showErrorBottomSheet(context, e.toString());
@@ -235,8 +247,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   children: [
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
-                    Text("Otomatis menggunakan harga normal", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
-                    Text("jika produk tidak memiliki tipe harga terkait", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                    Text("Otomatis menggunakan harga normal jika produk tidak memiliki tipe harga terkait", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
@@ -261,6 +272,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                   if (_selectedName == labelPrice.name) {
                                     _selectedName = "";
                                   }else{
+                                    flagShowSaveBtn = true;
                                     _selectedName = labelPrice.name;
                                   }
                                 });
@@ -280,8 +292,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                                       color: isSelected == true ? successColor : Colors.black,
                                       fontWeight: FontWeight.w600
                                     )),
-                                    if(isSelected)
-                                    Icon(Icons.check_circle, size: 15, color: successColor,)
+                                    if(isSelected) ... [
+                                      Icon(Icons.check_circle, size: 15, color: successColor,)
+                                    ] else ... [
+                                      Icon(Icons.keyboard_arrow_right_rounded, size: 15, color: primaryColor,)
+                                    ]
                                   ],
                                 ),
                               ),
@@ -291,17 +306,40 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       ),
                     ),
                     Gap(10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_capitalize(_selectedName.toString())}", onPressed: () {
-                            fetchProducts(keyword.text, "true", _selectedName.toString());
-                            Navigator.pop(context);
-                            alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_capitalize(_selectedName.toString())}");
-                          })
+                    if(flagShowSaveBtn == true)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ButtonPrimary(text: _selectedName.toString() == "" ? "Simpan" : "Ubah ke ${_capitalize(_selectedName.toString())}", onPressed: () {
+                              if(_selectedName.toString() != ""){
+                                setState(() {
+                                  selectedPriceType = true;
+                                  flagShowSaveBtn = false;
+                                });
+                              }
+                              fetchProducts(keyword.text, "true", _selectedName.toString());
+                              Navigator.pop(context);
+                              alertLottie(context, _selectedName.toString() == "" ? "Beralih ke harga normal" : "Beralih ke harga ${_capitalize(_selectedName.toString())}");
+                            })
+                          )
+                        ],
+                      ),
+                    if(_selectedName.toString() != "" && selectedPriceType == true)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ButtonPrimaryOutline(text: "Beralih ke harga normal", onPressed: () {
+                              setState(() {
+                                _selectedName = "";
+                                selectedPriceType = false;
+                              });
+                              fetchProducts(keyword.text, "true", _selectedName.toString());
+                              Navigator.pop(context);
+                              alertLottie(context, "Beralih ke harga normal");
+                            }
+                          )
                         )
-                      ],
-                    )
+                      ])
                   ],
                 ),
               ),
@@ -344,12 +382,12 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                 children: [
                   Text("Jumlah Pembelian", style: TextStyle(fontWeight: FontWeight.w600)),
                   Container(
-                    padding: EdgeInsets.all(3),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                     decoration: BoxDecoration(
                       border: Border.all(color: primaryColor),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text('Tersedia : ${availableStock.toString()}', style: TextStyle(color: primaryColor)),
+                    child: Text('Stok : ${availableStock.toString()}', style: TextStyle(color: primaryColor)),
                   )
                 ],
               ),
@@ -494,7 +532,15 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     children: [
                       Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk", controller: keyword)),
                       Gap(5),
-                      QrScannerButton(controller: keyword),
+                      QrScannerButton(
+                        controller: keyword,
+                        onScanned: (scannedCode) {
+                          setState(() {
+                            keyword.text = scannedCode;
+                            pendingBarcode = scannedCode; // Simpan sementara
+                          });
+                        }
+                      )
                     ],
                   ),
                   // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),

@@ -4,8 +4,8 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class QrScannerButton extends StatefulWidget {
   final TextEditingController controller;
-
-  const QrScannerButton({super.key, required this.controller});
+  final Function(String)? onScanned;
+  const QrScannerButton({super.key, required this.controller, this.onScanned});
 
   @override
   State<QrScannerButton> createState() => _QrScannerButtonState();
@@ -45,6 +45,9 @@ class _QrScannerButtonState extends State<QrScannerButton> {
 
     if (scannedCode != null && scannedCode != '-1') {
       widget.controller.text = scannedCode;
+      if (widget.onScanned != null) {
+        widget.onScanned!(scannedCode); // <== ini yang penting
+      }
     }
   }
 

@@ -100,7 +100,8 @@ class _StockBadgeState extends State<StockBadge> {
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(5),
             topRight: Radius.circular(5),
-          )
+          ),
+          border: Border.all(color: widget.availableStock > 5 ?bgSuccess : widget.availableStock.toString() == "0" ? secondaryColor : Color(0xffe74c3c))
         ),
         child: Text(
           widget.availableStock.toString() == "0" ? "Produk habis" : 'Tersisa ${widget.availableStock.toString()} pcs',
