@@ -7,6 +7,7 @@ import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
@@ -99,7 +100,13 @@ class _IndexStockPageState extends State<IndexStockPage> {
                 children: [
                   PageTitle(text: "Mutasi Stok", back: true),
                   Gap(15),
-                  SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
+                  Row(
+                    children: [
+                      Expanded(child: SearchTextField(placeholder:"Cari berdasarkan nama produk...", controller: keyword)),
+                      Gap(5),
+                      QrScannerButton(controller: keyword),
+                    ],
+                  ),
                 ],
               ),
             ),

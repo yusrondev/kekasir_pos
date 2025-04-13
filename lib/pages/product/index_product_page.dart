@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
+import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
@@ -132,7 +133,13 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     ],
                   ),
                   Gap(10),
-                  SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",),
+                  Row(
+                    children: [
+                      Expanded(child: SearchTextField(controller: searchField, placeholder: "Cari berdasarkan nama produk...",)),
+                      Gap(5),
+                      QrScannerButton(controller: searchField)
+                    ],
+                  )
                 ],
               ),
             ),

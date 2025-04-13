@@ -21,6 +21,7 @@ import 'package:kekasir/utils/ui_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:logger/web.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class FormProductPage extends StatefulWidget {
   final Product? product;
@@ -63,6 +64,7 @@ class _FormProductPageState extends State<FormProductPage> {
   final _formKey = GlobalKey<FormState>();
 
   // controllers field
+  TextEditingController codeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController costController = TextEditingController();
@@ -92,6 +94,7 @@ class _FormProductPageState extends State<FormProductPage> {
   String? storeQuantity = "Masukkan harga...";
   String? _selectedName = "-";
   String? _oldValueType;
+  String? result;
 
   List<LabelPrice> labelPrices = [];
 
@@ -101,6 +104,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
     if (widget.product != null) {
       nameController.text = widget.product!.name;
+      codeController.text = widget.product!.code;
       priceController.text = formatRupiah(widget.product!.price);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
@@ -428,6 +432,7 @@ class _FormProductPageState extends State<FormProductPage> {
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
+          codeController.text,
           nameController.text,
           priceValue,
           _image,
@@ -462,6 +467,7 @@ class _FormProductPageState extends State<FormProductPage> {
         // Jika produk sudah ada, update produk
         success = await apiService.updateProduct(
           widget.product!.id, // ID produk yang akan diupdate
+          codeController.text,
           nameController.text,
           priceValue,
           _image,
@@ -664,6 +670,53 @@ class _FormProductPageState extends State<FormProductPage> {
                                 ),
                               ],
                             ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: CustomTextField(
+                          border: true,
+                          controller: codeController,
+                          label: "Kode Produk",
+                          placeholder: "Misalnya 3495083 (tidak wajib)...",
+                          maxLine: 1,
+                        )),
+                        Gap(5),
+                        GestureDetector(
+                          onTap: () async {
+                            final scannedCode = await SimpleBarcodeScanner.scanBarcode(
+                              context,
+                              barcodeAppBar: const BarcodeAppBar(
+                                appBarTitle: 'Test',
+                                centerTitle: false,
+                                enableBackButton: true,
+                                backButtonIcon: Icon(Icons.arrow_back_ios),
+                              ),
+                              isShowFlashIcon: true,
+                              delayMillis: 2000,
+                              cameraFace: CameraFace.back,
+                            );
+
+                            if (scannedCode != null && scannedCode != '-1') {
+                              // '-1' biasanya berarti user cancel
+                              setState(() {
+                                codeController.text = scannedCode;
+                              });
+                            } else {
+                              // Bisa tampilkan snackbar/toast jika user batal
+                              alertLottie(context, 'Scanning dibatalkan atau tidak berhasil', 'error');
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 8),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: primaryColor, // Warna background
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Icon(Icons.qr_code_scanner_rounded, color: Colors.white,),
                           ),
                         )
                       ],

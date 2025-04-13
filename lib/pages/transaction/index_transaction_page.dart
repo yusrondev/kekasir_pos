@@ -10,6 +10,7 @@ import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
@@ -449,45 +450,52 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       PageTitle(text: "Tambah Transaksi"),
-                      GestureDetector(
-                        onTap: () {
-                          if (grandTotal != "Rp 0") {
-                            DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
-                              clearCart();
-                            });
-                          }
-                        },
-                        child: Image.asset(
-                          grandTotal != "Rp 0" ? 'assets/icons/empty-cart-active.png' : 'assets/icons/empty-cart.png',
-                          width: 30,
-                        ),
+                      Row(
+                        children: [
+                          if(labelPrices.isNotEmpty) ... [
+                            Gap(5),
+                            GestureDetector(
+                              onTap: () => showDialogListPriceType(),
+                              child: Container(
+                                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 2),
+                                decoration: BoxDecoration(
+                                  color: ligthSky,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: secondaryColor)
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(_selectedName.toString().isNotEmpty ? toBeginningOfSentenceCase(_selectedName.toString()) : "Tipe Harga", style: TextStyle(fontSize: 14),),
+                                    Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Gap(5)
+                          ],
+                          GestureDetector(
+                            onTap: () {
+                              if (grandTotal != "Rp 0") {
+                                DialogHelper.showDeleteAllCartConfirmation(context: context, onConfirm: (){
+                                  clearCart();
+                                });
+                              }
+                            },
+                            child: Image.asset(
+                              grandTotal != "Rp 0" ? 'assets/icons/empty-cart-active.png' : 'assets/icons/empty-cart.png',
+                              width: 30,
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),
                   Gap(10),
                   Row(
                     children: [
-                      Expanded(child: SearchTextField(placeholder: labelPrices.isNotEmpty ? "Cari produk..." : "Cari berdasarkan nama produk...", controller: keyword)),
-                      if(labelPrices.isNotEmpty) ... [
-                        Gap(5),
-                        GestureDetector(
-                          onTap: () => showDialogListPriceType(),
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: ligthSky,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: secondaryColor)
-                            ),
-                            child: Row(
-                              children: [
-                                Text(_selectedName.toString().isNotEmpty ? toBeginningOfSentenceCase(_selectedName.toString()) : "Tipe Harga", style: TextStyle(fontSize: 14),),
-                                Icon(Icons.arrow_drop_down_rounded, size: 20),
-                              ],
-                            ),
-                          ),
-                        )
-                      ]
+                      Expanded(child: SearchTextField(placeholder: "Cari berdasarkan nama produk", controller: keyword)),
+                      Gap(5),
+                      QrScannerButton(controller: keyword),
                     ],
                   ),
                   // isLoadCart == true ? CustomLoader.showCustomLoader() : buildProductList(),
