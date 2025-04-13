@@ -50,6 +50,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   String change = '0';
   String transactionDate = '';
   String transactionTime = '';
+  String createdBy = '';
 
   dynamic details;
 
@@ -96,6 +97,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           transactionDate = transaction['created_date'];
           transactionTime = transaction['created_time'];
 
+          createdBy = transaction['created_by'];
         });
 
         items = convertDetailsToItems(details);
@@ -142,9 +144,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     }
 
     await Future.delayed(Duration(seconds: 10));
-    setState(() {
-      _isPrinting = false;
-    });
+    if(mounted){
+      setState(() {
+        _isPrinting = false;
+      });
+    }
   }
 
   Future<void> _loadDevices() async {
@@ -198,9 +202,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
   Future<void> _saveSelectedDevice(BluetoothDevice device) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('printer_name', device.name ?? ''); // Store name instead of address
-    setState(() {
-      _isConnected = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isConnected = true;
+      });
+    }
   }
   
   Future<void> _loadSelectedDevice() async {
@@ -453,6 +459,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                 Gap(15),
                 buildListCart(),
                 buildPayment(),
+                buildAuthor(),
                 LineXM(),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -699,8 +706,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
     );
   }
 
-    Widget buildPayment() {
+  Widget buildPayment() {
     return Container(
+      margin: EdgeInsets.only(bottom: 10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: ligthSky,
@@ -754,6 +762,29 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
               LabelSemiBoldMD(text: transaction['payment_method']),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildAuthor() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: ligthSky,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: secondaryColor)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Kasir yang bertugas'),
+              LabelSemiBoldMD(text: createdBy),
+            ],
+          )
         ],
       ),
     );

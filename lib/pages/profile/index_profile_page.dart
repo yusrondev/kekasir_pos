@@ -12,6 +12,7 @@ import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IndexProfilePage extends StatefulWidget {
@@ -31,6 +32,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   final String? version = dotenv.env['APP_VERSION'];
 
   bool isLoading = true;
+  String checkOwner = '';
 
   @override
   void initState() {
@@ -58,6 +60,10 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   }
 
   Future<void> me() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkOwner = prefs.getString("is_owner") ?? "0";
+    });
     try {
       final data = await authService.fetchUser();
       
@@ -298,46 +304,45 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           ),
         ),
 
-        Gap(20),
-
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Text("Pengolahan Data", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
-        ),
-
-        Gap(5),
-
-        GestureDetector(
-          onTap: () {
-            DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
-          },
-          child: Container(
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              border: Border.all(color: Color(0xffE7E7E7)),
-              color: Color(0xffF3F3F3),
-              borderRadius: BorderRadius.circular(20)
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.restart_alt_rounded, color: Color(0xffE74C3C), size: 20),
-                        Gap(10),
-                        Text("Atur Ulang", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
-                      ],
-                    ),
-                    Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
-                  ],
-                )
-              ],
+        if(checkOwner == "1") ... [
+          Gap(20),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Text("Pengolahan Data", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 12)),
+          ),
+          Gap(5),
+          GestureDetector(
+            onTap: () {
+              DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
+            },
+            child: Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xffE7E7E7)),
+                color: Color(0xffF3F3F3),
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.restart_alt_rounded, color: Color(0xffE74C3C), size: 20),
+                          Gap(10),
+                          Text("Atur Ulang", style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xffE74C3C))),
+                        ],
+                      ),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: Color(0xffE74C3C)),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
+        ],
 
         Gap(20),
 

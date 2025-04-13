@@ -31,9 +31,11 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final token = data['access_token'];
+      final isOwner = data['is_owner'];
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', token);
+      await prefs.setString('is_owner', isOwner);
       return null; // Jika login berhasil, tidak ada error
     } else {
       final errorData = jsonDecode(response.body);

@@ -18,7 +18,8 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String checkOwner;
+  const HomePage({super.key, required this.checkOwner});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -360,8 +361,10 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Gap(10),
-            buildOtherIncome(),
-            Gap(10),
+            if(widget.checkOwner == "1") ... [
+              buildOtherIncome(),
+              Gap(10),
+            ],
             buildSectionFeatures(),
             Gap(10),
             buildTransactionHistory(),

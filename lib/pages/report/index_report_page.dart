@@ -93,7 +93,7 @@ class _IndexReportPageState extends State<IndexReportPage> {
                   )
                   : InAppWebView(
                       initialUrlRequest: URLRequest(
-                        url: WebUri("https://kekasir-core.dewadev.id/report/product/${dataMe?['id'] ?? ''}"),
+                        url: WebUri("https://kekasir-core.dewadev.id/report/product/${dataMe?['store_id'] ?? ''}"),
                       ),
                     ),
             ),

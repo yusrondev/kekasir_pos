@@ -8,7 +8,9 @@ import 'package:kekasir/pages/product/index_product_page.dart';
 import 'package:kekasir/pages/discount/index_discount_page.dart';
 import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
+import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -19,46 +21,62 @@ class AppLayout extends StatefulWidget {
 
 class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
   late InternetConnectionChecker _connectionChecker;
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _animations;
   bool isDialogOpen = false;
   int _selectedIndex = 0;
-
+  String checkOwner = '';
    @override
   void initState() {
     super.initState();
-    _controllers = List.generate(menu.length, (index) {
-      return AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 300),
-      );
-    });
-
-    _animations = _controllers.map((controller) {
-      return TweenSequence([
-        TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.1).chain(CurveTween(curve: Curves.easeOut)), weight: 50),
-        TweenSequenceItem(tween: Tween(begin: 1.1, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 50),
-      ]).animate(controller);
-    }).toList();
-
     _connectionChecker = InternetConnectionChecker.createInstance();
     _checkInternetConnection(); // Cek internet saat aplikasi dimulai
-    
+
+    _getLocalVar();  
+  }
+
+  List<Map<String, dynamic>> menu = [];
+
+  Future<void> _getLocalVar() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkOwner = prefs.getString("is_owner") ?? "0";
+      Logger().d(checkOwner);
+      menu = [
+        {
+          "icon": "assets/icons/ic_home_inactive.png",
+          "icon_active": "assets/icons/ic_home_active.png",
+          "page_name": "Beranda",
+          "fragment": HomePage(checkOwner : checkOwner)
+        },
+        {
+          "icon": "assets/icons/ic_transaction_inactive.png",
+          "icon_active": "assets/icons/ic_transaction_active.png",
+          "page_name": "Transaksi",
+          "fragment": IndexTransactionPage()
+        },
+        if (checkOwner == "1") ... [
+          {
+            "icon": "assets/icons/ic_product_inactive.png",
+            "icon_active": "assets/icons/ic_product_active.png",
+            "page_name": "Produk",
+            "fragment": IndexProductPage()
+          },
+          {
+            "icon": "assets/icons/ic_discount_inactive.png",
+            "icon_active": "assets/icons/ic_discount_active.png",
+            "page_name": "Diskon",
+            "fragment": IndexDiscountPage()
+          },
+        ] // hanya tampilkan Produk kalau owner
+      ];
+
+      _selectedIndex = 0;
+    });
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    _controllers[index].forward(from: 0);
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 
   void _checkInternetConnection() {
@@ -133,33 +151,6 @@ class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
     }
   }
 
-  final List<Map<String, dynamic>> menu = [
-    {
-      "icon": "assets/icons/ic_home_inactive.png",
-      "icon_active": "assets/icons/ic_home_active.png",
-      "page_name": "Beranda",
-      "fragment": const HomePage()
-    },
-    {
-      "icon": "assets/icons/ic_transaction_inactive.png",
-      "icon_active": "assets/icons/ic_transaction_active.png",
-      "page_name": "Transaksi",
-      "fragment": IndexTransactionPage()
-    },
-    {
-      "icon": "assets/icons/ic_product_inactive.png",
-      "icon_active": "assets/icons/ic_product_active.png",
-      "page_name": "Produk",
-      "fragment": IndexProductPage()
-    },
-    {
-      "icon": "assets/icons/ic_discount_inactive.png",
-      "icon_active": "assets/icons/ic_discount_active.png",
-      "page_name": "Diskon",
-      "fragment": IndexDiscountPage()
-    },
-  ];
-
   Future<bool> _onWillPop() async {
     return await showDialog(
       context: context,
@@ -222,14 +213,18 @@ class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
             ),
           ),
         ),
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: menu[_selectedIndex]['fragment'],
-        ),
-        bottomNavigationBar: Container(
+        body: menu.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: menu[_selectedIndex]['fragment'],
+          ),
+        bottomNavigationBar: menu.isEmpty
+        ? SizedBox.shrink()
+        :  Container(
           padding: EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -239,39 +234,36 @@ class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
             ),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: checkOwner == "1" ? MainAxisAlignment.spaceAround : MainAxisAlignment.spaceEvenly,
             children: menu.asMap().entries.map((entry) {
               int index = entry.key;
               var item = entry.value;
 
               return GestureDetector(
                 onTap: () => _onItemTapped(index),
-                child: ScaleTransition(
-                  scale: _animations[index],
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(1000),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          _selectedIndex == index ? item['icon_active'] : item['icon'],
-                          width: 24,
-                          height: 24,
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(1000),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        _selectedIndex == index ? item['icon_active'] : item['icon'],
+                        width: checkOwner == "1" ? 24 : 25,
+                        height: checkOwner == "1" ? 24 : 25,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item['page_name'],
+                        style: TextStyle(
+                          color: _selectedIndex == index ? primaryColor : Color(0xff9CA9EE),
+                          fontSize: 12,
+                          fontWeight: _selectedIndex == index ? FontWeight.w600 : FontWeight.normal,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          item['page_name'],
-                          style: TextStyle(
-                            color: _selectedIndex == index ? primaryColor : Color(0xff9CA9EE),
-                            fontSize: 12,
-                            fontWeight: _selectedIndex == index ? FontWeight.w600 : FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );
