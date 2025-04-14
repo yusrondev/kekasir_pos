@@ -110,6 +110,7 @@ class _FormProductPageState extends State<FormProductPage> {
   bool _isConnecting = false;
   bool _isConnected = false;
   bool _isPrinting = false;
+  bool _generateBarcode = false;
   bool _isProcessing = false;
   bool _showPrinterSetup = false;
   bool _triggerBtnPrint = false;
@@ -588,7 +589,10 @@ class _FormProductPageState extends State<FormProductPage> {
       alertLottie(context, "Printer belum terhubung!", "error");
       return;
     }
-    setState(() => _isPrinting = true);
+    setState((){
+      _isPrinting = true;
+      _generateBarcode = true;
+    });
     try {
 
       dynamic barcode = await authService.getBarcode(storeId ?? "");
@@ -596,7 +600,8 @@ class _FormProductPageState extends State<FormProductPage> {
       await _connectDevice();
       await _printerService.printbarcode(
         url: barcode['url'],
-        name : nameController.text
+        name : nameController.text,
+        code : barcode['code']
       ).then((_){
         if (mounted) {
           setState(() {
@@ -980,7 +985,7 @@ class _FormProductPageState extends State<FormProductPage> {
                           border: true,
                           controller: codeController,
                           label: "Kode Produk",
-                          shortDescription: "Jika tidak diisi, Kekasir akan otomatis membuatkan kode.",
+                          shortDescription: "Jika kosong, sistem akan membuatkan kode acak",
                           placeholder: "Misalnya 3495083 (tidak wajib)...",
                           maxLength: 12,
                           maxLine: 1,
@@ -1043,7 +1048,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                       ),
                                     ),
                                     Text(
-                                      "Produk Anda tidak memiliki barcode? kami bantu untuk membuatkannya",
+                                      "Produk Anda tidak memiliki barcode? kami bantu untuk membuatkan kode secara acak",
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: primaryColor,
@@ -1175,7 +1180,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                 ),
                                 LinePrimary(),
                                 Text(
-                                  "Anda bisa cetak dan buat barcode atau cetak ulang barcode",
+                                  "Anda bisa buat barcode dan cetak / cetak ulang barcode",
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: primaryColor,
@@ -1201,33 +1206,35 @@ class _FormProductPageState extends State<FormProductPage> {
                                           absorbing: _isPrinting,
                                           child: Opacity(
                                             opacity: _isPrinting ? 0.5 : 1.0,
-                                            child: Text('Buat Barcode', style: TextStyle(fontWeight: FontWeight.w600))
+                                            child: Text('Buat & Cetak', style: TextStyle(fontWeight: FontWeight.w600))
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Gap(5),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: _isPrinting ? null : _rePrint,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white, // Ubah warna background
-                                          foregroundColor: successColor, // Warna teks/icon
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10), // Border radius
-                                            side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
+                                    if(_generateBarcode == true || widget.product != null) ... [
+                                      Gap(5),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: _isPrinting ? null : _rePrint,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white, // Ubah warna background
+                                            foregroundColor: successColor, // Warna teks/icon
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10), // Border radius
+                                              side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
+                                            ),
+                                            elevation: 0
                                           ),
-                                          elevation: 0
-                                        ),
-                                        child: AbsorbPointer(
-                                          absorbing: _isPrinting,
-                                          child: Opacity(
-                                            opacity: _isPrinting ? 0.5 : 1.0,
-                                            child: Text('Cetak Ulang', style: TextStyle(fontWeight: FontWeight.w600))
+                                          child: AbsorbPointer(
+                                            absorbing: _isPrinting,
+                                            child: Opacity(
+                                              opacity: _isPrinting ? 0.5 : 1.0,
+                                              child: Text('Cetak Ulang', style: TextStyle(fontWeight: FontWeight.w600))
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ]
                                   ],
                                 )
                               ],

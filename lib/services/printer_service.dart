@@ -114,6 +114,7 @@ class PrinterService {
   Future<void> printbarcode({
     required String url,
     required String name,
+    required String code,
   }) async {
     if (!_isConnected) {
       Logger().w("Printer tidak terkoneksi");
@@ -129,6 +130,7 @@ class PrinterService {
       // Header Toko
       _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
       _printer.printNewLine();
+      _printer.printCustom(code, 1, 1);
       _printer.printCustom(name, 1, 1);
       _printer.printNewLine();
       _printer.printNewLine();
@@ -157,6 +159,7 @@ class PrinterService {
       // Header Toko
       _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
       _printer.printNewLine();
+      _printer.printCustom(url, 1, 1);
       _printer.printCustom(name, 1, 1);
       _printer.printNewLine();
       _printer.printNewLine();

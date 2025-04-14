@@ -69,6 +69,7 @@ class _QrScannerButtonState extends State<QrScannerButton> {
         decoration: BoxDecoration(
           color: hasValue ? Color(0xffe74c3c): primaryColor,
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: ligthSky, width: 4)
         ),
         child: Icon(
           hasValue ? Icons.close_rounded : Icons.qr_code_scanner_rounded,

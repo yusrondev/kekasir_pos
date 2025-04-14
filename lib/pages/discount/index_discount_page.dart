@@ -110,17 +110,19 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Halaman ini masih dalam tahap pengembangan 😉",
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      color: Colors.white
-                    ),
-                  ),
+                  Expanded(child: 
+                    Text(
+                      "Halaman ini masih dalam tahap pengembangan, untuk sementara masih belum berfungsi 😉",
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        color: Colors.white
+                      ),
+                    )
+                  )
                 ],
               ),
             ),
