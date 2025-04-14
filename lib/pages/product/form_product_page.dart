@@ -171,6 +171,12 @@ class _FormProductPageState extends State<FormProductPage> {
         return;
       }      
 
+      if (costController.text == "" && isEdit == false) {
+        showErrorSnackbar(context, 'Pastikan harga beli sudah terisi!');
+        Navigator.pop(context, true);
+        return;
+      }      
+
       if (widget.product == null) {
         // Jika produk baru, buat produk
         success = await apiService.createProduct(
@@ -348,7 +354,8 @@ class _FormProductPageState extends State<FormProductPage> {
               ),
               PriceField(
                 controller: priceController,
-                label: "Harga *",
+                label: "Harga Produk*",
+                shortDescription: "Harga per pcs",
                 placeholder: "Misalnya 10.000...",
                 maxLine: 1,
                 border: true,
@@ -417,8 +424,7 @@ class _FormProductPageState extends State<FormProductPage> {
               if(isEdit == false || selectedValue != null) ... [
                 CustomTextFieldNumber(
                   controller: quantity,
-                  label: "Jumlah",
-                  shortDescription: "Jumlah penyesuaian stok",
+                  label: "Jumlah Stok",
                   placeholder: "Misalnya 20...",
                   maxLength: 5,
                   border: true,

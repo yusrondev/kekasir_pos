@@ -54,8 +54,9 @@ class _HomePageState extends State<HomePage> {
   String thisMonthRevenue = "";
   String lastMonthRevenue = "";
   String totalPurchases = "";
+  String totalPurchasesLastMonth = "";
   String grossProfit = "";
-  String netProfit = "";
+  String grossProfitLastMonth = "";
   String hpp = "";
 
   Timer? _debounceHit;
@@ -165,20 +166,22 @@ class _HomePageState extends State<HomePage> {
       thisMonthRevenue = prefs.getString('this_month_revenue') ?? "";
       lastMonthRevenue = prefs.getString('last_month_revenue') ?? "";
       totalPurchases = prefs.getString('total_purchases') ?? "";
+      totalPurchasesLastMonth = prefs.getString('total_purchases_last_month') ?? "";
       grossProfit = prefs.getString('gross_profit') ?? "";
-      netProfit = prefs.getString('net_profit') ?? "";
+      grossProfitLastMonth = prefs.getString('gross_profit_last_month') ?? "";
       hpp = prefs.getString('hpp') ?? "";
     });
   }
 
   /// Simpan data revenue ke SharedPreferences
-  Future<void> saveRevenueToStorage(String thisMonth, String lastMonth, String totalPurchases, String grossProfit, String netProfit, String hpp) async {
+  Future<void> saveRevenueToStorage(String thisMonth, String lastMonth, String totalPurchases, String grossProfit, String hpp, String grossProfitLastMonth, String totalPurchasesLastMonth) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('this_month_revenue', thisMonth);
     await prefs.setString('last_month_revenue', lastMonth);
     await prefs.setString('total_purchases', totalPurchases);
+    await prefs.setString('total_purchases_last_month', totalPurchasesLastMonth);
     await prefs.setString('gross_profit', grossProfit);
-    await prefs.setString('net_profit', netProfit);
+    await prefs.setString('gross_profit_last_month', grossProfitLastMonth);
     await prefs.setString('hpp', hpp);
   }
 
@@ -191,15 +194,16 @@ class _HomePageState extends State<HomePage> {
           thisMonthRevenue = data!['data']['this_month'];
           lastMonthRevenue = data['data']['last_month'];
           totalPurchases = data['data']['total_purchases'];
+          totalPurchasesLastMonth = data['data']['total_purchases_last_month'];
           grossProfit = data['data']['gross_profit'];
-          netProfit = data['data']['net_profit'];
+          grossProfitLastMonth = data['data']['gross_profit_last_month'];
           hpp = data['data']['hpp'];
         });
 
         Logger().d(data);
 
         // Simpan data revenue ke storage setelah diambil dari API
-        saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue, totalPurchases, grossProfit, netProfit, hpp);
+        saveRevenueToStorage(thisMonthRevenue, lastMonthRevenue, totalPurchases, grossProfit, hpp, grossProfitLastMonth, totalPurchasesLastMonth);
       }
     } catch (e) {
       Logger().d(e.toString());
@@ -463,7 +467,7 @@ class _HomePageState extends State<HomePage> {
               return StatefulBuilder(
                 builder: (context, setModalState) {
                   return FractionallySizedBox(
-                    heightFactor: 0.8,
+                    heightFactor: 0.5,
                     child: Container(
                       padding: EdgeInsets.all(14),
                       width: double.infinity,
@@ -493,7 +497,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "📌 Pendapatan bulan lalu"),
+                          LabelSemiBold(text: "📌 Pendapatan bulan kemarin"),
                           Text(
                             lastMonthRevenue,
                             style: TextStyle(
@@ -503,7 +507,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           LineXM(),
-                          LabelSemiBold(text: "📈 Total laba (keuntungan)"),
+                          LabelSemiBold(text: "📈 Total laba bulan ini (keuntungan)"),
                           Text(
                             grossProfit,
                             style: TextStyle(
@@ -579,14 +583,17 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Total keuntungan", style: TextStyle(fontSize: 12, color: Colors.white)),
+                          Text("Total keuntungan", style: TextStyle(fontSize: 13, color: Colors.white)),
+                          Gap(2),
                           Text(grossProfit.toString(), style: TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Colors.white
                           )),
+                          Gap(5),
+                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: Colors.white)),
+                          Gap(5),
                           Container(
-                            margin: EdgeInsets.only(top: 10),
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -595,8 +602,7 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(child: Text("Bulan Kemarin", style: TextStyle(fontSize: 10, color: primaryColor))),
-                                Expanded(child: Text(grossProfit.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor))),
+                                Expanded(child: Text(grossProfitLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryColor))),
                               ],
                             ),
                           )
@@ -615,14 +621,17 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Total belanja", style: TextStyle(fontSize: 12, color: primaryColor)),
+                          Text("Total belanja", style: TextStyle(fontSize: 13, color: primaryColor)),
+                          Gap(2),
                           Text(totalPurchases.toString(), style: TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: primaryColor
                           )),
+                          Gap(5),
+                          Text("Bulan Kemarin", style: TextStyle(fontSize: 12, color: primaryColor)),
+                          Gap(5),
                           Container(
-                            margin: EdgeInsets.only(top: 10),
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -632,8 +641,7 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(child: Text("Bulan Kemarin", style: TextStyle(fontSize: 10, color: primaryColor))),
-                                Expanded(child: Text(grossProfit.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryColor))),
+                                Expanded(child: Text(totalPurchasesLastMonth.toString(), textAlign: TextAlign.end, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryColor))),
                               ],
                             ),
                           )
