@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
           Gap(20),
           Column(
             children: [
-              Text("Selamat Datang!", style: TextStyle(
+              Text("Selamat Datang", style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 17
                 )

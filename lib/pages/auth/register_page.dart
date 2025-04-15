@@ -223,7 +223,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Gap(20),
                 Column(
                   children: [
-                    Text("Yuk, Buat Akun Baru!", style: TextStyle(
+                    Text("Buat Akun Baru", style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 17
                       )
