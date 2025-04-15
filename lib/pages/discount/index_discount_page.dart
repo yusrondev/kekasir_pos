@@ -7,6 +7,7 @@ import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -57,8 +58,8 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
   }
 
   Future<void> fetchProducts(String keyword) async {
-    final data = await ApiService().fetchProducts(keyword);
     try {
+      final data = await ApiService().fetchProducts(keyword);
       if (mounted) {
         setState(() {
           isLoadProduct = false;
@@ -66,8 +67,13 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
         });
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showErrorBottomSheet(context, e.toString());
+      if (mounted) {
+        if (e.toString().contains('expired')) {
+          showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+        } else {
+          showErrorBottomSheet(context, e.toString());
+        }
+      }
     }
   }
 

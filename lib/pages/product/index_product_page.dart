@@ -71,10 +71,12 @@ class _IndexProductPageState extends State<IndexProductPage> {
         tapped = List.generate(products.length, (index) => false);
       });
     } catch (e) {
-      if (e.toString().contains('expired')) {
-        showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
-      } else {
-        showErrorBottomSheet(context, e.toString());
+      if (mounted) {
+        if (e.toString().contains('expired')) {
+          showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+        } else {
+          showErrorBottomSheet(context, e.toString());
+        }
       }
     }
   }

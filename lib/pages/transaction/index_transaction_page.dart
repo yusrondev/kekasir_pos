@@ -12,6 +12,7 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/label_price.dart';
@@ -91,9 +92,8 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   }
 
   Future<void> fetchProducts(String keyword, String sort, String typePrice) async {
-    final data = await ApiService().fetchProducts(keyword, sort, typePrice);
-    Logger().d(data);
     try {
+      final data = await ApiService().fetchProducts(keyword, sort, typePrice);
       if (mounted) {  
         setState(() {
           isLoadProduct = false;
@@ -112,7 +112,13 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
         }
       }
     } catch (e) {
-      showErrorBottomSheet(context, e.toString());
+      if (mounted) {
+        if (e.toString().contains('expired')) {
+          showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+        } else {
+          showErrorBottomSheet(context, e.toString());
+        }
+      }
     }
   }
 
