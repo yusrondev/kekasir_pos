@@ -334,7 +334,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           counterText: "",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                          hintText: "Misalnya kekasir@gmail.com...",
+                          hintText: "Misalnya jhon@kekasir.com...",
                           hintStyle: TextStyle(
                             color: Color(0xffB1B9C3), 
                             fontSize: 14
