@@ -434,7 +434,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               FilteringTextInputFormatter
                                                   .digitsOnly,
                                               LengthLimitingTextInputFormatter(
-                                                8,
+                                                9,
                                               ),
                                             ],
                                             maxLines: 1,

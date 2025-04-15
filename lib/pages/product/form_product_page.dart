@@ -1041,14 +1041,14 @@ class _FormProductPageState extends State<FormProductPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Buat barcode Anda sendiri",
+                                      "Generate Barcode",
                                       style: TextStyle(
                                         color: primaryColor,
                                         fontWeight: FontWeight.w600
                                       ),
                                     ),
                                     Text(
-                                      "Produk Anda tidak memiliki barcode? kami bantu untuk membuatkan kode secara acak",
+                                      "Produk Anda tidak memiliki barcode? \nkami bantu mencetak barcode secara acak dan otomatis menjadikannya kode produk",
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: primaryColor,
@@ -1057,7 +1057,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   ],
                                 ),
                               ),
-                              Gap(50),
+                              Gap(20),
                               GestureDetector(
                                 onTap: (){
                                   setState(() {

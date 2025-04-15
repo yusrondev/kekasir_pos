@@ -43,6 +43,7 @@ class PrinterService {
     required String? merchantAddress,
     required String? transactionDate,
     required String? transactionTime,
+    required String? createdBy,
   }) async {
     if (!_isConnected) {
       Logger().w("Printer tidak terkoneksi");
@@ -64,6 +65,7 @@ class PrinterService {
       _printer.printLeftRight("Nota    :", invoiceNumber, 1);
       _printer.printLeftRight("Tanggal :", transactionDate.toString(), 1);
       _printer.printLeftRight("Jam     :", transactionTime.toString(), 1);
+      _printer.printLeftRight("Kasir   :", createdBy.toString(), 1);
       _printer.printCustom("-------------------------------", 1, 1);
 
       // Daftar Item

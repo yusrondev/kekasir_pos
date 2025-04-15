@@ -170,7 +170,8 @@ class _PrintPageState extends State<PrintPage> {
         merchantName: data['merchant_name'],
         merchantAddress: data['merchant_address'],
         transactionDate: transactionDate,
-        transactionTime : transactionTime
+        transactionTime : transactionTime,
+        createdBy : ""
       );
     } catch (e) {
       _logger.e('Print error: $e');

@@ -123,7 +123,8 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
         merchantName: transaction['merchant_name'],
         merchantAddress: transaction['merchant_address'],
         transactionDate: transactionDate,
-        transactionTime : transactionTime
+        transactionTime : transactionTime,
+        createdBy : createdBy
       ).then((_){
         // alertLottie(context, "Berhasil dicetak!");
       });

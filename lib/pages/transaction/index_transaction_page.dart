@@ -720,9 +720,9 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       ],
                       Row(
                         children: [
-                          PriceTag(text: formatRupiah(product.price), haveType : product.haveType),
+                          Flexible(child: PriceTag(text: formatRupiah(product.price), haveType : product.haveType)),
                           Gap(5),
-                          StockTag(text: 'Stok : ${product.availableStock.toString()}'),
+                          Flexible(child: StockTag(text: 'Stok : ${product.availableStock.toString()}')),
                         ],
                       ),
                       Gap(5),

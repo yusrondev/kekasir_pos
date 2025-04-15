@@ -293,6 +293,7 @@ class _HomePageState extends State<HomePage> {
             buildSectionFeatures(),
             Gap(10),
             buildTransactionHistory(),
+            Gap(20),
           ],
         ),
       ),

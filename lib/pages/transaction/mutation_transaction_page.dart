@@ -174,8 +174,7 @@ class _MutationTransactionPageState extends State<MutationTransactionPage> {
                   children: [
                     LabelSemiBold(text: "Pilih Tipe Harga"),
                     Gap(2),
-                    Text("Sesuaikan filter menggunakan tipe harga", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
-                    Text("Klik lagi tipe harga untuk batal memilih", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
+                    Text("Sesuaikan filter menggunakan tipe harga, klik lagi tipe harga untuk batal memilih", textAlign: TextAlign.center, style: TextStyle(fontSize: 12)),
                     LineXM(),
                     Container(
                       constraints: BoxConstraints(
