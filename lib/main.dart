@@ -6,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
+// import 'package:kekasir/pages/auth/login_page.dart';
+import 'package:kekasir/pages/auth/register_page.dart';
+import 'package:kekasir/pages/landing_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
 import 'package:kekasir/pages/profile/edit_profile_page.dart';
@@ -44,7 +47,7 @@ class MainApp extends StatelessWidget {
   Future<Widget> checkToken() async {
     AuthService authService = AuthService();
     String? token = await authService.getToken();
-    return token == null ? LoginPage() : AppLayout();
+    return token == null ? LandingPage() : AppLayout();
   }
 
   @override
@@ -110,6 +113,8 @@ class MainApp extends StatelessWidget {
           return FormDiscountPage(product : product);
         },
         '/report' : (context) => IndexReportPage(),
+        '/login' : (context) => LoginPage(),
+        '/register' : (context) => RegisterPage(),
       },
     );
   }

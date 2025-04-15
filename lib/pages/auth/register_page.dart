@@ -11,49 +11,23 @@ import 'package:kekasir/utils/ui_helper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-
-void showErrorSnackbarCustom(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Color(0xfffdcb6e),
-      showCloseIcon: true,
-      closeIconColor: Colors.black,
-      behavior: SnackBarBehavior.floating, // Membuat snackbar mengambang
-      elevation: 0,
-      margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height * 0.73, // Untuk menampilkan di atas
-        left: 16,
-        right: 16,
-      ),
-      duration: Duration(seconds: 2), // Durasi muncul
-      content: Text(
-        message,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-          color: Colors.black,
-        ),
-      ),
-      animation: CurvedAnimation(
-        parent: ModalRoute.of(context)!.animation!,
-        curve: Curves.easeOut, // Animasi lebih halus
-      ),
-    ),
-  );
-}
-
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   late InternetConnectionChecker _connectionChecker;
+
+  final TextEditingController storeNameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   final AuthService authService = AuthService();
+  
   bool isLoading = false;
   bool _obscureText = true;
   bool isDialogOpen = false;
@@ -138,6 +112,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
+    if (storeNameController.text == "") {
+      alertLottie(context, 'Pastikan nama toko sudah terisi!', 'error');
+      return;
+    }
+
     if (emailController.text == "") {
       alertLottie(context, 'Pastikan email sudah terisi!', 'error');
       return;
@@ -196,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // ignore: deprecated_member_use
-    return Scaffold(
+    return  Scaffold(
       extendBodyBehindAppBar:true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0
@@ -222,18 +201,13 @@ class _LoginPageState extends State<LoginPage> {
           Gap(20),
           Column(
             children: [
-              Text("Selamat Datang!", style: TextStyle(
+              Text("Yuk, Buat Akun Baru!", style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18
                 )
               ),
               Gap(2),
-              Text("Senang bertemu kembali 👋", style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xff57606f)
-                )
-              ),
-              Text("Masuk ke akun Anda di bawah ini", style: TextStyle(
+              Text("Hanya butuh beberapa detik untuk jadi bagian dari Kekasir 👏", style: TextStyle(
                   fontSize: 12,
                   color: Color(0xff57606f)
                 )
@@ -246,18 +220,87 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text("Nama Toko *", style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14
+                )),
+                Gap(7),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(
+                      color: secondaryColor,
+                    ),
+                  ),
+                  child: TextField(
+                    cursorColor: primaryColor,
+                    maxLength: 50,
+                    maxLines: 1,
+                    controller: storeNameController,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      hintText: "Masukkan nama toko",
+                      hintStyle: TextStyle(
+                        color: Color(0xffB1B9C3), 
+                        fontSize: 14
+                      )
+                    ),
+                  )
+                ),
+    
+                Gap(10),
+                Text("No Telepon ", style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14
+                )),
+                Gap(7),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(
+                      color: secondaryColor,
+                    ),
+                  ),
+                  child: TextField(
+                    cursorColor: primaryColor,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(14),
+                    ], 
+                    maxLength: 14,
+                    maxLines: 1,
+                    controller: phoneController,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      hintText: "Masukkan nomor telepon",
+                      hintStyle: TextStyle(
+                        color: Color(0xffB1B9C3), 
+                        fontSize: 14
+                        )
+                      ),
+                    )
+                ),
+    
+                Gap(10),
                 Text("Email *", style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14
                 )),
                 Gap(7),
                 Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                  border: Border.all(color: secondaryColor)
-                ),
-                child: TextField(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(color: secondaryColor)
+                  ),
+                  child: TextField(
                   cursorColor: primaryColor,
                   controller: emailController,
                   decoration: InputDecoration(
@@ -326,17 +369,16 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: login,
-                    child: ButtonPrimary(
-                      text: "Masuk",
-                    ),
-                  ),
+            GestureDetector(
+              onTap: () { 
+                login(); 
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: ButtonPrimary(
+                  text: "Daftar",
                 ),
-              ],
+              )
             ),
             Gap(20),
             Row(
