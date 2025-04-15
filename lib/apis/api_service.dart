@@ -36,15 +36,17 @@ class ApiService {
         List data = json.decode(response.body)['products'];
         return data.map((json) => Product.fromJson(json)).toList();
       } else {
-        // Log kesalahan jika response gagal
+        if (response.statusCode == 403) {
+          throw Exception("expired");
+        }
         Logger().d('Gagal mengambil produk. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      // Menangani error jaringan atau parsing JSON
-      Logger().d('Terjadi kesalahan: $e');
+      if (e.toString().contains('expired')) {
+        throw Exception("expired");
+      }
     }
 
-    // Jika terjadi error, kembalikan list kosong agar aplikasi tetap berjalan
     return [];
   }
 

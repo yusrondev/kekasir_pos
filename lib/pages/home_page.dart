@@ -7,6 +7,7 @@ import 'package:kekasir/apis/api_service_transaction.dart';
 import 'package:kekasir/components/custom_button_component.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/transaction.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -83,7 +84,6 @@ class _HomePageState extends State<HomePage> {
     _debounceHit = Timer(Duration(milliseconds: 500), () {
       getRevenue(); // Update data dari API setelah 1 detik
       fetchLastUpdateTransaction();
-      checkExpired();
     });
 
     // Cek apakah user sudah melihat tutorial sebelumnya
@@ -237,7 +237,11 @@ class _HomePageState extends State<HomePage> {
       if (mounted) {
         // ignore: use_build_context_synchronously
         Logger().d(e.toString());
-        showErrorBottomSheet(context, e.toString());
+        if (e.toString().contains('expired')) {
+          showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+        } else {
+          showErrorBottomSheet(context, e.toString());
+        }
       }
     }
   }
@@ -249,82 +253,6 @@ class _HomePageState extends State<HomePage> {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       alertLottie(context, 'Tidak dapat membuka Whatsapp', 'error');
-    }
-  }
-
-  void _showNoExpiredDialog() {
-    if (!isDialogOpen) {
-      isDialogOpen = true;
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        // ignore: deprecated_member_use
-        barrierColor: Colors.black.withOpacity(0.7), // Atur tingkat 
-        // ignore: deprecated_member_use
-        builder: (context) => WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            clipBehavior: Clip.hardEdge,
-            backgroundColor: Colors.white,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8, // 80% dari layar
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Lottie.asset(
-                      'assets/animations/error.json',
-                      width: 60,
-                      frameRate: const FrameRate(90),
-                    ),
-                  ),
-                  Gap(5),
-                  Center(
-                    child: Text(
-                      "Masa aktif akun telah berakhir!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Gap(5),
-                  Center(child: Text("Perpanjang agar tetap bisa mengakses layanan", textAlign: TextAlign.center, style: TextStyle(fontSize: 13))),
-                  Gap(10),
-                  GestureDetector(
-                    onTap: () => openWhatsApp(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: ButtonPrimary(
-                            text: "Hubungi Kekasir",
-                          )
-                        )
-                      ],
-                    ),
-                  ),
-                  Gap(5),
-                  Center(child: Text("Notifikasi ini akan tetap ditampilkan hingga akun Anda diaktifkan kembali.", textAlign: TextAlign.center, style: TextStyle(fontSize: 10))),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
-  Future<void> checkExpired() async {
-    try {
-      final data = await ApiServiceTransaction().checkExpired();
-      if (data == 403) {
-        _showNoExpiredDialog();
-      }
-    } catch (e) {
-      if (mounted) {
-        // ignore: use_build_context_synchronously
-        Logger().d(e.toString());
-      }
     }
   }
 
@@ -341,7 +269,6 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: () async {
           await getRevenue(); // Update data saat refresh
-          await checkExpired(); // Update data saat refresh
           await fetchLastUpdateTransaction();
         },
         color: primaryColor,

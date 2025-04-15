@@ -54,6 +54,9 @@ class ApiServiceTransaction {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
+      if (response.statusCode == 403) {
+        throw Exception("expired");
+      }
       throw Exception("Server sedang bermasalah");
     }
   }

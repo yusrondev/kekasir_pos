@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/qr_scanner_button.dart';
+import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
@@ -62,17 +63,19 @@ class _IndexProductPageState extends State<IndexProductPage> {
   }
 
   Future<void> fetchProducts(String text) async {
-    final data = await ApiService().fetchProducts(searchField.text);
-    logger.d(data);
-    if (!mounted) return; // Pastikan widget masih ada sebelum setState
     try {
+      final data = await ApiService().fetchProducts(searchField.text);
       setState(() {
         products = data;
         isLoading = false;
         tapped = List.generate(products.length, (index) => false);
       });
     } catch (e) {
-      showErrorBottomSheet(context, e.toString());
+      if (e.toString().contains('expired')) {
+        showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+      } else {
+        showErrorBottomSheet(context, e.toString());
+      }
     }
   }
 
