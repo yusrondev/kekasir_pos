@@ -1249,7 +1249,7 @@ class _FormProductPageState extends State<FormProductPage> {
                     CustomTextField(
                       border: true,
                       controller: nameController,
-                      label: "Nama *",
+                      label: "Nama Produk *",
                       placeholder: "Misalnya Snack...",
                       maxLine: 1,
                     ),
@@ -1257,7 +1257,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       border: true,
                       controller: shortDescriptionController,
                       label: "Deskripsi Singkat",
-                      placeholder: "Misalnya Varian Pedas Banget (tidak wajib)...",
+                      placeholder: "Misalnya varian pedas banget (tidak wajib)...",
                       maxLength : 100,
                     ),
                     Row(

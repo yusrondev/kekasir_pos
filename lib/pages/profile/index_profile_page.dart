@@ -422,6 +422,8 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
             passwordController.text = "";
           });
 
+          await removeRevenue();
+          
           Navigator.pop(context);
           // berhasil
           alertLottie(context, "Data berhasil direset!");
@@ -438,6 +440,17 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
       // ignore: use_build_context_synchronously
       showErrorBottomSheet(context, e.toString());
     }
+  }
+
+  Future<void> removeRevenue() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('this_month_revenue');
+    await prefs.remove('last_month_revenue');
+    await prefs.remove('total_purchases');
+    await prefs.remove('total_purchases_last_month');
+    await prefs.remove('gross_profit');
+    await prefs.remove('gross_profit_last_month');
+    await prefs.remove('hpp');
   }
   
   void showInputDialog() {
