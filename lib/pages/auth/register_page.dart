@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
+import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final TextEditingController storeNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -111,7 +113,20 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void login() async {
+  bool isValidEmail(String email) {
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9._%+-]+@kekasir\.com$');
+    return regex.hasMatch(email);
+  }
+
+  void register() async {
+    if (!isValidEmail(emailController.text)) {
+      setState(() {
+        isLoading = false;
+      });
+      alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
+      return;
+    }
+
     if (storeNameController.text == "") {
       alertLottie(context, 'Pastikan nama toko sudah terisi!', 'error');
       return;
@@ -132,7 +147,10 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      String? error = await authService.login(
+      String? error = await authService.register(
+        storeNameController.text,
+        phoneController.text,
+        addressController.text,
         emailController.text,
         passwordController.text,
       );
@@ -191,179 +209,190 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       body: isLoading ? Center(
           child:CustomLoader.showCustomLoader(),
-        ) : Column(
-        children: [
-          Gap(70),
-          Image.asset(
-            'assets/images/logo-blue.png',
-            width: 25,
-          ),
-          Gap(20),
-          Column(
+        ) : ListView(
+            padding: EdgeInsets.symmetric(vertical: 10),
             children: [
-              Text("Yuk, Buat Akun Baru!", style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18
-                )
-              ),
-              Gap(2),
-              Text("Hanya butuh beberapa detik untuk jadi bagian dari Kekasir 👏", style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xff57606f)
-                )
-              )
-            ],
-          ),
-          Gap(10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
               children: [
-                Text("Nama Toko *", style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14
-                )),
-                Gap(7),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                    border: Border.all(
-                      color: secondaryColor,
-                    ),
-                  ),
-                  child: TextField(
-                    cursorColor: primaryColor,
-                    maxLength: 50,
-                    maxLines: 1,
-                    controller: storeNameController,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                      hintText: "Masukkan nama toko",
-                      hintStyle: TextStyle(
-                        color: Color(0xffB1B9C3), 
-                        fontSize: 14
+                Gap(70),
+                Image.asset(
+                  'assets/images/logo-blue.png',
+                  width: 25,
+                ),
+                Gap(20),
+                Column(
+                  children: [
+                    Text("Yuk, Buat Akun Baru!", style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17
                       )
                     ),
-                  )
+                    Gap(2),
+                    Text("Hanya butuh beberapa detik untuk jadi bagian dari Kekasir 👏", style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xff57606f)
+                      )
+                    )
+                  ],
                 ),
-    
                 Gap(10),
-                Text("No Telepon ", style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14
-                )),
-                Gap(7),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                    border: Border.all(
-                      color: secondaryColor,
-                    ),
-                  ),
-                  child: TextField(
-                    cursorColor: primaryColor,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(14),
-                    ], 
-                    maxLength: 14,
-                    maxLines: 1,
-                    controller: phoneController,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                      hintText: "Masukkan nomor telepon",
-                      hintStyle: TextStyle(
-                        color: Color(0xffB1B9C3), 
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Nama Toko *", style: TextStyle(
+                        fontWeight: FontWeight.w600,
                         fontSize: 14
+                      )),
+                      Gap(7),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: secondaryColor,
+                          ),
+                        ),
+                        child: TextField(
+                          cursorColor: primaryColor,
+                          maxLength: 50,
+                          maxLines: 1,
+                          controller: storeNameController,
+                          decoration: InputDecoration(
+                            counterText: "",
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            hintText: "Masukkan nama toko",
+                            hintStyle: TextStyle(
+                              color: Color(0xffB1B9C3), 
+                              fontSize: 14
+                            )
+                          ),
                         )
                       ),
-                    )
-                ),
-    
-                Gap(10),
-                Text("Email *", style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14
-                )),
-                Gap(7),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                    border: Border.all(color: secondaryColor)
-                  ),
-                  child: TextField(
-                  cursorColor: primaryColor,
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    counterText: "",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    hintText: "Misalnya kekasir@gmail.com...",
-                    hintStyle: TextStyle(
-                      color: Color(0xffB1B9C3), 
-                      fontSize: 14
-                      )
-                    ),
-                  )
-                ),
-    
-                Gap(10),
-    
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Password *", style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14
-                    )),
-                    Gap(7),
-                    Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      border: Border.all(color: secondaryColor)
-                    ),
-                    child: TextField(
-                      controller: passwordController,
-                      cursorColor: primaryColor,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        counterText: "",
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                        hintText: "******",
-                        suffixIcon: IconButton(
-                          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, size: 20, color: Color(0xff747d8c)),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
+                      Gap(10),
+                      CustomTextField(
+                        border: true,
+                        controller: addressController,
+                        label: "Alamat",
+                        placeholder: "Misalnya Jl Pahlawan (tidak wajib)...",
+                        maxLength : 100,
+                      ),
+                      Text("No Telepon ", style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14
+                      )),
+                      Gap(7),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: secondaryColor,
+                          ),
                         ),
-                        hintStyle: TextStyle(
-                          color: Color(0xffB1B9C3), 
-                          fontSize: 14
+                        child: TextField(
+                          cursorColor: primaryColor,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(14),
+                          ], 
+                          maxLength: 14,
+                          maxLines: 1,
+                          controller: phoneController,
+                          decoration: InputDecoration(
+                            counterText: "",
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            hintText: "Masukkan nomor telepon",
+                            hintStyle: TextStyle(
+                              color: Color(0xffB1B9C3), 
+                              fontSize: 14
+                              )
+                            ),
                           )
+                      ),
+                  
+                      Gap(10),
+                      Text("Email *", style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14
+                      )),
+                      Gap(7),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          border: Border.all(color: secondaryColor)
                         ),
+                        child: TextField(
+                        cursorColor: primaryColor,
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          counterText: "",
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                          hintText: "Misalnya kekasir@gmail.com...",
+                          hintStyle: TextStyle(
+                            color: Color(0xffB1B9C3), 
+                            fontSize: 14
+                            )
+                          ),
+                        )
+                      ),
+                  
+                      Gap(10),
+                  
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Password *", style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14
+                          )),
+                          Gap(7),
+                          Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            border: Border.all(color: secondaryColor)
+                          ),
+                          child: TextField(
+                            controller: passwordController,
+                            cursorColor: primaryColor,
+                            obscureText: _obscureText,
+                            decoration: InputDecoration(
+                              counterText: "",
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                              hintText: "******",
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, size: 20, color: Color(0xff747d8c)),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureText = !_obscureText;
+                                  });
+                                },
+                              ),
+                              hintStyle: TextStyle(
+                                color: Color(0xffB1B9C3), 
+                                fontSize: 14
+                                )
+                              ),
+                            )
+                          ),
+                          Gap(10),
+                        ],
                       )
-                    ),
-                    Gap(10),
-                  ],
-                )
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
+          ] 
+        ),
       bottomNavigationBar: isLoading != true ? Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Column(
@@ -371,7 +400,7 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             GestureDetector(
               onTap: () { 
-                login(); 
+                register(); 
               },
               child: SizedBox(
                 width: double.infinity,

@@ -122,7 +122,7 @@ class _LandingPageState extends State<LandingPage> {
                           ),
                           Gap(3),
                           Text(
-                            "Kelola toko lebih efisien dan profesional, langsung dari genggaman Anda. Catat transaksi, pantau stok hanya dengan satu aplikasi, solusi cepat dan mudah untuk manajemen kasir",
+                            "Kelola toko lebih efisien langsung dari genggaman Anda. Catat transaksi, produk, pantau stok hanya dengan satu aplikasi, solusi cepat dan mudah untuk manajemen kasir",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,

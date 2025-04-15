@@ -44,6 +44,38 @@ class AuthService {
       return errorData['error']; // Mengembalikan pesan error dari API
     }
   }
+  
+  Future<String?> register(String store, String? phone, String? address, String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/register'),
+      headers: {'X-API-TOKEN': apiToken!},
+      body: {
+        'store' : store,
+        'phone' : phone ?? "",
+        'address' : address ?? "",
+        'email': email, 
+        'password': password
+      },
+    );
+
+    Logger().d(response.body); // Log respons dari server
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final token = data['access_token'];
+      final isOwner = data['is_owner'];
+      final storeId = data['store_id'];
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', token);
+      await prefs.setString('is_owner', isOwner);
+      await prefs.setString('store_id', storeId);
+      return null; // Jika login berhasil, tidak ada error
+    } else {
+      final errorData = jsonDecode(response.body);
+      return errorData['error']; // Mengembalikan pesan error dari API
+    }
+  }
 
   // Dapatkan Token dari SharedPreferences
   Future<String?> getToken() async {

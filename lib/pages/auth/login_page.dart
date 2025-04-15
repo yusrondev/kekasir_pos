@@ -224,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Text("Selamat Datang!", style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 18
+                  fontSize: 17
                 )
               ),
               Gap(2),
