@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
@@ -23,7 +24,8 @@ import 'package:kekasir/pages/transaction/index_transaction_page.dart';
 import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
-import 'package:intl/date_symbol_data_local.dart'; // Tambahkan ini
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:logger/web.dart'; // Tambahkan ini
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -31,6 +33,16 @@ Future<void> main() async {
   await initializeDateFormatting('id_ID', null); // Inisialisasi data lokal
 
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // Cek apakah ada update dari Play Store
+  try {
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      await InAppUpdate.performImmediateUpdate();
+    }
+  } catch (e) {
+    Logger().d('Gagal memeriksa update: $e');
+  }
 
   WidgetsFlutterBinding.ensureInitialized(); // untuk disable rotasi
   SystemChrome.setPreferredOrientations([
