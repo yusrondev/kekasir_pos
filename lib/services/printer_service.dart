@@ -128,11 +128,9 @@ class PrinterService {
 
     try {
       // Header Toko
-      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
-      _printer.printNewLine();
-      _printer.printCustom(code, 1, 1);
       _printer.printCustom(name, 1, 1);
-      _printer.printNewLine();
+      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printCustom(code, 1, 1);
       _printer.printNewLine();
       _printer.printNewLine();
       _printer.printNewLine();
@@ -157,11 +155,9 @@ class PrinterService {
 
     try {
       // Header Toko
-      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
-      _printer.printNewLine();
-      _printer.printCustom(url, 1, 1);
       _printer.printCustom(name, 1, 1);
-      _printer.printNewLine();
+      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printCustom(url, 1, 1);
       _printer.printNewLine();
       _printer.printNewLine();
       _printer.printNewLine();

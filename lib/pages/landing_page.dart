@@ -93,10 +93,14 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset('assets/images/wave.png', fit: BoxFit.cover),
+            ),
             // Konten utama
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: Column(
                   children: [
                     Expanded(
@@ -120,13 +124,13 @@ class _LandingPageState extends State<LandingPage> {
                               fontSize: 18,
                             ),
                           ),
-                          Gap(3),
+                          Gap(5),
                           Text(
                             "Kelola toko lebih efisien langsung dari genggaman Anda. Catat transaksi, produk, pantau stok hanya dengan satu aplikasi, solusi cepat dan mudah untuk manajemen kasir",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 13,
+                              fontSize: 14,
                             ),
                           )
                         ],

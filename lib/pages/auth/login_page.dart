@@ -214,12 +214,12 @@ class _LoginPageState extends State<LoginPage> {
           child:CustomLoader.showCustomLoader(),
         ) : Column(
         children: [
-          Gap(70),
+          Gap(60),
           Image.asset(
             'assets/images/logo-blue.png',
             width: 25,
           ),
-          Gap(20),
+          Gap(10),
           Column(
             children: [
               Text("Selamat Datang", style: TextStyle(

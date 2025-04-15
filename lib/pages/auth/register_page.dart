@@ -228,12 +228,12 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
             Column(
               children: [
-                Gap(70),
+                Gap(60),
                 Image.asset(
                   'assets/images/logo-blue.png',
                   width: 25,
                 ),
-                Gap(20),
+                Gap(10),
                 Column(
                   children: [
                     Text("Buat Akun Baru", style: TextStyle(
