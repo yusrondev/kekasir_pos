@@ -130,16 +130,16 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    if (passwordController.text == "") {
-      alertLottie(context, 'Pastikan password sudah terisi!', 'error');
-      return;
-    }
-
     if (!isValidEmail(emailController.text)) {
       setState(() {
         isLoading = false;
       });
       alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
+      return;
+    }
+
+    if (passwordController.text == "") {
+      alertLottie(context, 'Pastikan password sudah terisi!', 'error');
       return;
     }
 
