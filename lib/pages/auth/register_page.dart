@@ -264,7 +264,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             counterText: "",
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                            hintText: "Masukkan nama toko",
+                            hintText: "Misalnya Toko Makmur...",
                             hintStyle: TextStyle(
                               color: Color(0xffB1B9C3), 
                               fontSize: 14
@@ -284,7 +284,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.w600,
                         fontSize: 14
                       )),
-                      Gap(7),
+                      Text("Dapatkan informasi menarik dengan mengisi nomor telepon yang valid", style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xff747d8c)
+                      )),
+                      Gap(5),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -307,7 +311,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             counterText: "",
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                            hintText: "Masukkan nomor telepon",
+                            hintText: "08... (tidak wajib)",
                             hintStyle: TextStyle(
                               color: Color(0xffB1B9C3), 
                               fontSize: 14
@@ -321,7 +325,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.w600,
                         fontSize: 14
                       )),
-                      Gap(7),
+                      Text("Harus menggunakan domain @kekasir.com", style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xff747d8c)
+                      )),
+                      Gap(5),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
