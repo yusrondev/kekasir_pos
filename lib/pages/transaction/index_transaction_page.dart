@@ -391,7 +391,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                     padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                     decoration: BoxDecoration(
                       border: Border.all(color: primaryColor),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text('Stok : ${availableStock.toString()}', style: TextStyle(color: primaryColor)),
                   )

@@ -74,6 +74,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar:true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0), // Ukuran AppBar jadi 0

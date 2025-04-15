@@ -9,6 +9,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
+import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -125,6 +126,11 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (storeNameController.text.length < 3) {
+      alertLottie(context, "Nama toko minimal 3 karakter", "error");
+      return;
+    }
+
     if (emailController.text == "") {
       alertLottie(context, 'Pastikan email sudah terisi!', 'error');
       return;
@@ -143,6 +149,11 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (passwordController.text.length < 6) {
+      alertLottie(context, "Jumlah password minimal 6 karakter", "error");
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -155,6 +166,8 @@ class _RegisterPageState extends State<RegisterPage> {
         emailController.text,
         passwordController.text,
       );
+
+      Logger().d(error);
 
       if (error == null) {
         if (mounted) { // Pastikan widget masih terpasang
@@ -246,7 +259,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.w600,
                         fontSize: 14
                       )),
-                      Gap(7),
+                      Text("Minimal 3 karakter", style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xff747d8c)
+                      )),
+                      Gap(5),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -278,6 +295,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: addressController,
                         label: "Alamat",
                         placeholder: "Misalnya Jl Pahlawan (tidak wajib)...",
+                        shortDescription: "Nantinya akan tampil di nota",
                         maxLength : 100,
                       ),
                       Text("No Telepon ", style: TextStyle(
@@ -361,7 +379,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontWeight: FontWeight.w600,
                             fontSize: 14
                           )),
-                          Gap(7),
+                          Text("Minimal 6 karakter", style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff747d8c)
+                          )),
+                          Gap(5),
                           Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),

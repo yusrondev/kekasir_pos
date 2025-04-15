@@ -46,19 +46,21 @@ class AuthService {
   }
   
   Future<String?> register(String store, String? phone, String? address, String email, String password) async {
+    Logger().d('ping');
+
     final response = await http.post(
       Uri.parse('$apiUrl/register'),
       headers: {'X-API-TOKEN': apiToken!},
       body: {
-        'store' : store,
-        'phone' : phone ?? "",
-        'address' : address ?? "",
+        'store': store,
+        'phone': phone,
+        'address': address,
         'email': email, 
         'password': password
       },
     );
 
-    Logger().d(response.body); // Log respons dari server
+    Logger().d(response.statusCode); // Log respons dari server
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
