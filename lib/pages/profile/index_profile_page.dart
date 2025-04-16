@@ -214,12 +214,12 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/detail-package'),
-                    child: Row(
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/detail-package'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       children: [
                         Image.asset(
                           'assets/icons/sparkles.png',
@@ -229,9 +229,9 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                         Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
                       ],
                     ),
-                  ),
-                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
-                ],
+                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                  ],
+                ),
               ),
               LineXM(),
               Row(
