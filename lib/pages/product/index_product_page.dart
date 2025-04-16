@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter/material.dart';
 import 'package:kekasir/components/custom_field_component.dart';
@@ -225,20 +226,24 @@ class _IndexProductPageState extends State<IndexProductPage> {
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
-                                child: Image.network(
-                                  product.image,
+                                child: CachedNetworkImage(
+                                  imageUrl: product.image,
                                   width: 160,
                                   height: 160,
                                   fit: BoxFit.fitWidth,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/empty.png', 
-                                      width: 160,
-                                      height: 160,
-                                      fit: BoxFit.fitWidth
-                                    );
-                                  },
-                                )
+                                  placeholder: (context, url) => Image.asset(
+                                    'assets/images/empty.png',
+                                    width: 160,
+                                    height: 160,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  errorWidget: (context, url, error) => Image.asset(
+                                    'assets/images/empty.png',
+                                    width: 160,
+                                    height: 160,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
                               ),
                             ),
                             StockBadge(availableStock: product.availableStock),

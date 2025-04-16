@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -666,19 +667,23 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            product.image,
+                          child: CachedNetworkImage(
+                            imageUrl : product.image,
                             width: 65,
                             height: 65,
                             fit: BoxFit.fitWidth,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/empty.png', 
-                                width: 65,
-                                height: 65,
-                                fit: BoxFit.fitWidth,
-                              );
-                            },
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/empty.png', 
+                              width: 65,
+                              height: 65,
+                              fit: BoxFit.fitWidth,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/empty.png',
+                              width: 65,
+                              height: 65,
+                              fit: BoxFit.fitWidth,
+                            ),
                           ),
                         ),
                         Container(

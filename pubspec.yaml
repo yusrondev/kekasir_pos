@@ -32,6 +32,7 @@ dependencies:
   blue_thermal_printer: ^1.2.3
   simple_barcode_scanner: ^0.3.0
   in_app_update: ^4.2.3
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -611,19 +612,23 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        cartItem['product']['image'] ?? "",
+                      child: CachedNetworkImage(
+                        imageUrl : cartItem['product']['image'] ?? "",
                         width: 60,
                         height: 60,
                         fit: BoxFit.fitWidth,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/images/empty.png',
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.fitWidth,
-                          );
-                        },
+                        placeholder: (context, url) => Image.asset(
+                          'assets/images/empty.png', 
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.fitWidth,
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/empty.png', 
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.fitWidth
+                        )
                       ),
                     ),
                     Gap(10),

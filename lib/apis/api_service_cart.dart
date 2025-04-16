@@ -40,13 +40,16 @@ class ApiServiceCart {
   }
   
   Future<CartSummary> fetchCartSummary(String? typePrice) async {
-    final response = await http.get(Uri.parse('$apiUrl/cart/total-price?type_price=$typePrice'), headers: await _headers);
-
-    if (response.statusCode == 200) {
-      Logger().d(response.body);
-      final Map<String, dynamic> data = json.decode(response.body);
-      return CartSummary.fromJson(data);
-    } else {
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/cart/total-price?type_price=$typePrice'), headers: await _headers);
+      if (response.statusCode == 200) {
+        Logger().d(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
+        return CartSummary.fromJson(data);
+      } else {
+        return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
+      }
+    } catch (e) {
       return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
     }
   }
