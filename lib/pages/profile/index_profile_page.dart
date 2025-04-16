@@ -423,6 +423,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           await removeRevenue();
           
           Navigator.pop(context);
+          Navigator.pop(context, true);
           // berhasil
           alertLottie(context, "Data berhasil direset!");
         }

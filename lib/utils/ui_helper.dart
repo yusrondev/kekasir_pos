@@ -100,7 +100,7 @@ void alertLottie(BuildContext context, String message, [String? icon]) {
             Center(
               child: Lottie.asset(
                 "assets/animations/$icon.json",
-                width: 60,
+                width: 50,
                 frameRate: const FrameRate(90),
                 repeat: icon == 'info' ? true : false
               ),

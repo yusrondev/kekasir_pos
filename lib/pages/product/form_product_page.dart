@@ -408,7 +408,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
       if (quantity.text.isEmpty && isEdit == false) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
         return;
       }    
 
@@ -417,38 +417,38 @@ class _FormProductPageState extends State<FormProductPage> {
 
       if (nameController.text == "") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
         return;
       }
 
       if (priceController.text == "") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
         return;
       }      
 
       if (costController.text == "" && selectedValue.toString() == "Masuk") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         return;
       }      
 
       if (costController.text == "" && isEdit == false) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan harga beli sudah terisi!', 'error');
         return;
       }      
 
       int? parsedQuantity = int.tryParse(quantity.text);
       if (parsedQuantity == 0 && selectedValue.toString().isNotEmpty) {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'info');
+        alertLottie(context, 'Pastikan jumlah stok tidak 0!', 'error');
         return;
       }
 
       if (quantity.text == "" && selectedValue.toString() != "null") {
         Navigator.pop(context, true);
-        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'info');
+        alertLottie(context, 'Pastikan jumlah stok sudah terisi!', 'error');
         return;
       }      
 
@@ -469,20 +469,20 @@ class _FormProductPageState extends State<FormProductPage> {
         int? parsedQuantity = int.tryParse(quantity.text);
         if (selectedValue.toString() == "Keluar" && parsedQuantity != null && parsedQuantity > availableStock) {
           Navigator.pop(context, true);
-          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'info');
+          alertLottie(context, 'Jumlah melebihi stok yang tersedia!', 'error');
           return;
         }
 
         if (quantity.text.isNotEmpty && selectedValue == null) {
           Navigator.pop(context, true);
-          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'info');
+          alertLottie(context, 'Pastikan tipe penyesuaian sudah terpilih!', 'error');
           return;
         }
 
         if (selectedValue.toString() == "Masuk" || selectedValue.toString() == "Keluar") {
           if (quantity.text == "") {
             Navigator.pop(context, true);
-            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'info');
+            alertLottie(context, 'Pastikan jumlah stok produk sudah terisi!', 'error');
             return;
           }
         }
@@ -1041,14 +1041,14 @@ class _FormProductPageState extends State<FormProductPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Generate Barcode",
+                                      widget.product == null ? "Generate Barcode" : "Cetak Ulang Barcode",
                                       style: TextStyle(
                                         color: primaryColor,
                                         fontWeight: FontWeight.w600
                                       ),
                                     ),
                                     Text(
-                                      "Produk Anda tidak memiliki barcode? \nkami bantu mencetak barcode secara acak dan otomatis menjadikannya kode produk",
+                                      widget.product == null ? "Produk Anda tidak memiliki barcode? \nkami bantu mencetak barcode secara acak dan otomatis menjadikannya kode produk" : "Produk ini sudah memiliki barcode, Anda bisa cetak ulang",
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: primaryColor,
@@ -1178,7 +1178,9 @@ class _FormProductPageState extends State<FormProductPage> {
                                       ),
                                   ],
                                 ),
+                                if(widget.product == null)
                                 LinePrimary(),
+                                if(widget.product == null)
                                 Text(
                                   "Anda bisa buat barcode dan cetak / cetak ulang barcode",
                                   style: TextStyle(
@@ -1190,29 +1192,31 @@ class _FormProductPageState extends State<FormProductPage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: _isPrinting ? null : _printTest,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: bgSuccess, // Ubah warna background
-                                          foregroundColor: successColor, // Warna teks/icon
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10), // Border radius
-                                            side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
+                                    if(widget.product == null) ... [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: _isPrinting ? null : _printTest,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: bgSuccess, // Ubah warna background
+                                            foregroundColor: successColor, // Warna teks/icon
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10), // Border radius
+                                              side: BorderSide(color: _isPrinting ? secondaryColor : successColor, width: 1), // Warna dan ketebalan border
+                                            ),
+                                            elevation: 0
                                           ),
-                                          elevation: 0
-                                        ),
-                                        child: AbsorbPointer(
-                                          absorbing: _isPrinting,
-                                          child: Opacity(
-                                            opacity: _isPrinting ? 0.5 : 1.0,
-                                            child: Text('Buat & Cetak', style: TextStyle(fontWeight: FontWeight.w600))
+                                          child: AbsorbPointer(
+                                            absorbing: _isPrinting,
+                                            child: Opacity(
+                                              opacity: _isPrinting ? 0.5 : 1.0,
+                                              child: Text('Buat & Cetak', style: TextStyle(fontWeight: FontWeight.w600))
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    if(_generateBarcode == true || widget.product != null) ... [
                                       Gap(5),
+                                    ],
+                                    if(_generateBarcode == true || widget.product != null) ... [
                                       Expanded(
                                         child: ElevatedButton(
                                           onPressed: _isPrinting ? null : _rePrint,
@@ -1251,6 +1255,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       controller: nameController,
                       label: "Nama Produk *",
                       placeholder: "Misalnya Snack...",
+                      maxLength : 30,
                       maxLine: 1,
                     ),
                     CustomTextField(
@@ -1574,12 +1579,12 @@ class _FormProductPageState extends State<FormProductPage> {
         child: GestureDetector(
           onTap: () {
             if (nameController.text == "") {
-              alertLottie(context, 'Pastikan nama produk sudah terisi!', 'info');
+              alertLottie(context, 'Pastikan nama produk sudah terisi!', 'error');
               return;
             }
 
             if (priceController.text == "") {
-              alertLottie(context, 'Pastikan harga produk sudah terisi!', 'info');
+              alertLottie(context, 'Pastikan harga produk sudah terisi!', 'error');
               return;
             }
 
