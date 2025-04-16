@@ -12,6 +12,7 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailPackagePage extends StatefulWidget {
   const DetailPackagePage({super.key});
@@ -71,6 +72,17 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
     }
   }
 
+  void openWhatsApp() async {
+    final Uri url = Uri.parse(
+        'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan%20mengenai%20paket!');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      // ignore: use_build_context_synchronously
+      alertLottie(context, 'Tidak dapat membuka Whatsapp');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +115,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () => openWhatsApp(),
                     child: ButtonPrimary(
                       text: "Hubungi Kekasir",
                     ),
