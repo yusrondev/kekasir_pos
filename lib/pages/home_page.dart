@@ -332,7 +332,9 @@ class _HomePageState extends State<HomePage> {
         GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, '/profile').then((value) {
-              getRevenue();
+              if (value == true) {
+                getRevenue();
+              }
             });
           },
           child: Image.asset('assets/icons/menu.png', width: 23, key: _buttonKey,),

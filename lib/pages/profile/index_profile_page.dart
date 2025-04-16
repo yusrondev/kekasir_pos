@@ -43,7 +43,8 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   void logout() async {
     await AuthService().logout();
     // ignore: use_build_context_synchronously
-    Navigator.pop(context);
+    Navigator.pop(context, false);
+    Navigator.pop(context, false);
     Navigator.pushReplacement(
       // ignore: use_build_context_synchronously
       context,
