@@ -42,6 +42,8 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
 
   void logout() async {
     await AuthService().logout();
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
     Navigator.pushReplacement(
       // ignore: use_build_context_synchronously
       context,
@@ -313,7 +315,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               DialogHelper.customDialog(context: context, onConfirm: (){showInputDialog();}, content: "Semua data yang sudah Anda tambahkan akan dihapus secara permanen, termasuk produk, transaksi, stok, laporan, dan mutasi. \n\nApakah Anda yakin dengan tindakan ini?", title: "Peringatan Penting!", actionButton: true);
             },
             child: Container(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 13),
               decoration: BoxDecoration(
                 border: Border.all(color: Color(0xffE7E7E7)),
                 color: Color(0xffF3F3F3),

@@ -54,8 +54,8 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
         setState(() {
           dataMe = data;
           isLoading = false;
-          expiredDateStr = data['store']['expired_date'];
-          periodInMonths = data['package']['period'];
+          expiredDateStr = data['store']['expired_date'] ?? "";
+          periodInMonths = data['package']['period'] ?? "";
         });
 
         Logger().d(expiredDateStr);
@@ -74,7 +74,8 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
 
   void openWhatsApp() async {
     final Uri url = Uri.parse(
-        'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan%20mengenai%20paket!');
+      'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan%20mengenai%20paket!',
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
@@ -116,9 +117,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () => openWhatsApp(),
-                    child: ButtonPrimary(
-                      text: "Hubungi Kekasir",
-                    ),
+                    child: ButtonPrimary(text: "Hubungi Kekasir"),
                   ),
                 ),
               ],
@@ -129,15 +128,14 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
               children: [
                 Expanded(
                   child: Text(
-                    "Nikmati kemudahan berlangganan paket Kekasir langsung via WhatsApp resmi kami.", 
+                    "Berlangganan paket Kekasir langsung via WhatsApp resmi kami.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xff57606f)
-                  )),
+                    style: TextStyle(fontSize: 12, color: Color(0xff57606f)),
+                  ),
                 ),
               ],
             ),
+            Gap(10),
           ],
         ),
       );
@@ -147,22 +145,50 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
   }
 
   Widget buildProgressLayout() {
-    if (isLoading || expiredDateStr.isEmpty || dataMe == null) {
+    if (isLoading || dataMe == null) {
       return Center(child: CustomLoader.showCustomLoader());
     }
-    DateTime expiredDate = DateTime.parse(expiredDateStr);
+
     DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day); // Hanya tanggal
+    DateTime today = DateTime(now.year, now.month, now.day);
 
-    final DateTime startDate = DateTime(
-      expiredDate.year,
-      expiredDate.month - periodInMonths,
-      expiredDate.day,
-    );
+    bool isUnlimited = dataMe!['store']['expired_date'] == null;
+    int rawPeriod = dataMe!['package']['period'];
+    String packageDuration = "";
 
-    String lastUpdate = DateFormat("d MMMM yyyy HH:mm", 'id_ID').format(
-      DateTime.parse(dataMe!['store']['updated_at'])
-    );
+    double progress = 1.0;
+    int remainingDays = 0;
+
+    if (!isUnlimited) {
+      DateTime expiredDate = DateTime.parse(dataMe!['store']['expired_date']);
+      DateTime startDate;
+
+      if (rawPeriod == 0) {
+        periodInMonths = 0;
+        startDate = expiredDate.subtract(Duration(days: 7));
+        packageDuration = "7 Hari";
+      } else {
+        periodInMonths = rawPeriod;
+        startDate = DateTime(
+          expiredDate.year,
+          expiredDate.month - periodInMonths,
+          expiredDate.day,
+        );
+        packageDuration = "$periodInMonths Bulan";
+      }
+
+      final int totalDays = expiredDate.difference(startDate).inDays;
+      remainingDays = expiredDate.difference(today).inDays;
+      progress = (totalDays - remainingDays) / totalDays;
+    } else {
+      packageDuration = "Unlimited";
+      progress = 1.0;
+    }
+
+    String lastUpdate = DateFormat(
+      "d MMMM yyyy",
+      'id_ID',
+    ).format(DateTime.parse(dataMe!['store']['updated_at']));
 
     String formattedPrice = NumberFormat.currency(
       locale: 'id_ID',
@@ -170,14 +196,27 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
       decimalDigits: 0,
     ).format(double.parse(dataMe!['package']['price']));
 
-    final int totalDays = expiredDate.difference(startDate).inDays;
-    final int remainingDays = expiredDate.difference(today).inDays;
-    final double progress = (totalDays - remainingDays) / totalDays;
+    Color parseHexColor(String? hexColor) {
+      if (hexColor == null || hexColor.isEmpty) {
+        return Colors.black;
+      }
+
+      hexColor = hexColor.replaceAll("#", "");
+      if (hexColor.length == 6) {
+        hexColor = "FF$hexColor"; // tambahkan opacity (FF) kalau 6 digit
+      }
+
+      try {
+        return Color(int.parse("0x$hexColor"));
+      } catch (e) {
+        return Colors.black;
+      }
+    }
 
     return ListView(
       padding: defaultPadding,
       children: [
-        PageTitle(text: "Informasi Paket", back: true,),
+        PageTitle(text: "Informasi Paket", back: true),
         Gap(18),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,22 +226,24 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: CachedNetworkImage(
-                    imageUrl: dataMe!['package']['image'],
+                    imageUrl: !isUnlimited ? dataMe!['package']['image'] : "https://img.freepik.com/premium-photo/queen-gold-crown_863013-113893.jpg?w=360",
                     width: 60,
                     height: 60,
                     fit: BoxFit.fitWidth,
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/empty.png',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.fitWidth,
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/empty.png',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.fitWidth,
-                    ),
+                    placeholder:
+                        (context, url) => Image.asset(
+                          'assets/images/empty.png',
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.fitWidth,
+                        ),
+                    errorWidget:
+                        (context, url, error) => Image.asset(
+                          'assets/images/empty.png',
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.fitWidth,
+                        ),
                   ),
                 ),
                 Gap(10),
@@ -211,45 +252,88 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dataMe!['package']['name'],
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        !isUnlimited ? dataMe!['package']['name'] : "Unlimited",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: parseHexColor(dataMe!['package']['color']),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      Gap(5),
+                      Gap(2),
                       Text(
-                        dataMe!['package']['description'],
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                        !isUnlimited ? dataMe!['package']['description'] : "Nikmati semua fitur sepuasnya, sebanyak yang kamu mau!",
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            Gap(15),
-            LinearProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-              backgroundColor: Colors.grey[300],
-              color: remainingDays <= 3 ? Color(0xffe74c3c) : remainingDays <= 8 ? Color(0xfff39c12) : primaryColor,
-            ),
-            Gap(5),
-            Text(
-              "Langganan berakhir dalam $remainingDays hari",
-              style: TextStyle(
-                fontSize: 13, 
-                fontWeight: FontWeight.w600,
-                color: remainingDays <= 3 ? Color(0xffe74c3c) : remainingDays <= 8 ? Color(0xfff39c12) : primaryColor,
-              ),
-            ),
           ],
         ),
-        Gap(15),
+        if (!isUnlimited) ...[
+          Gap(15),
+          Stack(
+            alignment: Alignment.centerLeft,
+            children: [
+              LinearProgressIndicator(
+                value: progress.clamp(0.0, 1.0),
+                minHeight: 10,
+                borderRadius: BorderRadius.circular(5),
+                backgroundColor: Colors.grey[300],
+                color: remainingDays <= 3 ? Color(0xffe74c3c) : primaryColor,
+              ),
+              if (progress == 0.0)
+                Positioned(
+                  left: 2,
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: primaryColor, // warna titik
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Gap(5),
+          Text(
+            dataMe!['package']['name'] == "Trial"
+                ? "Masa aktif akun tersisa $remainingDays hari"
+                : remainingDays == 0 ? "Masa aktif sudah habis" : "Langganan berakhir dalam $remainingDays hari",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color:
+                  remainingDays <= 3
+                      ? Color(0xffe74c3c)
+                      : primaryColor,
+            ),
+          ),
+          Gap(15),
+        ] else ...[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              "Paket Anda Unlimited 🎉",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: primaryColor,
+              ),
+            ),
+          ),
+        ],
         Container(
           padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
             border: Border.all(color: Color(0xffE7E7E7)),
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10)
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,7 +342,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Terakhir Diperbarui"),
-                  Text(lastUpdate, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    lastUpdate,
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
               LineXM(),
@@ -266,7 +353,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Durasi Paket"),
-                  Text("${dataMe!['package']['period'].toString()} Bulan", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    packageDuration,
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
               LineXM(),
@@ -274,7 +364,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Biaya Bulanan"),
-                  Text(formattedPrice, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    !isUnlimited ? formattedPrice : "Rp 0",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
               LineXM(),
@@ -282,7 +375,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Maksimal Pegawai"),
-                  Text(dataMe!['package']['quota_employee'].toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    !isUnlimited ? dataMe!['package']['quota_employee'].toString() : "Tidak Terbatas",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
               LineXM(),
@@ -290,7 +386,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Maksimal Produk"),
-                  Text("Tidak Terbatas", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    "Tidak Terbatas",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
               LineXM(),
@@ -298,7 +397,10 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Maksimal Transaksi"),
-                  Text("Tidak Terbatas", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))
+                  Text(
+                    "Tidak Terbatas",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
             ],

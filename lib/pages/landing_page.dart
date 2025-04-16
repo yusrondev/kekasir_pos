@@ -94,7 +94,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: Image.asset('assets/images/wave.png', fit: BoxFit.cover),
             ),
             // Konten utama
