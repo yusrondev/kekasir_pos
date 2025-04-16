@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   late InternetConnectionChecker _connectionChecker;
 
   final TextEditingController storeNameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -131,6 +132,16 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (nameController.text == "") {
+      alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
+      return;
+    }
+
+    if (nameController.text.length < 3) {
+      alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
+      return;
+    }
+
     if (emailController.text == "") {
       alertLottie(context, 'Pastikan email sudah terisi!', 'error');
       return;
@@ -161,6 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       String? error = await authService.register(
         storeNameController.text,
+        nameController.text,
         phoneController.text,
         addressController.text,
         emailController.text,
@@ -290,6 +302,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         )
                       ),
                       Gap(10),
+                      CustomTextField(
+                        controller: nameController,
+                        label: "Nama Pengguna*",
+                        placeholder: "Misalnya Jhon...",
+                        shortDescription: "Minimal 3 karakter",
+                        maxLine: 1,
+                        maxLength: 100,
+                        border: true,
+                      ),
                       CustomTextField(
                         border: true,
                         controller: addressController,

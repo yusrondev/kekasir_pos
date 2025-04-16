@@ -45,7 +45,7 @@ class AuthService {
     }
   }
   
-  Future<String?> register(String store, String? phone, String? address, String email, String password) async {
+  Future<String?> register(String store, String name, String? phone, String? address, String email, String password) async {
     Logger().d('ping');
 
     final response = await http.post(
@@ -53,6 +53,7 @@ class AuthService {
       headers: {'X-API-TOKEN': apiToken!},
       body: {
         'store': store,
+        'name': name,
         'phone': phone,
         'address': address,
         'email': email, 
@@ -154,8 +155,9 @@ class AuthService {
     return jsonDecode(userData);
   }
 
-  Future<Map<String, dynamic>> updateUser(String name, String address, String email, [String? oldPassword, String? password]) async {
+  Future<Map<String, dynamic>> updateUser(String? storeName, String name, String address, String email, [String? oldPassword, String? password]) async {
     Map<String, dynamic> body = {
+      'store': storeName,
       'name': name,
       'email': email,
       'address' : address

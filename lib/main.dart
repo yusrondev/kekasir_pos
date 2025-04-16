@@ -12,6 +12,7 @@ import 'package:kekasir/pages/auth/register_page.dart';
 import 'package:kekasir/pages/landing_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
+import 'package:kekasir/pages/profile/detail_package_page.dart';
 import 'package:kekasir/pages/profile/edit_profile_page.dart';
 import 'package:kekasir/pages/profile/index_profile_page.dart';
 import 'package:kekasir/pages/discount/form_discount_page.dart';
@@ -127,6 +128,7 @@ class MainApp extends StatelessWidget {
         '/report' : (context) => IndexReportPage(),
         '/login' : (context) => LoginPage(),
         '/register' : (context) => RegisterPage(),
+        '/detail-package' : (context) => DetailPackagePage(),
       },
     );
   }

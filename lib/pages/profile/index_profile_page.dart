@@ -217,22 +217,20 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/icons/sparkles.png',
-                        width: 20,
-                      ),
-                      Gap(10),
-                      Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
-                    ],
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/detail-package'),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/sparkles.png',
+                          width: 20,
+                        ),
+                        Gap(10),
+                        Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
-                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
-                    ],
-                  )
+                  Icon(Icons.keyboard_arrow_right_outlined, size: 15)
                 ],
               ),
               LineXM(),

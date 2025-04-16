@@ -188,15 +188,17 @@ class _HomePageState extends State<HomePage> {
   /// Ambil data revenue dari SharedPreferences
   Future<void> loadRevenueFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      thisMonthRevenue = prefs.getString('this_month_revenue') ?? "";
-      lastMonthRevenue = prefs.getString('last_month_revenue') ?? "";
-      totalPurchases = prefs.getString('total_purchases') ?? "";
-      totalPurchasesLastMonth = prefs.getString('total_purchases_last_month') ?? "";
-      grossProfit = prefs.getString('gross_profit') ?? "";
-      grossProfitLastMonth = prefs.getString('gross_profit_last_month') ?? "";
-      hpp = prefs.getString('hpp') ?? "";
-    });
+    if (mounted) {
+      setState(() {
+        thisMonthRevenue = prefs.getString('this_month_revenue') ?? "";
+        lastMonthRevenue = prefs.getString('last_month_revenue') ?? "";
+        totalPurchases = prefs.getString('total_purchases') ?? "";
+        totalPurchasesLastMonth = prefs.getString('total_purchases_last_month') ?? "";
+        grossProfit = prefs.getString('gross_profit') ?? "";
+        grossProfitLastMonth = prefs.getString('gross_profit_last_month') ?? "";
+        hpp = prefs.getString('hpp') ?? "";
+      });
+    }
   }
 
   /// Simpan data revenue ke SharedPreferences

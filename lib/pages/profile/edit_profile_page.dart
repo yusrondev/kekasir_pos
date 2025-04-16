@@ -10,6 +10,7 @@ import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
+import 'package:logger/web.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -26,6 +27,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController storeNameController = TextEditingController();
 
   bool isLoading = false;
   String checkOwner = '';
@@ -38,7 +40,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataMe = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
+      Logger().d(dataMe);
+
       if (dataMe != null) {
+        storeNameController.text = dataMe['store']['name'];
         emailController.text = dataMe['email'];
         nameController.text = dataMe['name'];
         addressController.text = dataMe['address'] ?? "";
@@ -123,16 +128,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> updateUser() async {
+    setState(() {
+      isLoading = false;
+    });
+    
+    if (emailController.text == "") {
+      alertLottie(context, 'Pastikan email sudah terisi!', 'error');
+      return;
+    }
+
     if (!isValidEmail(emailController.text)) {
-      setState(() {
-        isLoading = false;
-      });
       alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
+      return;
+    }
+
+    if (storeNameController.text == "") {
+      alertLottie(context, 'Pastikan nama toko sudah terisi!', 'error');
+      return;
+    }
+
+    if (storeNameController.text.length < 3) {
+      alertLottie(context, "Nama toko minimal 3 karakter", "error");
+      return;
+    }
+
+    if (nameController.text == "") {
+      alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
+      return;
+    }
+
+    if (nameController.text.length < 3) {
+      alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
       return;
     }
 
     try {
       final result = await AuthService().updateUser(
+        storeNameController.text,
         nameController.text,
         addressController.text,
         emailController.text,
@@ -209,12 +241,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Gap(15),
           CustomTextField(
             controller: nameController,
-            label: checkOwner == "1" ? "Nama Toko" : "Nama",
+            label: "Nama Pengguna",
             placeholder: "Misalnya kekasir...",
             maxLine: 1,
             maxLength: 100,
             border: true,
           ),
+          if(checkOwner == "1")
+            CustomTextField(
+              controller: storeNameController,
+              label: "Nama Toko",
+              placeholder: "Misalnya Toko Makmur...",
+              maxLine: 1,
+              maxLength: 100,
+              border: true,
+            ),
           if(checkOwner == "1")
             CustomTextField(
               controller: addressController,
