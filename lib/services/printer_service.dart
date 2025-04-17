@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:image/image.dart' as img;
 
 class PrinterService {
   final NumberFormat _rupiahFormatter = NumberFormat.decimalPattern('id_ID');
@@ -133,8 +134,7 @@ class PrinterService {
       _printer.printCustom(name, 1, 1);
       _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
       _printer.printNewLine();
-      _printer.printCustom(code, 1, 1);
-      _printer.printNewLine();
+      _printer.printCustom(code, 0, 1);
       _printer.printNewLine();
       _printer.printNewLine();
     } catch (e) {
@@ -151,18 +151,31 @@ class PrinterService {
       return;
     }
 
-    var response = await http.get(Uri.parse('https://kekasir-core.dewadev.id/storage/images/products/barcodes/$url.png'));
+    var response = await http.get(
+      Uri.parse('https://kekasir-core.dewadev.id/storage/images/products/barcodes/$url.png'),
+    );
+
     Uint8List bytesNetwork = response.bodyBytes;
-    Uint8List imageBytesFromNetwork = bytesNetwork.buffer
-        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
 
     try {
-      // Header Toko
+      // Decode gambar PNG dari network
+      final originalImage = img.decodeImage(bytesNetwork);
+      if (originalImage == null) {
+        Logger().e("Gagal decode gambar dari URL");
+        return;
+      }
+
+      // Resize gambar ke lebar 250 pixel, tinggi disesuaikan otomatis
+      final resizedImage = img.copyResize(originalImage, width: 250);
+
+      // Encode ulang ke PNG
+      final resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
+
+      // Print
       _printer.printCustom(name, 1, 1);
-      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printImageBytes(resizedBytes);
       _printer.printNewLine();
-      _printer.printCustom(url, 1, 1);
-      _printer.printNewLine();
+      _printer.printCustom(url, 0, 1);
       _printer.printNewLine();
       _printer.printNewLine();
     } catch (e) {

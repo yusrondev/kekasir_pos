@@ -33,6 +33,7 @@ dependencies:
   simple_barcode_scanner: ^0.3.0
   in_app_update: ^4.2.3
   cached_network_image: ^3.4.1
+  image: ^4.5.4
 
 dev_dependencies:
   flutter_test:
