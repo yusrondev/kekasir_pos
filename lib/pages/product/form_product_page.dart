@@ -93,6 +93,10 @@ class _FormProductPageState extends State<FormProductPage> {
   bool isEdit = false;
   String? selectedValue;
   int availableStock = 0;
+  String hpp = "";
+  String formattedLaba = "";
+  double? hppOriginal;
+  double? laba;
   bool hasBeenChange = false;
   bool _listPrice = false;
   bool isEditedPrice = false;
@@ -146,9 +150,9 @@ class _FormProductPageState extends State<FormProductPage> {
 
     quantity.addListener(() {
       String wording = "";
-
-      int? parsedPrice = int.tryParse(priceController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      int? parsedCost = int.tryParse(costController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       int? parsedQuantity = int.tryParse(quantity.text);
+      int? parsedPrice = int.tryParse(priceController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
       if (parsedPrice != null && parsedQuantity != null) {
         int total = parsedPrice * parsedQuantity;
@@ -158,12 +162,79 @@ class _FormProductPageState extends State<FormProductPage> {
         wording = "Masukkan harga dan jumlah yang valid...";
       }
 
+      if (parsedCost != null && parsedQuantity != null && parsedPrice != null) {
+        if (mounted) {
+          setState(() {
+            hppOriginal = parsedCost / parsedQuantity;
+            laba = parsedPrice - hppOriginal!;
+            formattedLaba = NumberFormat.currency(
+              locale: 'id_ID',
+              symbol: 'Rp ',
+              decimalDigits: 0,
+            ).format(laba);
+            hpp = NumberFormat.currency(
+                  locale: 'id_ID',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(parsedCost / parsedQuantity);
+            Logger().d('hpp awal $hpp');
+          });
+        }
+      }
+
       setState(() {
         storeQuantity = wording;
       });
     });
 
+    costController.addListener(() {
+      int? parsedCost = int.tryParse(costController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      int? parsedQuantity = int.tryParse(quantity.text);
+      int? parsedPrice = int.tryParse(priceController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (parsedCost != null && parsedQuantity != null && parsedPrice != null) {
+        if (mounted) {
+          setState(() {
+            hppOriginal = parsedCost / parsedQuantity;
+            laba = parsedPrice - hppOriginal!;
+            formattedLaba = NumberFormat.currency(
+              locale: 'id_ID',
+              symbol: 'Rp ',
+              decimalDigits: 0,
+            ).format(laba);
+            hpp = NumberFormat.currency(
+                  locale: 'id_ID',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(parsedCost / parsedQuantity);
+                Logger().d('hpp ke 2 $hpp');
+          });
+        }
+      }
+    });
+
     priceController.addListener(() {
+      int? parsedCost = int.tryParse(costController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      int? parsedQuantity = int.tryParse(quantity.text);
+      int? parsedPrice = int.tryParse(priceController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      if (parsedCost != null && parsedQuantity != null && parsedPrice != null) {
+        if (mounted) {
+          setState(() {
+            hppOriginal = parsedCost / parsedQuantity;
+            laba = parsedPrice - hppOriginal!;
+            formattedLaba = NumberFormat.currency(
+              locale: 'id_ID',
+              symbol: 'Rp ',
+              decimalDigits: 0,
+            ).format(laba);
+            hpp = NumberFormat.currency(
+                  locale: 'id_ID',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(parsedCost / parsedQuantity);
+                Logger().d('hpp ke 2 $hpp');
+          });
+        }
+      }
       setState(() {
         if (_selectedName != "-") {
           isEditedPrice = true; 
@@ -795,6 +866,7 @@ class _FormProductPageState extends State<FormProductPage> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           backgroundColor: Colors.white,
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -1335,6 +1407,10 @@ class _FormProductPageState extends State<FormProductPage> {
                 
                           return GestureDetector(
                             onTap: () {
+                              if (!isEdit) {
+                                alertLottie(context, "Silakan simpan produk terlebih dahulu untuk menggunakan fitur ini.", "error");
+                                return;
+                              }
                               setState(() {
                                 if (_selectedName == labelPrice.name) {
                                   _selectedName = "-";
@@ -1359,6 +1435,10 @@ class _FormProductPageState extends State<FormProductPage> {
                               });
                             },
                             onLongPress: () {
+                              if (!isEdit) {
+                                alertLottie(context, "Silakan simpan produk terlebih dahulu untuk menggunakan fitur ini.", "error");
+                                return;
+                              }
                               setState(() {
                                 typePrice.text = labelPrice.name ?? "";
                                 _oldValueType = labelPrice.id.toString();
@@ -1470,7 +1550,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       CustomPaint(
                         painter: DashedBorderPainter(),
                         child: GestureDetector(
-                          onTap: () => showDialogAddPriceType(),
+                          onTap: () => isEdit == true ? showDialogAddPriceType() : alertLottie(context, "Silakan simpan produk terlebih dahulu untuk menggunakan fitur ini.", "error"),
                           child: Container(
                             margin: EdgeInsets.only(bottom: 5),
                             padding: EdgeInsets.only(top: 10, bottom: 6),
@@ -1558,6 +1638,123 @@ class _FormProductPageState extends State<FormProductPage> {
                           maxLine: 1,
                           border: true,
                         ),
+                        if(hpp.isNotEmpty && hpp != "Rp 1" && priceController.text != "") ... [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: primaryColor),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'HPP per item ',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: primaryColor,
+                                      fontFamily: 'Lexend',
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: hpp,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gap(2),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Didapatkan dari ',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: primaryColor,
+                                      fontFamily: 'Lexend',
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: costController.text,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      TextSpan(text: ' / '),
+                                      TextSpan(
+                                        text: quantity.text,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                LineXM(),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Keuntungan per item ',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: primaryColor,
+                                      fontFamily: 'Lexend',
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: formattedLaba,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Didapatkan dari ',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: primaryColor,
+                                      fontFamily: 'Lexend',
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: priceController.text,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      TextSpan(text: ' - '),
+                                      TextSpan(
+                                        text: hpp,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+
+                            ),
+                          ),
+                          Gap(10),
+                        ]
                       ],
                       CustomTextField(
                         border: true,

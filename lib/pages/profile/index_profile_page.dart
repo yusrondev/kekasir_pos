@@ -43,12 +43,10 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
   void logout() async {
     await AuthService().logout();
     // ignore: use_build_context_synchronously
-    Navigator.pop(context, false);
-    Navigator.pop(context, false);
-    Navigator.pushReplacement(
-      // ignore: use_build_context_synchronously
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LandingPage()),
+      (route) => false, // Hapus semua route sebelumnya
     );
   }
 

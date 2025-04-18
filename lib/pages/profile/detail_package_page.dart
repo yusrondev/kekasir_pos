@@ -179,16 +179,17 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
 
       final int totalDays = expiredDate.difference(startDate).inDays;
       remainingDays = expiredDate.difference(today).inDays;
-      progress = (totalDays - remainingDays) / totalDays;
+      // Perubahan di sini - balikkan progress
+      progress = remainingDays / totalDays;
     } else {
       packageDuration = "Unlimited";
       progress = 1.0;
     }
 
-    String lastUpdate = DateFormat(
+    String expiredAt = DateFormat(
       "d MMMM yyyy",
       'id_ID',
-    ).format(DateTime.parse(dataMe!['store']['updated_at']));
+    ).format(DateTime.parse(dataMe!['store']['expired_date']));
 
     String formattedPrice = NumberFormat.currency(
       locale: 'id_ID',
@@ -286,7 +287,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
                 backgroundColor: Colors.grey[300],
                 color: remainingDays <= 3 ? Color(0xffe74c3c) : primaryColor,
               ),
-              if (progress == 0.0)
+              if (progress == 1.0)
                 Positioned(
                   left: 2,
                   child: Container(
@@ -341,9 +342,9 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Terakhir Diperbarui"),
+                  Text("Berakhir Pada"),
                   Text(
-                    lastUpdate,
+                    expiredAt,
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                   ),
                 ],
@@ -352,7 +353,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Durasi Paket"),
+                  Text("Durasi Paket ${dataMe!['package']['name']}"),
                   Text(
                     packageDuration,
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),

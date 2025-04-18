@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:kekasir/apis/auth_service.dart';
 import 'package:kekasir/components/custom_button_component.dart';
+import 'package:kekasir/pages/landing_page.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool _isDialogOpen = false;
+AuthService authService = AuthService();
 
 void whatsappApps(BuildContext context) async {
   final Uri url = Uri.parse(
@@ -15,6 +18,16 @@ void whatsappApps(BuildContext context) async {
   } else {
     alertLottie(context, 'Tidak dapat membuka Whatsapp', 'error');
   }
+}
+
+void logout(BuildContext context) async {
+  await AuthService().logout();
+  // ignore: use_build_context_synchronously
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => LandingPage()),
+    (route) => false, // Hapus semua route sebelumnya
+  );
 }
 
 void showNoExpiredDialog(BuildContext context) {
@@ -67,6 +80,20 @@ void showNoExpiredDialog(BuildContext context) {
                       Expanded(
                         child: ButtonPrimary(
                           text: "Hubungi Kekasir",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(5),
+                GestureDetector(
+                  onTap: () => logout(context),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ButtonPrimaryOutline(
+                          text: "Logout",
                         ),
                       ),
                     ],

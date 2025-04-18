@@ -126,13 +126,23 @@ class PrinterService {
 
     var response = await http.get(Uri.parse(url));
     Uint8List bytesNetwork = response.bodyBytes;
-    Uint8List imageBytesFromNetwork = bytesNetwork.buffer
-        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
 
     try {
+      // Decode gambar PNG dari network
+      final originalImage = img.decodeImage(bytesNetwork);
+      if (originalImage == null) {
+        Logger().e("Gagal decode gambar dari URL");
+        return;
+      }
+
+      // Resize gambar ke lebar 250 pixel, tinggi disesuaikan otomatis
+      final resizedImage = img.copyResize(originalImage, width: 200);
+
+      // Encode ulang ke PNG
+      final resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
       // Header Toko
       _printer.printCustom(name, 1, 1);
-      _printer.printImageBytes(imageBytesFromNetwork); //image from Networ
+      _printer.printImageBytes(resizedBytes); //image from Networ
       _printer.printNewLine();
       _printer.printCustom(code, 0, 1);
       _printer.printNewLine();
@@ -166,7 +176,7 @@ class PrinterService {
       }
 
       // Resize gambar ke lebar 250 pixel, tinggi disesuaikan otomatis
-      final resizedImage = img.copyResize(originalImage, width: 250);
+      final resizedImage = img.copyResize(originalImage, width: 200);
 
       // Encode ulang ke PNG
       final resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
