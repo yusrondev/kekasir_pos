@@ -82,6 +82,7 @@ class CustomTextFieldNumber extends StatelessWidget {
   final int? maxLength;
   final int? maxLine;
   final bool? border;
+  final bool? readonly;
 
   const CustomTextFieldNumber({
     super.key,
@@ -91,7 +92,8 @@ class CustomTextFieldNumber extends StatelessWidget {
     this.controller,
     this.placeholder,
     this.maxLine,
-    this.border = false
+    this.border = false,
+    this.readonly = false
   });
 
   @override
@@ -115,7 +117,7 @@ class CustomTextFieldNumber extends StatelessWidget {
         Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
+          color: readonly == true ? secondaryColor : Colors.white,
           border: Border.all(
             color: border == true ? secondaryColor : Colors.transparent,
           ),
@@ -130,6 +132,7 @@ class CustomTextFieldNumber extends StatelessWidget {
           maxLength: maxLength,
           maxLines: maxLine,
           controller: controller,
+          readOnly: readonly ?? false,
           decoration: InputDecoration(
             counterText: "",
             border: InputBorder.none,

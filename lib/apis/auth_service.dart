@@ -147,6 +147,26 @@ class AuthService {
     }
   }
 
+  Future<Map<String, dynamic>?> generateBarcode(String id) async {
+    final response = await http.get(Uri.parse('$apiUrl/product/generate-barcode/$id'), headers: await _headers);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception("Server sedang bermasalah");
+    }
+  }
+
+  Future<Map<String, dynamic>?> generateImageBarcode(String code) async {
+    final response = await http.get(Uri.parse('$apiUrl/product/generate-image-barcode/$code'), headers: await _headers);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception("Server sedang bermasalah");
+    }
+  }
+
   // Dapatkan Data User dari Local Storage
   Future<Map<String, dynamic>?> getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

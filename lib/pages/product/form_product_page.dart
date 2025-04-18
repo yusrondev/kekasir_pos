@@ -653,8 +653,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
   Future<void> _printTest() async {
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final storeId = prefs.getString('store_id');
+    final code = codeController.text;
 
     if (_isConnected == false) {
       alertLottie(context, "Printer belum terhubung!", "error");
@@ -666,7 +665,7 @@ class _FormProductPageState extends State<FormProductPage> {
     });
     try {
 
-      dynamic barcode = await authService.getBarcode(storeId ?? "");
+      dynamic barcode = await authService.generateImageBarcode(code);
 
       await _connectDevice();
       await _printerService.printbarcode(
@@ -701,35 +700,23 @@ class _FormProductPageState extends State<FormProductPage> {
     }
   }
 
-  Future<void> _rePrint() async {
-    if (_isConnected == false) {
-      alertLottie(context, "Printer belum terhubung!", "error");
-      return;
-    }
-    setState(() => _isPrinting = true);
+  Future<void> generateBarcode() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final storeId = prefs.getString('store_id');
     try {
-      await _connectDevice();
-      await _printerService.rePrint(
-        url: codeProduct.toString(),
-        name : nameController.text
-      );
+      dynamic barcode = await authService.generateBarcode(storeId ?? "");
+
+      setState(() {
+        codeController.text = barcode['code'];
+      });
+
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
-    } finally {
-      if (mounted) {
-        setState(() => _isPrinting = false);
-      }
-    }
-
-    await Future.delayed(Duration(seconds: 10));
-    if(mounted){
-      setState(() {
-        _isPrinting = false;
-      });
     }
   }
 
@@ -1057,44 +1044,62 @@ class _FormProductPageState extends State<FormProductPage> {
                           border: true,
                           controller: codeController,
                           label: "Kode Produk",
-                          shortDescription: "Jika kosong, sistem akan membuatkan kode acak",
+                          shortDescription: !isEdit ? "Jika kosong, sistem akan membuatkan kode acak" : "Kode produk tidak bisa diubah setelah produk tersimpan",
                           placeholder: "Misalnya 3495083 (tidak wajib)...",
                           maxLength: 12,
                           maxLine: 1,
+                          readonly: !isEdit ? false : true,
                         )),
-                        Gap(5),
-                        GestureDetector(
-                          onTap: () async {
-                            final scannedCode = await SimpleBarcodeScanner.scanBarcode(
-                              context,
-                              barcodeAppBar: const BarcodeAppBar(
-                                appBarTitle: 'Test',
-                                centerTitle: false,
-                                enableBackButton: true,
-                                backButtonIcon: Icon(Icons.arrow_back_ios),
+                        if(!isEdit) ... [
+                          Gap(5),
+                          GestureDetector(
+                            onTap: (){
+                              generateBarcode();
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: lightBlue, // Warna background
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              isShowFlashIcon: true,
-                              delayMillis: 2000,
-                              cameraFace: CameraFace.back,
-                            );
-
-                            if (scannedCode != null && scannedCode != '-1') {
-                              // '-1' biasanya berarti user cancel
-                              setState(() {
-                                codeController.text = scannedCode;
-                              });
-                            }
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(top: 20),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: primaryColor, // Warna background
-                              borderRadius: BorderRadius.circular(10)
+                              child: Icon(Icons.refresh, color: Colors.white,),
                             ),
-                            child: Icon(Icons.qr_code_scanner_rounded, color: Colors.white,),
                           ),
-                        ),
+                          Gap(5),
+                          GestureDetector(
+                            onTap: () async {
+                              final scannedCode = await SimpleBarcodeScanner.scanBarcode(
+                                context,
+                                barcodeAppBar: const BarcodeAppBar(
+                                  appBarTitle: 'Test',
+                                  centerTitle: false,
+                                  enableBackButton: true,
+                                  backButtonIcon: Icon(Icons.arrow_back_ios),
+                                ),
+                                isShowFlashIcon: true,
+                                delayMillis: 2000,
+                                cameraFace: CameraFace.back,
+                              );
+
+                              if (scannedCode != null && scannedCode != '-1') {
+                                // '-1' biasanya berarti user cancel
+                                setState(() {
+                                  codeController.text = scannedCode;
+                                });
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: primaryColor, // Warna background
+                                borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Icon(Icons.qr_code_scanner_rounded, color: Colors.white,),
+                            ),
+                          ),
+                        ]
                       ],
                     ),
                     Container(
@@ -1113,7 +1118,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget.product == null ? "Generate Barcode" : "Cetak Ulang Barcode",
+                                      widget.product == null ? "Cetak Barcode" : "Cetak Ulang Barcode",
                                       style: TextStyle(
                                         color: primaryColor,
                                         fontWeight: FontWeight.w600
@@ -1250,17 +1255,6 @@ class _FormProductPageState extends State<FormProductPage> {
                                       ),
                                   ],
                                 ),
-                                if(widget.product == null)
-                                LinePrimary(),
-                                if(widget.product == null)
-                                Text(
-                                  "Anda bisa buat barcode dan cetak / cetak ulang barcode",
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: primaryColor,
-                                    overflow: TextOverflow.ellipsis
-                                  ),
-                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -1281,17 +1275,16 @@ class _FormProductPageState extends State<FormProductPage> {
                                             absorbing: _isPrinting,
                                             child: Opacity(
                                               opacity: _isPrinting ? 0.5 : 1.0,
-                                              child: Text('Buat & Cetak', style: TextStyle(fontWeight: FontWeight.w600))
+                                              child: Text('Cetak', style: TextStyle(fontWeight: FontWeight.w600))
                                             ),
                                           ),
                                         ),
                                       ),
-                                      Gap(5),
                                     ],
                                     if(_generateBarcode == true || widget.product != null) ... [
                                       Expanded(
                                         child: ElevatedButton(
-                                          onPressed: _isPrinting ? null : _rePrint,
+                                          onPressed: _isPrinting ? null : _printTest,
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white, // Ubah warna background
                                             foregroundColor: successColor, // Warna teks/icon

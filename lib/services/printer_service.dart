@@ -141,11 +141,10 @@ class PrinterService {
       // Encode ulang ke PNG
       final resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
       // Header Toko
-      _printer.printCustom(name, 1, 1);
+      _printer.printCustom(name, 0, 1);
       _printer.printImageBytes(resizedBytes); //image from Networ
       _printer.printNewLine();
       _printer.printCustom(code, 0, 1);
-      _printer.printNewLine();
       _printer.printNewLine();
     } catch (e) {
       Logger().e("Print error: $e");
