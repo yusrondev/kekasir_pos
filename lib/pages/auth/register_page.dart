@@ -196,10 +196,12 @@ class _RegisterPageState extends State<RegisterPage> {
           setState(() {
             isLoading = false;
           });
+          Navigator.pop(context);
           alertLottie(context, error, 'error');
         }
       }
     } catch (e) {
+      Navigator.pop(context);
       // ignore: use_build_context_synchronously
       showErrorBottomSheet(context, e.toString());
     }
@@ -214,6 +216,64 @@ class _RegisterPageState extends State<RegisterPage> {
       // ignore: use_build_context_synchronously
       alertLottie(context, 'Tidak dapat membuka Whatsapp');
     }
+  }
+
+  void showConfirmDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black54, // Agar tetap fokus ke dialog
+      useSafeArea: false, // Menghindari batas layar
+      builder: (context) {
+        return AlertDialog(
+          clipBehavior: Clip.hardEdge,
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(child: Text('Masa Percobaan Dimulai!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600), textAlign: TextAlign.center,)),
+                ],
+              ),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(child: Text('Setelah mendaftar, Anda akan mendapatkan akses gratis ke semua fitur Kekasir selama 7 hari sebagai masa percobaan', textAlign: TextAlign.center, style: TextStyle(fontSize: 13),)),
+                ],
+              ),
+              Gap(20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: ButtonPrimaryOutline(
+                        text: "Batal",
+                      ),
+                    )
+                  ),
+                  Gap(5),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => register(),
+                      child: ButtonPrimary(
+                        text: "Daftar",
+                      ),
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -452,7 +512,7 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             GestureDetector(
               onTap: () { 
-                register(); 
+                showConfirmDialog(); 
               },
               child: SizedBox(
                 width: double.infinity,

@@ -25,6 +25,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
   AuthService authService = AuthService();
 
   String expiredDateStr = "";
+  String expiredAt = "";
   int periodInMonths = 3;
 
   Map<String, dynamic>? dataMe;
@@ -186,10 +187,12 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
       progress = 1.0;
     }
 
-    String expiredAt = DateFormat(
-      "d MMMM yyyy",
-      'id_ID',
-    ).format(DateTime.parse(dataMe!['store']['expired_date']));
+    if (!isUnlimited) {  
+      expiredAt = DateFormat(
+        "d MMMM yyyy",
+        'id_ID',
+      ).format(DateTime.parse(dataMe!['store']['expired_date']));
+    }
 
     String formattedPrice = NumberFormat.currency(
       locale: 'id_ID',
@@ -339,17 +342,19 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Berakhir Pada"),
-                  Text(
-                    expiredAt,
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              LineXM(),
+              if(!isUnlimited) ... [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Berakhir Pada"),
+                    Text(
+                      expiredAt,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                LineXM(),
+              ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

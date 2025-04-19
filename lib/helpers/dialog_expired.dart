@@ -85,20 +85,20 @@ void showNoExpiredDialog(BuildContext context) {
                     ],
                   ),
                 ),
-                const Gap(5),
-                GestureDetector(
-                  onTap: () => logout(context),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: ButtonPrimaryOutline(
-                          text: "Logout",
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // const Gap(5),
+                // GestureDetector(
+                //   onTap: () => logout(context),
+                //   child: const Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Expanded(
+                //         child: ButtonPrimaryOutline(
+                //           text: "Logout",
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 const Gap(5),
                 const Center(
                   child: Text(
