@@ -26,7 +26,8 @@ import 'package:kekasir/pages/transaction/mutation_transaction_page.dart';
 import 'package:kekasir/pages/transaction/nota_transaction_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:logger/web.dart'; // Tambahkan ini
+import 'package:logger/web.dart';
+import 'package:showcaseview/showcaseview.dart'; // Tambahkan ini
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -57,10 +58,10 @@ Future<void> main() async {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  Future<Widget> checkToken() async {
+  Future<Widget> checkToken(context) async {
     AuthService authService = AuthService();
     String? token = await authService.getToken();
-    return token == null ? LandingPage() : AppLayout();
+    return ShowCaseWidget(builder: (context) => token == null ? LandingPage() : AppLayout());
   }
 
   @override
@@ -89,7 +90,7 @@ class MainApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: FutureBuilder(
-        future: checkToken(),
+        future: checkToken(context),
         builder: (context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

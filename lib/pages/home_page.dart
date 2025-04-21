@@ -13,7 +13,7 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/web.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -70,10 +70,16 @@ class _HomePageState extends State<HomePage> {
 
   Timer? _debounceHit;
 
-  TutorialCoachMark? tutorialCoachMark;
-  final GlobalKey _buttonKey = GlobalKey();
-  final GlobalKey _otherIncomeHint = GlobalKey();
-  final GlobalKey _revenueKey = GlobalKey();
+  final GlobalKey revenueHint = GlobalKey();
+  final GlobalKey lastMonthHint = GlobalKey();
+  final GlobalKey detailIncomeHint = GlobalKey();
+  final GlobalKey stockMutationHint = GlobalKey();
+  final GlobalKey transactionMutationHint = GlobalKey();
+  final GlobalKey reportHint = GlobalKey();
+  final GlobalKey profileHint = GlobalKey();
+
+  int currentStep = 0;
+  List<GlobalKey> showcaseKeys = [];
 
   @override
   void initState() {
@@ -84,18 +90,21 @@ class _HomePageState extends State<HomePage> {
       fetchLastUpdateTransaction();
     });
 
-    // Cek apakah user sudah melihat tutorial sebelumnya
-    checkTutorialStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkShowcaseStatus();
+    });
   }
 
-  Future<void> checkTutorialStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool hasSeenTutorial = prefs.getBool('has_seen_tutorial_home') ?? false;
+  void _checkShowcaseStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasShownShowcase = prefs.getBool('hasShownHomeShowcase') ?? false;
 
-    if (!hasSeenTutorial) {
-      Future.delayed(Duration(milliseconds: 500), () {
-        showTutorial();
-      });
+    if (!hasShownShowcase && mounted) {
+      final showcase = ShowCaseWidget.of(context);
+      if (showcase != null) {
+        ShowCaseWidget.of(context).startShowCase([revenueHint, lastMonthHint, detailIncomeHint, stockMutationHint, transactionMutationHint, reportHint, profileHint]);
+        prefs.setBool('hasShownHomeShowcase', true);
+      }
     }
   }
 
@@ -119,70 +128,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _debounceHit?.cancel(); // Pastikan Timer dibatalkan saat widget dihancurkan
     super.dispose();
-  }
-
-   void showTutorial() {
-    tutorialCoachMark = TutorialCoachMark(
-      targets: [
-        TargetFocus(
-          identify: "Revenue",
-          keyTarget: _revenueKey,
-          shape: ShapeLightFocus.RRect,
-          contents: [
-            TargetContent(
-              align: ContentAlign.right,
-              child: Text(
-                "Ini adalah total pendapatan Anda dalam bulan ini",
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-          ],
-        ),
-        TargetFocus(
-          identify: "Button",
-          keyTarget: _buttonKey,
-          shape: ShapeLightFocus.Circle,
-          contents: [
-            TargetContent(
-              align: ContentAlign.left,
-              child: Text(
-                "Tekan tombol ini untuk mendapatkan informasi akun",
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-          ],
-        ),
-        TargetFocus(
-          identify: "OtherIncome",
-          keyTarget: _otherIncomeHint,
-          alignSkip: Alignment.topRight,
-          shape: ShapeLightFocus.RRect,
-          contents: [
-            TargetContent(
-              align: ContentAlign.bottom,
-              child: Text(
-                "Klik bagian ini untuk melihat detail dari semua ringkasan pendapatan Anda",
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-          ],
-        ),
-      ],
-      onFinish: () async {
-        // Tandai bahwa user sudah melihat tutorial
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('has_seen_tutorial_home', true);
-      },
-      onSkip: () {
-        // Inisialisasi SharedPreferences
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setBool('has_seen_tutorial_home', true);
-        });
-
-        return true; // Harus mengembalikan bool agar sesuai dengan tipe data yang diharapkan
-      },
-
-    )..show(context: context);
   }
 
   /// Ambil data revenue dari SharedPreferences
@@ -334,10 +279,16 @@ class _HomePageState extends State<HomePage> {
             Navigator.pushNamed(context, '/profile').then((value) {
               if (value == true) {
                 getRevenue();
+                fetchLastUpdateTransaction();
               }
             });
           },
-          child: Image.asset('assets/icons/menu.png', width: 23, key: _buttonKey,),
+          child: Showcase(
+            key: profileHint,
+            description: "Klik bagian ini untuk melihat informasi akun Anda", 
+            overlayOpacity: 0.5, 
+            child: Image.asset('assets/icons/menu.png', width: 23)
+          ),
         ),
       ],
     );
@@ -357,7 +308,6 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
-                key: _revenueKey,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Pendapatan Bulan Ini", style: TextStyle(fontSize: 14)),
@@ -371,12 +321,18 @@ class _HomePageState extends State<HomePage> {
                           color: primaryColor,
                         ),
                       )
-                      : Text(
-                        thisMonthRevenue,
-                        key: ValueKey(thisMonthRevenue), // Perubahan revenue akan memicu animasi
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
+                      : Showcase(
+                        key: revenueHint,
+                        description: "Pendapatan dari produk yang terjual bulan ini",
+                        overlayOpacity: 0.5,
+                        targetPadding: EdgeInsets.all(2),
+                        child: Text(
+                          thisMonthRevenue,
+                          key: ValueKey(thisMonthRevenue), // Perubahan revenue akan memicu animasi
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                 ],
@@ -389,39 +345,44 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           Gap(10),
-          Container(
-            padding: EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              color: Color(0xFFF3F5FB),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Bulan Kemarin',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: primaryColor,
-                  ),
-                ),
-                lastMonthRevenue.isEmpty
-                    ? SizedBox(
-                      width: 10,
-                      height: 10,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: primaryColor,
-                      ),
-                    )
-                    : Text(
-                      lastMonthRevenue,
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+          Showcase(
+            key: lastMonthHint,
+            description: "Total pendapatan bulan kemarin.",
+            overlayOpacity: 0.5,
+            child: Container(
+              padding: EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Color(0xFFF3F5FB),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Bulan Kemarin',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
                     ),
-              ],
+                  ),
+                  lastMonthRevenue.isEmpty
+                      ? SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: primaryColor,
+                        ),
+                      )
+                      : Text(
+                        lastMonthRevenue,
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                ],
+              ),
             ),
           ),
         ],
@@ -448,9 +409,16 @@ class _HomePageState extends State<HomePage> {
               },
               child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset('assets/sections/stock.png', width: 50),
+                  Showcase(
+                    key: stockMutationHint,
+                    description: "Klik bagian ini untuk menampilkan mutasi stok produk",
+                    overlayOpacity: 0.5,
+                    targetPadding: EdgeInsets.all(5),
+                    targetBorderRadius: BorderRadius.circular(15),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset('assets/sections/stock.png', width: 50),
+                    ),
                   ),
                   Gap(5),
                   Text(
@@ -466,11 +434,18 @@ class _HomePageState extends State<HomePage> {
               },
               child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/sections/transaction.png',
-                      width: 50,
+                  Showcase(
+                    key: transactionMutationHint,
+                    description: "Klik bagian ini untuk menampilkan mutasi transaksi",
+                    overlayOpacity: 0.5,
+                    targetPadding: EdgeInsets.all(5),
+                    targetBorderRadius: BorderRadius.circular(15),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset(
+                        'assets/sections/transaction.png',
+                        width: 50,
+                      ),
                     ),
                   ),
                   Gap(5),
@@ -481,24 +456,33 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/report');              
-              },
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset('assets/sections/report.png', width: 50),
-                  ),
-                  Gap(5),
-                  Text(
-                    "Laporan",
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-                  ),
-                ],
+            if(widget.checkOwner == "1") ... [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/report');              
+                },
+                child: Column(
+                  children: [
+                    Showcase(
+                      key: reportHint,
+                      description: "Klik bagian ini untuk menampilkan laporan stok dan penjualan produk",
+                      overlayOpacity: 0.5,
+                      targetPadding: EdgeInsets.all(5),
+                      targetBorderRadius: BorderRadius.circular(15),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.asset('assets/sections/report.png', width: 50),
+                      ),
+                    ),
+                    Gap(5),
+                    Text(
+                      "Laporan",
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ]
           ],
         ),
       ),
@@ -507,7 +491,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildOtherIncome() {
     return Padding(
-      key: _otherIncomeHint,
       padding: EdgeInsets.symmetric(horizontal: 14),
       child: GestureDetector(
         onTap: () {
@@ -632,75 +615,81 @@ class _HomePageState extends State<HomePage> {
             },
           );
         },
-        child: Container(
-          padding: EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: secondaryColor)
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Ringkasan Pendapatan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  Icon(Icons.more_horiz, size: 20,),
-                ],
-              ),
-              Gap(7),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: Color(0xFFF3F5FB),
-                        border: Border.all(color: secondaryColor, width: 0.9)
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Total Keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
-                          Gap(2),
-                          Text(grossProfit.toString(), style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Gap(10),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: Color(0xFFF3F5FB),
-                        border: Border.all(color: secondaryColor, width: 0.9)
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Total Belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
-                          Gap(2),
-                          Text(totalPurchases.toString(), style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor
-                          )),
-                        ],
+        child: Showcase(
+          key: detailIncomeHint,
+          description: "Klik di sini untuk menampilkan ringkasan pendapatan Anda",
+          overlayOpacity: 0.5,
+          targetBorderRadius: BorderRadius.circular(15),
+          child: Container(
+            padding: EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: secondaryColor)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Ringkasan Pendapatan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    Icon(Icons.more_horiz, size: 20,),
+                  ],
+                ),
+                Gap(7),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // color: Color(0xFFF3F5FB),
+                          border: Border.all(color: secondaryColor, width: 0.9)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Total Keuntungan", style: TextStyle(fontSize: 13, color: Colors.black)),
+                            Gap(2),
+                            Text(grossProfit.toString(), style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            )),
+                          ],
+                        ),
                       ),
                     ),
-                  )
-                ],
-              )
-            ],
+                    Gap(10),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // color: Color(0xFFF3F5FB),
+                          border: Border.all(color: secondaryColor, width: 0.9)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Total Belanja", style: TextStyle(fontSize: 13, color: Colors.black)),
+                            Gap(2),
+                            Text(totalPurchases.toString(), style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor
+                            )),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         )
       ),
@@ -817,7 +806,7 @@ class _HomePageState extends State<HomePage> {
             : 
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Belum ada transaksi untuk hari ini ...", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff898F9F),)),
+                child: Text("Belum ada transaksi untuk hari ini ...", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff898F9F),)),
               )
           ],
         ),

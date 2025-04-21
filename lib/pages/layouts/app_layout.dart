@@ -225,7 +225,7 @@ class _AppLayoutState extends State<AppLayout> with TickerProviderStateMixin {
         bottomNavigationBar: menu.isEmpty
         ? SizedBox.shrink()
         :  Container(
-          padding: EdgeInsets.symmetric(vertical: 5),
+          padding: checkOwner == "1" ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.symmetric(vertical: 0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(

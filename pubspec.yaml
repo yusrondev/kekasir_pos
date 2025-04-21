@@ -23,17 +23,16 @@ dependencies:
   lottie: ^3.3.1
   mat_month_picker_dialog: ^1.1.2
   shared_preferences: ^2.5.2
-  tutorial_coach_mark: ^1.2.13
   url_launcher: ^6.3.1
   internet_connection_checker: ^3.0.1
   flutter_inappwebview: ^6.0.0
   auto_size_text: ^3.0.0
-  flutter_bluetooth_printer: ^2.17.1
   blue_thermal_printer: ^1.2.3
   simple_barcode_scanner: ^0.3.0
   in_app_update: ^4.2.3
   cached_network_image: ^3.4.1
   image: ^4.5.4
+  showcaseview: ^4.0.1
 
 dev_dependencies:
   flutter_test:

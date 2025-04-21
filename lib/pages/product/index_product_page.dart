@@ -17,6 +17,8 @@ import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class IndexProductPage extends StatefulWidget {
   const IndexProductPage({super.key});
@@ -30,6 +32,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
   List<Product> products = [];
   bool isLoading = true;
   List<bool> tapped = [];
+
+  GlobalKey one = GlobalKey();
 
   var logger = Logger();
 
@@ -47,12 +51,29 @@ class _IndexProductPageState extends State<IndexProductPage> {
       });
     }
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkShowcaseStatus();
+    });
+
     searchField.addListener(() {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(Duration(milliseconds: 500), () {
         fetchProducts(searchField.text);
       });
     });
+  }
+
+  void _checkShowcaseStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasShownShowcase = prefs.getBool('hasShownProductShowcase') ?? false;
+
+    if (!hasShownShowcase && mounted) {
+      final showcase = ShowCaseWidget.of(context);
+      if (showcase != null) {
+        showcase.startShowCase([one]);
+        prefs.setBool('hasShownProductShowcase', true);
+      }
+    }
   }
 
   @override
@@ -113,31 +134,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
               padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      PageTitle(text: "Data Produk"),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/create-product').then((value){
-                            if (value == true) {
-                              alertLottie(context, 'Berhasil menambahkan produk!');
-                              fetchProducts(searchField.text);
-                            }
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: secondaryColor),
-                            borderRadius:BorderRadius.circular(100) 
-                          ),
-                          child: Icon(Icons.add, color: Colors.black,size: 24)
-                        ),
-                      )
-                    ],
-                  ),
+                  PageTitle(text: "Data Produk"),
                   Gap(10),
                   Row(
                     children: [
@@ -160,7 +157,28 @@ class _IndexProductPageState extends State<IndexProductPage> {
             ),
           ],
         ),
-      )
+      ),
+      floatingActionButton: Showcase(
+        key: one, 
+        description: "Klik tombol ini untuk menambahkan produk baru", 
+        tooltipPosition: TooltipPosition.top,
+        overlayOpacity: 0.5,
+        targetBorderRadius: BorderRadius.circular(15),
+        child: FloatingActionButton(
+          onPressed: (){
+            Navigator.pushNamed(context, '/create-product').then((value){
+              if (value == true) {
+                // ignore: use_build_context_synchronously
+                alertLottie(context, 'Berhasil menambahkan produk!');
+                fetchProducts(searchField.text);
+              }
+            });
+          },
+          mini: true,
+          backgroundColor: primaryColor,
+          child: const Icon(Icons.add, color: Colors.white),
+        )
+      ),
     );
   }
 
