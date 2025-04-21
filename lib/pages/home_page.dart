@@ -101,10 +101,8 @@ class _HomePageState extends State<HomePage> {
 
     if (!hasShownShowcase && mounted) {
       final showcase = ShowCaseWidget.of(context);
-      if (showcase != null) {
-        ShowCaseWidget.of(context).startShowCase([revenueHint, lastMonthHint, detailIncomeHint, stockMutationHint, transactionMutationHint, reportHint, profileHint]);
-        prefs.setBool('hasShownHomeShowcase', true);
-      }
+      showcase.startShowCase([revenueHint, lastMonthHint, detailIncomeHint, stockMutationHint, transactionMutationHint, reportHint, profileHint]);
+      prefs.setBool('hasShownHomeShowcase', true);
     }
   }
 

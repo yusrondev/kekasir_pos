@@ -69,10 +69,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
 
     if (!hasShownShowcase && mounted) {
       final showcase = ShowCaseWidget.of(context);
-      if (showcase != null) {
-        showcase.startShowCase([one]);
-        prefs.setBool('hasShownProductShowcase', true);
-      }
+      showcase.startShowCase([one]);
+      prefs.setBool('hasShownProductShowcase', true);
     }
   }
 
