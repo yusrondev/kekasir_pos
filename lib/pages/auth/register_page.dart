@@ -11,6 +11,7 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -188,7 +189,11 @@ class _RegisterPageState extends State<RegisterPage> {
           });
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AppLayout()),
+            MaterialPageRoute(
+              builder: (context) => ShowCaseWidget(
+                builder: (context) => AppLayout()
+              ),
+            ),
           );
         }
       } else {
