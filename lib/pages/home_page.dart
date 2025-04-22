@@ -284,7 +284,69 @@ class _HomePageState extends State<HomePage> {
           child: Showcase(
             key: profileHint,
             description: "Klik bagian ini untuk melihat informasi akun Anda", 
-            overlayOpacity: 0.5, 
+            overlayOpacity: 0.5,
+            floatingActionWidget: FloatingActionWidget(
+              left: 0,
+              right: 0,
+              bottom: 16,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xffEE5366),
+                      ),
+                      onPressed: ShowCaseWidget.of(context).dismiss,
+                      child: const Text(
+                        'Tutup Semua',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Lexend',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '7 / 7', // Replace with actual current/total count
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Lexend',
+                          decoration: TextDecoration.none
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                      ),
+                      onPressed: () {
+                        ShowCaseWidget.of(context).next();
+                      },
+                      child: const Text(
+                        'Selanjutnya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Lexend',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             child: Image.asset('assets/icons/menu.png', width: 23)
           ),
         ),
@@ -323,6 +385,68 @@ class _HomePageState extends State<HomePage> {
                         key: revenueHint,
                         description: "Pendapatan dari produk yang terjual bulan ini",
                         overlayOpacity: 0.5,
+                        floatingActionWidget: FloatingActionWidget(
+                          left: 0,
+                          right: 0,
+                          bottom: 16,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffEE5366),
+                                  ),
+                                  onPressed: ShowCaseWidget.of(context).dismiss,
+                                  child: const Text(
+                                    'Tutup Semua',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Lexend',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '1 / 7', // Replace with actual current/total count
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Lexend',
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    ShowCaseWidget.of(context).next();
+                                  },
+                                  child: const Text(
+                                    'Selanjutnya',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Lexend',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         targetPadding: EdgeInsets.all(2),
                         child: Text(
                           thisMonthRevenue,
@@ -347,6 +471,68 @@ class _HomePageState extends State<HomePage> {
             key: lastMonthHint,
             description: "Total pendapatan bulan kemarin.",
             overlayOpacity: 0.5,
+            floatingActionWidget: FloatingActionWidget(
+              left: 0,
+              right: 0,
+              bottom: 16,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xffEE5366),
+                      ),
+                      onPressed: ShowCaseWidget.of(context).dismiss,
+                      child: const Text(
+                        'Tutup Semua',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Lexend',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '2 / 7', // Replace with actual current/total count
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Lexend',
+                          decoration: TextDecoration.none
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                      ),
+                      onPressed: () {
+                        ShowCaseWidget.of(context).next();
+                      },
+                      child: const Text(
+                        'Selanjutnya',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Lexend',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             child: Container(
               padding: EdgeInsets.all(7),
               decoration: BoxDecoration(
@@ -411,6 +597,68 @@ class _HomePageState extends State<HomePage> {
                     key: stockMutationHint,
                     description: "Klik bagian ini untuk menampilkan mutasi stok produk",
                     overlayOpacity: 0.5,
+                    floatingActionWidget: FloatingActionWidget(
+                      left: 0,
+                      right: 0,
+                      bottom: 16,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffEE5366),
+                              ),
+                              onPressed: ShowCaseWidget.of(context).dismiss,
+                              child: const Text(
+                                'Tutup Semua',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Lexend',
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '4 / 7', // Replace with actual current/total count
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Lexend',
+                                  decoration: TextDecoration.none
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                              ),
+                              onPressed: () {
+                                ShowCaseWidget.of(context).next();
+                              },
+                              child: const Text(
+                                'Selanjutnya',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Lexend',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     targetPadding: EdgeInsets.all(5),
                     targetBorderRadius: BorderRadius.circular(15),
                     child: ClipRRect(
@@ -436,6 +684,68 @@ class _HomePageState extends State<HomePage> {
                     key: transactionMutationHint,
                     description: "Klik bagian ini untuk menampilkan mutasi transaksi",
                     overlayOpacity: 0.5,
+                    floatingActionWidget: FloatingActionWidget(
+                      left: 0,
+                      right: 0,
+                      bottom: 16,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffEE5366),
+                              ),
+                              onPressed: ShowCaseWidget.of(context).dismiss,
+                              child: const Text(
+                                'Tutup Semua',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Lexend',
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '5 / 7', // Replace with actual current/total count
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Lexend',
+                                  decoration: TextDecoration.none
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                              ),
+                              onPressed: () {
+                                ShowCaseWidget.of(context).next();
+                              },
+                              child: const Text(
+                                'Selanjutnya',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Lexend',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     targetPadding: EdgeInsets.all(5),
                     targetBorderRadius: BorderRadius.circular(15),
                     child: ClipRRect(
@@ -465,6 +775,68 @@ class _HomePageState extends State<HomePage> {
                       key: reportHint,
                       description: "Klik bagian ini untuk menampilkan laporan stok dan penjualan produk",
                       overlayOpacity: 0.5,
+                      floatingActionWidget: FloatingActionWidget(
+                        left: 0,
+                        right: 0,
+                        bottom: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xffEE5366),
+                                ),
+                                onPressed: ShowCaseWidget.of(context).dismiss,
+                                child: const Text(
+                                  'Tutup Semua',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Lexend',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  '6 / 7', // Replace with actual current/total count
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Lexend',
+                                    decoration: TextDecoration.none
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                ),
+                                onPressed: () {
+                                  ShowCaseWidget.of(context).next();
+                                },
+                                child: const Text(
+                                  'Selanjutnya',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Lexend',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       targetPadding: EdgeInsets.all(5),
                       targetBorderRadius: BorderRadius.circular(15),
                       child: ClipRRect(
@@ -617,6 +989,68 @@ class _HomePageState extends State<HomePage> {
           key: detailIncomeHint,
           description: "Klik di sini untuk menampilkan ringkasan pendapatan Anda",
           overlayOpacity: 0.5,
+          floatingActionWidget: FloatingActionWidget(
+            left: 0,
+            right: 0,
+            bottom: 16,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffEE5366),
+                    ),
+                    onPressed: ShowCaseWidget.of(context).dismiss,
+                    child: const Text(
+                      'Tutup Semua',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Lexend',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '3 / 7',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Lexend',
+                        decoration: TextDecoration.none
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      ShowCaseWidget.of(context).next();
+                    },
+                    child: const Text(
+                      'Selanjutnya',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Lexend',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           targetBorderRadius: BorderRadius.circular(15),
           child: Container(
             padding: EdgeInsets.all(14),
