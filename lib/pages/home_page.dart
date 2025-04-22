@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
 
   void _checkShowcaseStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasShownShowcase = prefs.getBool('hasShownHomeShowcase') ?? false;
+    bool hasShownShowcase = prefs.getBool('hasShownHomeShowcases') ?? false;
 
     if (!hasShownShowcase && mounted) {
       final showcase = ShowCaseWidget.of(context);
@@ -298,7 +298,12 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xffEE5366),
                       ),
-                      onPressed: ShowCaseWidget.of(context).dismiss,
+                      onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                       child: const Text(
                         'Tutup Semua',
                         style: TextStyle(
@@ -398,7 +403,12 @@ class _HomePageState extends State<HomePage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xffEE5366),
                                   ),
-                                  onPressed: ShowCaseWidget.of(context).dismiss,
+                                  onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                                   child: const Text(
                                     'Tutup Semua',
                                     style: TextStyle(
@@ -484,7 +494,12 @@ class _HomePageState extends State<HomePage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xffEE5366),
                       ),
-                      onPressed: ShowCaseWidget.of(context).dismiss,
+                      onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                       child: const Text(
                         'Tutup Semua',
                         style: TextStyle(
@@ -610,7 +625,12 @@ class _HomePageState extends State<HomePage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xffEE5366),
                               ),
-                              onPressed: ShowCaseWidget.of(context).dismiss,
+                              onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                               child: const Text(
                                 'Tutup Semua',
                                 style: TextStyle(
@@ -697,7 +717,12 @@ class _HomePageState extends State<HomePage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xffEE5366),
                               ),
-                              onPressed: ShowCaseWidget.of(context).dismiss,
+                              onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                               child: const Text(
                                 'Tutup Semua',
                                 style: TextStyle(
@@ -788,7 +813,12 @@ class _HomePageState extends State<HomePage> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xffEE5366),
                                 ),
-                                onPressed: ShowCaseWidget.of(context).dismiss,
+                                onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                                 child: const Text(
                                   'Tutup Semua',
                                   style: TextStyle(
@@ -1002,7 +1032,12 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffEE5366),
                     ),
-                    onPressed: ShowCaseWidget.of(context).dismiss,
+                    onPressed: () {
+                                    // Tambahkan pengecekan null dan post frame callback
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      ShowCaseWidget.of(context)?.dismiss();
+                                    });
+                                  },
                     child: const Text(
                       'Tutup Semua',
                       style: TextStyle(
