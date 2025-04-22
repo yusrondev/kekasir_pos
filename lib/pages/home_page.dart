@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
 
   void _checkShowcaseStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasShownShowcase = prefs.getBool('hasShownHomeShowcases') ?? false;
+    bool hasShownShowcase = prefs.getBool('hasShownHomeShowcase') ?? false;
 
     if (!hasShownShowcase && mounted) {
       final showcase = ShowCaseWidget.of(context);
@@ -299,11 +299,11 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: const Color(0xffEE5366),
                       ),
                       onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                        // Tambahkan pengecekan null dan post frame callback
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ShowCaseWidget.of(context).dismiss();
+                        });
+                      },
                       child: const Text(
                         'Tutup Semua',
                         style: TextStyle(
@@ -406,7 +406,7 @@ class _HomePageState extends State<HomePage> {
                                   onPressed: () {
                                     // Tambahkan pengecekan null dan post frame callback
                                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
+                                      ShowCaseWidget.of(context).dismiss();
                                     });
                                   },
                                   child: const Text(
@@ -495,11 +495,11 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: const Color(0xffEE5366),
                       ),
                       onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                        // Tambahkan pengecekan null dan post frame callback
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ShowCaseWidget.of(context).dismiss();
+                        });
+                      },
                       child: const Text(
                         'Tutup Semua',
                         style: TextStyle(
@@ -626,11 +626,11 @@ class _HomePageState extends State<HomePage> {
                                 backgroundColor: const Color(0xffEE5366),
                               ),
                               onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                                // Tambahkan pengecekan null dan post frame callback
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  ShowCaseWidget.of(context).dismiss();
+                                });
+                              },
                               child: const Text(
                                 'Tutup Semua',
                                 style: TextStyle(
@@ -718,11 +718,11 @@ class _HomePageState extends State<HomePage> {
                                 backgroundColor: const Color(0xffEE5366),
                               ),
                               onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                                // Tambahkan pengecekan null dan post frame callback
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  ShowCaseWidget.of(context).dismiss();
+                                });
+                              },
                               child: const Text(
                                 'Tutup Semua',
                                 style: TextStyle(
@@ -814,11 +814,11 @@ class _HomePageState extends State<HomePage> {
                                   backgroundColor: const Color(0xffEE5366),
                                 ),
                                 onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                                  // Tambahkan pengecekan null dan post frame callback
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    ShowCaseWidget.of(context).dismiss();
+                                  });
+                                },
                                 child: const Text(
                                   'Tutup Semua',
                                   style: TextStyle(
@@ -1033,11 +1033,11 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: const Color(0xffEE5366),
                     ),
                     onPressed: () {
-                                    // Tambahkan pengecekan null dan post frame callback
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      ShowCaseWidget.of(context)?.dismiss();
-                                    });
-                                  },
+                      // Tambahkan pengecekan null dan post frame callback
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ShowCaseWidget.of(context).dismiss();
+                      });
+                    },
                     child: const Text(
                       'Tutup Semua',
                       style: TextStyle(
