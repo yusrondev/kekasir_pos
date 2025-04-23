@@ -47,10 +47,10 @@ class ApiServiceCart {
         final Map<String, dynamic> data = json.decode(response.body);
         return CartSummary.fromJson(data);
       } else {
-        return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
+        return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: [], subTotal: '', totalDiscount: '');
       }
     } catch (e) {
-      return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
+      return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: [], subTotal: '', totalDiscount: '');
     }
   }
 

@@ -46,6 +46,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
 
   String subTotal = '0';
   String grandTotal = '0';
+  String totalDiscount = '0';
   String discount = '0';
   String paid = '0';
   String change = '0';
@@ -87,6 +88,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
           isLoader = false;
           subTotal = transaction['sub_total']?.toString() ?? '0';
           grandTotal = transaction['grand_total']?.toString() ?? '0';
+          totalDiscount = transaction['total_discount']?.toString() ?? '0';
           discount = transaction['discount']?.toString() ?? '0';
           paid = transaction['paid']?.toString() ?? '0';
           change = transaction['change']?.toString() ?? '0';
@@ -118,6 +120,8 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
       await _printerService.printReceipt(
         invoiceNumber: '${transaction['code']}',
         items: items,
+        subTotal: int.tryParse(subTotal.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
+        totalDiscount: int.tryParse(totalDiscount.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
         total: int.tryParse(grandTotal.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
         payment: int.tryParse(paid.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
         change: int.tryParse(change.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
@@ -697,7 +701,7 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Label(text: "Diskon",),
-              LabelSemiBoldMD(text: "Rp 0"),
+              LabelSemiBoldMD(text: transaction['total_discount']),
             ],
           ),
           Row(

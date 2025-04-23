@@ -345,7 +345,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     children: [
                       Expanded(
                         child: AutoSizeText(
-                          formatRupiah(product.price),
+                          formatRupiah(product.realPrice),
                           style: TextStyle(
                             fontSize: 17, // Ukuran maksimal
                             color: product.isDiscount == true ? softBlack : primaryColor,
@@ -361,7 +361,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                       if(product.isDiscount == true)
                         Expanded(
                           child: AutoSizeText(
-                            formatRupiah(product.realPrice),
+                            formatRupiah(product.price),
                             style: TextStyle(
                               fontSize: 17, // Ukuran maksimal
                               color: primaryColor,

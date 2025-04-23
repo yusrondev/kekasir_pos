@@ -1,6 +1,6 @@
 class Product {
   final int id, availableStock, quantity;
-  final String code, name, shortDescription, image;
+  final String code, name, shortDescription, image, percentageDiscount;
   final double price, nominalDiscount, finalPrice, calculatedPrice, realPrice;
   final bool haveType, isDiscount;
 
@@ -19,6 +19,7 @@ class Product {
     this.isDiscount = false,
     required this.calculatedPrice,
     required this.realPrice,
+    this.percentageDiscount = "0",
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -37,6 +38,7 @@ class Product {
       finalPrice: double.parse(json['final_price'] ?? 0),
       calculatedPrice: double.parse(json['calculated_price'] ?? 0),
       realPrice: double.parse(json['real_price'] ?? 0),
+      percentageDiscount: json['percentage_discount'],
     );
   }
 
@@ -56,11 +58,12 @@ class Product {
       finalPrice: finalPrice,
       calculatedPrice: calculatedPrice,
       realPrice: realPrice,
+      percentageDiscount : percentageDiscount
     );
   }
 
   @override
   String toString() {
-    return 'id: $id, code: $code, name: $name, price: $price, image: $image, quantity: $quantity, haveType: $haveType, calculatedPrice : $calculatedPrice, nominalDiscount : $nominalDiscount, realPrice : $realPrice, isDiscount : $isDiscount';
+    return 'id: $id, code: $code, name: $name, price: $price, image: $image, quantity: $quantity, haveType: $haveType, calculatedPrice : $calculatedPrice, nominalDiscount : $nominalDiscount, realPrice : $realPrice, isDiscount : $isDiscount, percentageDiscount : $percentageDiscount';
   }
 }

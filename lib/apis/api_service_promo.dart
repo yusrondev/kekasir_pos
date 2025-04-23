@@ -25,12 +25,13 @@ class ApiServicePromo {
     return prefs.getString('access_token');
   }
 
-  Future<bool> updatePromo(int productId, String percentage, String nominalDiscount) async {
+  Future<bool> updatePromo(int productId, String percentage, String nominalDiscount, bool isPercentage) async {
 
     var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/promo/$productId'));
     request.headers.addAll(await _headers);
     request.fields['percentage'] = percentage.toString();
     request.fields['nominal_discount'] = nominalDiscount.toString();
+    request.fields['isPercentage'] = isPercentage.toString();
 
     var response = await request.send();
     return response.statusCode == 200;
@@ -44,7 +45,7 @@ class ApiServicePromo {
       final Map<String, dynamic> data = json.decode(response.body);
       return CartSummary.fromJson(data);
     } else {
-      return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: []);
+      return CartSummary(totalPrice: "Rp 0", totalQuantity: 0, items: [], subTotal: '', totalDiscount: '');
     }
   }
 }

@@ -37,6 +37,8 @@ class PrinterService {
   Future<void> printReceipt({
     required String invoiceNumber,
     required List<Map<String, dynamic>> items,
+    required num subTotal,
+    required num totalDiscount,
     required num total,
     required num payment,
     required num change,
@@ -86,6 +88,8 @@ class PrinterService {
       }
 
       _printer.printCustom("-------------------------------", 1, 1);
+      _printer.printLeftRight("Sub Total :", _formatCurrency(subTotal), 1);
+      _printer.printLeftRight("Diskon :", _formatCurrency(totalDiscount), 1);
       _printer.printLeftRight("Grand Total :", _formatCurrency(total), 1);
       _printer.printCustom("-------------------------------", 1, 1);
       _printer.printLeftRight("Pembayaran", "", 1);

@@ -6,13 +6,13 @@ import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service.dart';
 import 'package:kekasir/components/custom_field_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
+import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:kekasir/utils/variable.dart';
 
 class IndexDiscountPage extends StatefulWidget {
   const IndexDiscountPage({super.key});
@@ -98,42 +98,33 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
         },
         color: primaryColor,
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: defaultPadding,
+        child: Column(
           children: [
-            PageTitle(text: "Diskon Produk"),
-            Gap(15),
-            SearchTextField(placeholder: "Cari berdasarkan nama produk...", controller: keyword),
-            Gap(5),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(vertical: 3),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            Padding(
+              padding: EdgeInsets.only(top: 45, left: 14, right: 14), 
+              child: Column(
                 children: [
-                  Expanded(child: 
-                    Text(
-                      "Halaman ini masih dalam tahap pengembangan, untuk sementara masih belum berfungsi 😉",
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        color: Colors.white
-                      ),
-                    )
+                  PageTitle(text: "Diskon Produk"),
+                  Gap(10),
+                  Row(
+                    children: [
+                      Expanded(child: SearchTextField(controller: keyword, placeholder: "Cari berdasarkan nama produk...",)),
+                      Gap(5),
+                      QrScannerButton(controller: keyword)
+                    ],
                   )
                 ],
               ),
             ),
-            Gap(5),
-            buildListProducts(),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
+                children: [
+                  Gap(5),
+                  buildListProducts(),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -209,7 +200,7 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
                                   borderRadius: BorderRadius.circular(5)
                                 ),
                                 child: Text(
-                                  formatRupiah(product.price),
+                                  formatRupiah(product.realPrice),
                                   style: TextStyle(
                                     fontSize: 13,
                                     decoration: TextDecoration.lineThrough,
@@ -220,7 +211,7 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
                               ),
                               Gap(5),
                             ],
-                            PriceTag(text: formatRupiah(product.price - product.nominalDiscount)),
+                            PriceTag(text: formatRupiah(product.calculatedPrice)),
                           ],
                         ),
                         if(product.nominalDiscount != 0) ... [

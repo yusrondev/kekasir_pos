@@ -33,6 +33,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
   TextEditingController nominalCustomer = TextEditingController();
 
   String grandTotal = "Rp 0";
+  String subTotal = "Rp 0";
+  String totalDiscount = "Rp 0";
   int totalItem = 0;
   bool isLoader = true;
   bool transactionProccess = false;
@@ -69,6 +71,8 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
       if (mounted) {
         setState(() {
           grandTotal = fetchCartSummary.totalPrice;
+          subTotal = fetchCartSummary.subTotal;
+          totalDiscount = fetchCartSummary.totalDiscount;
           totalItem = fetchCartSummary.totalQuantity;
           cartItems = fetchCartSummary.items;
           isLoader = false;
@@ -327,13 +331,13 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Label(text: "Sub Total"),
-              LabelSemiBoldMD(text: grandTotal),
+              LabelSemiBoldMD(text: subTotal),
             ],
           ),
           Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Label(text: "Diskon"), LabelSemiBoldMD(text: "Rp 0")],
+            children: [Label(text: "Diskon"), LabelSemiBoldMD(text: totalDiscount)],
           ),
           Line(),
           Row(
@@ -613,6 +617,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
           decoration: BoxDecoration(
             color: ligthSky,
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: secondaryColor)
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

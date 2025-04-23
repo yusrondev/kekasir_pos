@@ -1,10 +1,14 @@
 class CartSummary {
   final String totalPrice;
+  final String subTotal;
+  final String totalDiscount;
   final int totalQuantity;
   final List<CartItem> items;
 
   CartSummary({
     required this.totalPrice,
+    required this.subTotal,
+    required this.totalDiscount,
     required this.totalQuantity,
     required this.items,
   });
@@ -12,6 +16,8 @@ class CartSummary {
   factory CartSummary.fromJson(Map<String, dynamic> json) {
     return CartSummary(
       totalPrice: json['total_price'] ?? "Rp 0",
+      subTotal: json['sub_total'] ?? "Rp 0",
+      totalDiscount: json['total_discount'] ?? "Rp 0",
       totalQuantity: json['total_quantity'] ?? 0,
       items: (json['items'] as List<dynamic>?)
               ?.map((item) => CartItem.fromJson(item))

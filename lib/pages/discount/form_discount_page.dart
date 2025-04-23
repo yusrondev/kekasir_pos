@@ -29,10 +29,19 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
   TextEditingController persentaseController = TextEditingController();
   
   String? selectedValueTipeDiscount = "Nominal";
+  bool isPercentage = false;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.product != null) {
+      if (mounted) {
+        nominalController.text = formatRupiah(widget.product!.nominalDiscount);
+        persentaseController.text = widget.product!.percentageDiscount;
+      }
+    }
+
     persentaseController.addListener(() {
       String value = persentaseController.text;
       if (value.isNotEmpty) {
@@ -51,7 +60,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
 
   Future<void> updatePromo(int productId) async {
 
-    String originPrice = formatRupiah(widget.product!.price);
+    String originPrice = formatRupiah(widget.product!.realPrice);
     String originPriceFinal = _cleanCurrency(originPrice);
 
     String originNominal = _cleanCurrency(nominalController.text);
@@ -80,7 +89,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
       },
     );
 
-    final store = await ApiServicePromo().updatePromo(productId, persentaseController.text, originNominal);
+    final store = await ApiServicePromo().updatePromo(productId, persentaseController.text, originNominal, isPercentage);
     
     if (store == true) {
       if (mounted) {
@@ -153,7 +162,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
                   ),
                 ),
                 Text(
-                  formatRupiah(widget.product!.price),
+                  formatRupiah(widget.product!.realPrice),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -207,7 +216,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
                   ),
                 ),
                 Text(
-                  formatRupiah(widget.product!.price - widget.product!.nominalDiscount),
+                  formatRupiah(widget.product!.realPrice - widget.product!.nominalDiscount),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -254,8 +263,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
                     onChanged: (value) {
                       setState(() {
                         selectedValueTipeDiscount = value;
-                        nominalController.text = "";
-                        persentaseController.text = "";
+                        isPercentage = false;
                       });
                     },
                   ),
@@ -273,8 +281,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
                     onChanged: (value) {
                       setState(() {
                         selectedValueTipeDiscount = value;
-                        nominalController.text = "";
-                        persentaseController.text = "";
+                        isPercentage = true;
                       });
                     },
                   ),
