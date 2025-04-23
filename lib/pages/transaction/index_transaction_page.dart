@@ -730,6 +730,22 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                           Flexible(child: StockTag(text: 'Stok : ${product.availableStock.toString()}')),
                         ],
                       ),
+                      if(product.isDiscount && product.haveType == false)
+                      Row(
+                        children: [
+                          Expanded(child: Text(
+                              formatRupiah(product.realPrice), style: TextStyle(
+                                color: softBlack,
+                                fontSize: 13,
+                                decoration: TextDecoration.lineThrough,
+                                decorationColor: dangerColor,
+                                decorationThickness: 2,
+                                fontWeight: FontWeight.w600
+                              )
+                            )
+                          )
+                        ],
+                      ),
                       Gap(5),
                     ],
                   ),

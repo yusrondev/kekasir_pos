@@ -90,6 +90,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
         isLoading = false;
         tapped = List.generate(products.length, (index) => false);
       });
+      logger.d(data);
     } catch (e) {
       if (mounted) {
         if (e.toString().contains('expired')) {
@@ -347,14 +348,30 @@ class _IndexProductPageState extends State<IndexProductPage> {
                           formatRupiah(product.price),
                           style: TextStyle(
                             fontSize: 17, // Ukuran maksimal
-                            color: primaryColor,
+                            color: product.isDiscount == true ? softBlack : primaryColor,
                             fontWeight: FontWeight.w600,
+                            decoration: product.isDiscount == true ? TextDecoration.lineThrough : TextDecoration.none,
+                            decorationColor: dangerColor
                           ),
                           maxLines: 2, // Batasi menjadi 1 baris
                           minFontSize: 8, // Ukuran minimal agar tetap terbaca
                           overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
                         )
                       ),
+                      if(product.isDiscount == true)
+                        Expanded(
+                          child: AutoSizeText(
+                            formatRupiah(product.realPrice),
+                            style: TextStyle(
+                              fontSize: 17, // Ukuran maksimal
+                              color: primaryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2, // Batasi menjadi 1 baris
+                            minFontSize: 8, // Ukuran minimal agar tetap terbaca
+                            overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
+                          )
+                        ),
                       Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
                     ],
                   ),

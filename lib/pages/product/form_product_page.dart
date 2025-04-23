@@ -127,7 +127,7 @@ class _FormProductPageState extends State<FormProductPage> {
       nameController.text = widget.product!.name;
       codeController.text = widget.product!.code;
       codeProduct = widget.product!.code;
-      priceController.text = formatRupiah(widget.product!.price);
+      priceController.text = formatRupiah(widget.product!.realPrice);
       shortDescriptionController.text = widget.product!.shortDescription;
       urlImage = widget.product!.image;
       setState(() {
@@ -427,7 +427,7 @@ class _FormProductPageState extends State<FormProductPage> {
           alertLottie(context, 'Berhasil memperbarui harga!');
           fetchLabelPrice(productId);
           if (productId != 0) {
-            priceController.text = formatRupiah(widget.product!.price);
+            priceController.text = formatRupiah(widget.product!.realPrice);
           }
           setState(() {
             isEditedPrice = false;
@@ -629,7 +629,7 @@ class _FormProductPageState extends State<FormProductPage> {
           alertLottie(context, 'Berhasil memperbarui nama tipe!');
           fetchLabelPrice(productId);
           if (productId != 0) {
-            priceController.text = formatRupiah(widget.product!.price);
+            priceController.text = formatRupiah(widget.product!.realPrice);
           }
           setState(() {
             isEditedPrice = false;
@@ -1356,7 +1356,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   _selectedName = "-";
                                   wordingPrice = "Harga Jual Produk (Normal)*";
                                   if (productId != 0) {
-                                    priceController.text = formatRupiah(widget.product!.price);
+                                    priceController.text = formatRupiah(widget.product!.realPrice);
                                     setState(() {
                                       isEditedPrice = false;
                                     });
@@ -1409,7 +1409,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                   _selectedName = "-";
                                   wordingPrice = "Harga Jual Produk (Normal)*";
                                   if (productId != 0) {
-                                    priceController.text = formatRupiah(widget.product!.price);
+                                    priceController.text = formatRupiah(widget.product!.realPrice);
                                     setState(() {
                                       isEditedPrice = false;
                                     });
@@ -1439,7 +1439,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                 // default
                                 if (_selectedName == labelPrice.name) {
                                   if (productId != 0) {
-                                    priceController.text = formatRupiah(widget.product!.price);
+                                    priceController.text = formatRupiah(widget.product!.realPrice);
                                     setState(() {
                                       isEditedPrice = false;
                                     });
@@ -1782,7 +1782,7 @@ class _FormProductPageState extends State<FormProductPage> {
               setState(() {
                 _selectedName = "-";
                 if (productId != 0) {
-                  priceController.text = formatRupiah(widget.product!.price);
+                  priceController.text = formatRupiah(widget.product!.realPrice);
                 }
               });
             }

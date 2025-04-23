@@ -294,26 +294,6 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffEE5366),
-                      ),
-                      onPressed: () {
-                        // Tambahkan pengecekan null dan post frame callback
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          ShowCaseWidget.of(context).dismiss();
-                        });
-                      },
-                      child: const Text(
-                        'Tutup Semua',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Lexend',
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
@@ -336,10 +316,12 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: primaryColor,
                       ),
                       onPressed: () {
-                        ShowCaseWidget.of(context).next();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ShowCaseWidget.of(context).dismiss();
+                        });
                       },
                       child: const Text(
-                        'Selanjutnya',
+                        'Selesai',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Lexend',
@@ -410,7 +392,7 @@ class _HomePageState extends State<HomePage> {
                                     });
                                   },
                                   child: const Text(
-                                    'Tutup Semua',
+                                    'Lewati',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Lexend',
@@ -501,7 +483,7 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                       child: const Text(
-                        'Tutup Semua',
+                        'Lewati',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Lexend',
@@ -632,7 +614,7 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                               child: const Text(
-                                'Tutup Semua',
+                                'Lewati',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontFamily: 'Lexend',
@@ -724,7 +706,7 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                               child: const Text(
-                                'Tutup Semua',
+                                'Lewati',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontFamily: 'Lexend',
@@ -820,7 +802,7 @@ class _HomePageState extends State<HomePage> {
                                   });
                                 },
                                 child: const Text(
-                                  'Tutup Semua',
+                                  'Lewati',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Lexend',
@@ -1039,7 +1021,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     child: const Text(
-                      'Tutup Semua',
+                      'Lewati',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Lexend',
