@@ -18,6 +18,7 @@ import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class NotaTransactionPage extends StatefulWidget {
   final dynamic id;
@@ -407,7 +408,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
       onWillPop: () async {
         return await Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => AppLayout()),
+          MaterialPageRoute(
+            builder: (context) => ShowCaseWidget(
+              builder: (context) => AppLayout()
+            ),
+          ),
           (route) => false, // Menghapus semua route yang ada
         );
       },
@@ -437,7 +442,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                         onTap: () {
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => AppLayout()),
+                            MaterialPageRoute(
+                              builder: (context) => ShowCaseWidget(
+                                builder: (context) => AppLayout()
+                              ),
+                            ),
                             (route) => false, // Menghapus semua route yang ada
                           );
                         },
@@ -594,7 +603,11 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                   onTap: () { 
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => AppLayout()),
+                      MaterialPageRoute(
+                        builder: (context) => ShowCaseWidget(
+                          builder: (context) => AppLayout()
+                        ),
+                      ),
                       (route) => false, // Menghapus semua route yang ada
                     );
                   },

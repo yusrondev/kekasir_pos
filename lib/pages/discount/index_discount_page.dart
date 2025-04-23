@@ -9,6 +9,7 @@ import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
 import 'package:kekasir/helpers/dialog_expired.dart';
+import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
@@ -73,6 +74,20 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
         } else {
           showErrorBottomSheet(context, e.toString());
         }
+      }
+    }
+  }
+
+  Future<void> resetDiscount(int id) async {
+    try {
+      await ApiService().resetDiscount(id);
+      if (mounted) {
+        alertLottie(context, "Diskon berhasil direset!");
+        fetchProducts(keyword.text);
+      }
+    } catch (e) {
+      if (mounted) {
+        showErrorBottomSheet(context, e.toString());
       }
     }
   }
@@ -223,6 +238,22 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
                   ),
                 ),
                 Gap(20),
+                if(product.isDiscount && product.nominalDiscount != 0)
+                GestureDetector(
+                  onTap: () {
+                    DialogHelper.customDialog(context: context, onConfirm: (){resetDiscount(product.id);}, title : "Reset Diskon", content: "Apakah Anda yakin ingin mereset diskon produk ${product.name}?", actionButton: true);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 7),
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: red,
+                      border: Border.all(color: red, width: 1),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: Icon(Icons.refresh, size: 15,color: Colors.white,)
+                  ),
+                ),
                 Container(
                   margin: EdgeInsets.only(right: 7),
                   padding: EdgeInsets.all(6),

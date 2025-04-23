@@ -579,7 +579,13 @@ class _FormProductPageState extends State<FormProductPage> {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
-        alertLottie(context, 'Berhasil memperbarui produk!');
+        if (widget.product == null) {
+          // ignore: use_build_context_synchronously
+          alertLottie(context, 'Berhasil menambahkan produk!');
+        }else{
+          // ignore: use_build_context_synchronously
+          alertLottie(context, 'Berhasil memperbarui produk!');
+        }
       } else {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);

@@ -83,4 +83,9 @@ class ApiService {
     final response = await http.delete(Uri.parse('$apiUrl/product/$id'), headers: await _headers);
     return response.statusCode == 200;
   }
+
+  Future<bool> resetDiscount(int id) async {
+    final response = await http.get(Uri.parse('$apiUrl/promo/reset-discount/$id'), headers: await _headers);
+    return response.statusCode == 200;
+  }
 }

@@ -167,8 +167,6 @@ class _IndexProductPageState extends State<IndexProductPage> {
           onPressed: (){
             Navigator.pushNamed(context, '/create-product').then((value){
               if (value == true) {
-                // ignore: use_build_context_synchronously
-                alertLottie(context, 'Berhasil menambahkan produk!');
                 fetchProducts(searchField.text);
               }
             });
