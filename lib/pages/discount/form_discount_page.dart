@@ -69,12 +69,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
     int? parseIntNominal = int.tryParse(originNominal);
     
     if (parseIntNominal != null && parseOriginPriceFinal != null && parseIntNominal > parseOriginPriceFinal) {
-      DialogHelper.customDialog(
-        context: context,
-        onConfirm: () {},
-        content: "Nominal tidak boleh melebihi harga produk!",
-        actionButton: false,
-      );
+      alertLottie(context, "Nominal tidak boleh melebihi harga produk!", "error");
       return;
     }
 
