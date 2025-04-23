@@ -38,7 +38,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
     if (widget.product != null) {
       if (mounted) {
         nominalController.text = formatRupiah(widget.product!.nominalDiscount);
-        persentaseController.text = widget.product!.percentageDiscount;
+        persentaseController.text = widget.product!.percentageDiscount == "0" ? "" : widget.product!.percentageDiscount;
       }
     }
 
@@ -301,6 +301,7 @@ class _FormDiscountPageState extends State<FormDiscountPage> {
             label: "Persentase Diskon",
             shortDescription: "Dalam Persen %",
             controller: persentaseController,
+            placeholder: "Misalnya 10...",
             border: true,
           ),
         ],

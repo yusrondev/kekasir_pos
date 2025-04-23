@@ -135,7 +135,7 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
               child: ListView(
                 padding: EdgeInsets.only(bottom: 45, left: 14, right: 14), 
                 children: [
-                  Gap(5),
+                  Gap(10),
                   buildListProducts(),
                 ],
               ),
@@ -176,25 +176,56 @@ class _IndexDiscountPageState extends State<IndexDiscountPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: secondaryColor)
             ),
             child: Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    product.image,
-                    width: 65,
-                    height: 65,
-                    fit: BoxFit.fitWidth,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        'assets/images/empty.png', 
+                Stack(
+                  children : [ 
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        product.image,
                         width: 65,
                         height: 65,
                         fit: BoxFit.fitWidth,
-                      );
-                    },
-                  ),
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/empty.png', 
+                            width: 65,
+                            height: 65,
+                            fit: BoxFit.fitWidth,
+                          );
+                        },
+                      ),
+                    ),
+                    if(product.isDiscount && product.nominalDiscount != 0) ... [
+                      Container(
+                        width: 65,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 65,
+                        height: 65,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${product.percentageDiscount}%',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              fontSize: 15
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                  ]
                 ),
                 Gap(10),
                 Expanded(
