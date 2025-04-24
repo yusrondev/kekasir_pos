@@ -192,7 +192,7 @@ class _IndexStockPageState extends State<IndexStockPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 150,child: LabelSemiBoldMD(text: product.name)),
+                        SizedBox(width: 150,child: ProductNameStock(text: product.name)),
                         Gap(2),
                         SizedBox(width: 150,child: Label(text: formatRupiah(product.price)))
                       ],

@@ -151,6 +151,32 @@ class ProductName extends StatelessWidget {
   }
 }
 
+class ProductNameStock extends StatelessWidget {
+  final String? text;
+  final int maxChar;
+
+  const ProductNameStock({
+    super.key,
+    this.text,
+    this.maxChar = 20, // Default maksimal 50 karakter
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayedText = (text != null && text!.length > maxChar)
+        ? '${text!.substring(0, maxChar)}...'
+        : text ?? "";
+
+    return AutoSizeText(
+      displayedText,
+      maxLines: 2,
+      minFontSize: 8,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    );
+  }
+}
+
 class ShortDesc extends StatelessWidget {
   final String? text;
   final int maxline;
