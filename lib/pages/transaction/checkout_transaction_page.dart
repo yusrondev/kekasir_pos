@@ -283,6 +283,17 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                             Gap(2),
                           ],
                           Label(text: cartItem.unitPrice),
+                          if(cartItem.discount != "Rp 0")
+                          Text(
+                            '- ${cartItem.discount}',
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              overflow: TextOverflow.ellipsis,
+                              color: dangerColor
+                            ),
+                          ),
                         ],
                       ),
                     ),

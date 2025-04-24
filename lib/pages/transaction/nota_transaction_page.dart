@@ -710,6 +710,17 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                             ShortDesc(text: cartItem['product']['short_description'],),
                           ],
                           Label(text: cartItem['price'].toString()),
+                          if(cartItem['product']['discount'] != "Rp 0")
+                          Text(
+                            '- ${cartItem['product']['discount']}',
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              overflow: TextOverflow.ellipsis,
+                              color: dangerColor
+                            ),
+                          ),
                         ],
                       ),
                     ),

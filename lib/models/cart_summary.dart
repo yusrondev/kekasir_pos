@@ -35,6 +35,7 @@ class CartItem {
   final int quantity;
   final String unitPrice;
   final String subtotal;
+  final String? discount;
 
   CartItem({
     required this.productId,
@@ -44,6 +45,7 @@ class CartItem {
     required this.subtotal,
     required this.productShortDescription,
     required this.productImage,
+    required this.discount,
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ class CartItem {
       quantity: json['quantity'] ?? 0,
       unitPrice: json['unit_price'] ?? "Rp 0",
       subtotal: json['subtotal'] ?? "Rp 0",
+      discount: json['discount'] ?? "Rp 0",
     );
   }
 }
