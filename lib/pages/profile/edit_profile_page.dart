@@ -244,7 +244,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             label: "Nama Pengguna *",
             placeholder: "Misalnya Jhon...",
             maxLine: 1,
-            maxLength: 100,
+            maxLength: 50,
             border: true,
           ),
           if(checkOwner == "1")
@@ -253,7 +253,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               label: "Nama Toko *",
               placeholder: "Misalnya Toko Makmur...",
               maxLine: 1,
-              maxLength: 100,
+              maxLength: 50,
               border: true,
             ),
           if(checkOwner == "1")

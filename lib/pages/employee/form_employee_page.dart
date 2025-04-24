@@ -182,7 +182,7 @@ class _FormEmployeePageState extends State<FormEmployeePage> {
           placeholder: "Misalnya Jhon...",
           shortDescription: "Minimal 3 karakter",
           maxLine: 1,
-          maxLength: 100,
+          maxLength: 50,
           border: true,
         ),
         Text("Email *", style: TextStyle(
