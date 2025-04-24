@@ -123,49 +123,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void register() async {
 
-    if (storeNameController.text == "") {
-      alertLottie(context, 'Pastikan nama toko sudah terisi!', 'error');
-      return;
-    }
-
-    if (storeNameController.text.length < 3) {
-      alertLottie(context, "Nama toko minimal 3 karakter", "error");
-      return;
-    }
-
-    if (nameController.text == "") {
-      alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
-      return;
-    }
-
-    if (nameController.text.length < 3) {
-      alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
-      return;
-    }
-
-    if (emailController.text == "") {
-      alertLottie(context, 'Pastikan email sudah terisi!', 'error');
-      return;
-    }
-
-    if (!isValidEmail(emailController.text)) {
-      setState(() {
-        isLoading = false;
-      });
-      alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
-      return;
-    }
-
-    if (passwordController.text == "") {
-      alertLottie(context, 'Pastikan password sudah terisi!', 'error');
-      return;
-    }
-
-    if (passwordController.text.length < 6) {
-      alertLottie(context, "Jumlah password minimal 6 karakter", "error");
-      return;
-    }
-
     setState(() {
       isLoading = true;
     });
@@ -517,6 +474,48 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             GestureDetector(
               onTap: () { 
+                if (storeNameController.text == "") {
+                  alertLottie(context, 'Pastikan nama toko sudah terisi!', 'error');
+                  return;
+                }
+
+                if (storeNameController.text.length < 3) {
+                  alertLottie(context, "Nama toko minimal 3 karakter", "error");
+                  return;
+                }
+
+                if (nameController.text == "") {
+                  alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
+                  return;
+                }
+
+                if (nameController.text.length < 3) {
+                  alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
+                  return;
+                }
+
+                if (emailController.text == "") {
+                  alertLottie(context, 'Pastikan email sudah terisi!', 'error');
+                  return;
+                }
+
+                if (!isValidEmail(emailController.text)) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
+                  return;
+                }
+
+                if (passwordController.text == "") {
+                  alertLottie(context, 'Pastikan password sudah terisi!', 'error');
+                  return;
+                }
+
+                if (passwordController.text.length < 6) {
+                  alertLottie(context, "Jumlah password minimal 6 karakter", "error");
+                  return;
+                }
                 showConfirmDialog(); 
               },
               child: SizedBox(

@@ -717,7 +717,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LabelSemiBoldMD(text: product.name),
+                      ProductName(text: product.name),
                       if(product.shortDescription != "") ... [
                         ShortDesc(text: product.shortDescription, maxline: 1)
                       ]else ... [

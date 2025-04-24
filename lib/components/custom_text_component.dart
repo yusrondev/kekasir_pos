@@ -127,16 +127,26 @@ class PageTitle extends StatelessWidget {
 
 class ProductName extends StatelessWidget {
   final String? text;
-  const ProductName({super.key, this.text});
+  final int maxChar;
+
+  const ProductName({
+    super.key,
+    this.text,
+    this.maxChar = 17, // Default maksimal 50 karakter
+  });
 
   @override
   Widget build(BuildContext context) {
+    final displayedText = (text != null && text!.length > maxChar)
+        ? '${text!.substring(0, maxChar)}...'
+        : text ?? "";
+
     return AutoSizeText(
-      text ?? "",
-      maxLines: 2, // Bisa dua baris
+      displayedText,
+      maxLines: 2,
       minFontSize: 8,
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
     );
   }
 }
