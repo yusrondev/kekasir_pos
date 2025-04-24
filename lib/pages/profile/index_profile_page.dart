@@ -8,11 +8,13 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/helpers/dialog_helper.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
+import 'package:kekasir/pages/employee/index_employee_page.dart';
 import 'package:kekasir/pages/landing_page.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IndexProfilePage extends StatefulWidget {
@@ -215,26 +217,55 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/detail-package'),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/icons/sparkles.png',
-                          width: 20,
-                        ),
-                        Gap(10),
-                        Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
-                      ],
-                    ),
-                    Icon(Icons.keyboard_arrow_right_outlined, size: 15)
-                  ],
+              if(checkOwner == "1") ... [
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/detail-package'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/sparkles.png',
+                            width: 20,
+                          ),
+                          Gap(10),
+                          Text("Informasi Paket", style: TextStyle(fontWeight: FontWeight.w600),),
+                        ],
+                      ),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                    ],
+                  ),
                 ),
-              ),
-              // LineXM(),
+                LineXM(),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ShowCaseWidget(
+                        builder: (context) => IndexEmployeePage(),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/teamwork.png',
+                            width: 20,
+                          ),
+                          Gap(10),
+                          Text("Manajemen Pegawai", style: TextStyle(fontWeight: FontWeight.w600),),
+                        ],
+                      ),
+                      Icon(Icons.keyboard_arrow_right_outlined, size: 15)
+                    ],
+                  ),
+                ),
+                LineXM(),
+              ],
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //   children: [
@@ -278,7 +309,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
               //     )
               //   ],
               // ),
-              LineXM(),
+              // LineXM(),
               GestureDetector(
                 onTap: () => openWhatsApp(),
                 child: Row(

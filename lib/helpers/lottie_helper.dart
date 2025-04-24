@@ -24,3 +24,27 @@ class EmptyProduct {
     );
   }
 }
+
+class Wind {
+  // Fungsi untuk mengembalikan widget Lottie
+  static Widget showWind() {
+    return Lottie.asset(
+      'assets/animations/wind.json',  // Ganti dengan path animasi Lottie kamu
+      width: 100,
+      height: 100,
+      frameRate: const FrameRate(90)
+    );
+  }
+}
+
+class TumbleWeed {
+  // Fungsi untuk mengembalikan widget Lottie
+  static Widget showTumbleWeed() {
+    return Lottie.asset(
+      'assets/animations/tumbleweed.json',  // Ganti dengan path animasi Lottie kamu
+      width: 150,
+      height: 150,
+      frameRate: const FrameRate(90)
+    );
+  }
+}

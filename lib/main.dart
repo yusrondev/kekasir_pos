@@ -5,10 +5,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:kekasir/apis/auth_service.dart';
+import 'package:kekasir/models/employee.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/pages/auth/login_page.dart';
 // import 'package:kekasir/pages/auth/login_page.dart';
 import 'package:kekasir/pages/auth/register_page.dart';
+import 'package:kekasir/pages/employee/form_employee_page.dart';
+import 'package:kekasir/pages/employee/index_employee_page.dart';
 import 'package:kekasir/pages/landing_page.dart';
 import 'package:kekasir/pages/layouts/app_layout.dart';
 import 'package:kekasir/pages/product/form_product_page.dart';
@@ -130,6 +133,12 @@ class MainApp extends StatelessWidget {
         '/login' : (context) => LoginPage(),
         '/register' : (context) => RegisterPage(),
         '/detail-package' : (context) => DetailPackagePage(),
+        '/employee' : (context) => IndexEmployeePage(),
+        '/create-employee' : (context) => FormEmployeePage(),
+        '/edit-employee': (context) {
+          final employee = ModalRoute.of(context)!.settings.arguments as Employee;
+          return FormEmployeePage(employee: employee);
+        },
       },
     );
   }
