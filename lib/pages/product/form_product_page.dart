@@ -1112,7 +1112,7 @@ class _FormProductPageState extends State<FormProductPage> {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         border: Border.all(color: primaryColor),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
                         children: [
@@ -1697,7 +1697,7 @@ class _FormProductPageState extends State<FormProductPage> {
                                     ],
                                   ),
                                 ),
-                                LineXM(),
+                                LinePrimary(),
                                 RichText(
                                   text: TextSpan(
                                     text: 'Keuntungan per item ',

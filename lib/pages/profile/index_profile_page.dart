@@ -234,50 +234,50 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
                   ],
                 ),
               ),
-              LineXM(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/icons/notification.png',
-                        width: 20,
-                      ),
-                      Gap(10),
-                      Text("Notifikasi Sistem", style: TextStyle(fontWeight: FontWeight.w600),),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
-                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
-                    ],
-                  )
-                ],
-              ),
-              LineXM(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/icons/help-assistance.png',
-                        width: 20,
-                      ),
-                      Gap(10),
-                      Text("Bantuan", style: TextStyle(fontWeight: FontWeight.w600),),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
-                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
-                    ],
-                  )
-                ],
-              ),
+              // LineXM(),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         Image.asset(
+              //           'assets/icons/notification.png',
+              //           width: 20,
+              //         ),
+              //         Gap(10),
+              //         Text("Notifikasi Sistem", style: TextStyle(fontWeight: FontWeight.w600),),
+              //       ],
+              //     ),
+              //     Row(
+              //       children: [
+              //         Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+              //         Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+              //       ],
+              //     )
+              //   ],
+              // ),
+              // LineXM(),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         Image.asset(
+              //           'assets/icons/help-assistance.png',
+              //           width: 20,
+              //         ),
+              //         Gap(10),
+              //         Text("Bantuan", style: TextStyle(fontWeight: FontWeight.w600),),
+              //       ],
+              //     ),
+              //     Row(
+              //       children: [
+              //         Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+              //         Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+              //       ],
+              //     )
+              //   ],
+              // ),
               LineXM(),
               GestureDetector(
                 onTap: () => openWhatsApp(),
@@ -361,28 +361,28 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/icons/settings.png',
-                        width: 20,
-                      ),
-                      Gap(10),
-                      Text("Pengaturan", style: TextStyle(fontWeight: FontWeight.w600),),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
-                      Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
-                    ],
-                  )
-                ],
-              ),
-              LineXM(),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         Image.asset(
+              //           'assets/icons/settings.png',
+              //           width: 20,
+              //         ),
+              //         Gap(10),
+              //         Text("Pengaturan", style: TextStyle(fontWeight: FontWeight.w600),),
+              //       ],
+              //     ),
+              //     Row(
+              //       children: [
+              //         Text('Belum tersedia', style: TextStyle(fontSize: 12, color: softBlack)),
+              //         Icon(Icons.keyboard_arrow_right_outlined, size: 15, color: softBlack),
+              //       ],
+              //     )
+              //   ],
+              // ),
+              // LineXM(),
               GestureDetector(
                 onTap: () {
                   DialogHelper.showLogoutConfirmation(context: context, onConfirm: () => logout());

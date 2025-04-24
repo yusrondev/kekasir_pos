@@ -887,7 +887,7 @@ class _HomePageState extends State<HomePage> {
               return StatefulBuilder(
                 builder: (context, setModalState) {
                   return FractionallySizedBox(
-                    heightFactor: 0.58,
+                    // heightFactor: 0.58,
                     child: Container(
                       padding: EdgeInsets.all(14),
                       width: double.infinity,
