@@ -247,7 +247,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildBackground() {
     return Container(
-      height: 140,
+      height: 150,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -256,7 +256,7 @@ class _HomePageState extends State<HomePage> {
             Color(0xff344BBC),
             Color(0xff344BBC),
             Color(0xff273A99),
-            Color(0xff273A99),
+            Color.fromARGB(255, 36, 53, 139),
           ],
         ),
         borderRadius: BorderRadius.only(

@@ -131,14 +131,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       isLoading = false;
     });
-    
-    if (emailController.text == "") {
-      alertLottie(context, 'Pastikan email sudah terisi!', 'error');
+
+    if (nameController.text == "") {
+      alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
       return;
     }
 
-    if (!isValidEmail(emailController.text)) {
-      alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
+    if (nameController.text.length < 3) {
+      alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
       return;
     }
 
@@ -151,14 +151,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       alertLottie(context, "Nama toko minimal 3 karakter", "error");
       return;
     }
-
-    if (nameController.text == "") {
-      alertLottie(context, 'Pastikan nama pengguna sudah terisi!', 'error');
+    
+    if (emailController.text == "") {
+      alertLottie(context, 'Pastikan email sudah terisi!', 'error');
       return;
     }
 
-    if (nameController.text.length < 3) {
-      alertLottie(context, "Nama pengguna minimal 3 karakter", "error");
+    if (!isValidEmail(emailController.text)) {
+      alertLottie(context, "Format email tidak valid! \n Harus menggunakan domain @kekasir.com", "error");
       return;
     }
 
@@ -241,8 +241,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Gap(15),
           CustomTextField(
             controller: nameController,
-            label: "Nama Pengguna",
-            placeholder: "Misalnya kekasir...",
+            label: "Nama Pengguna *",
+            placeholder: "Misalnya Jhon...",
             maxLine: 1,
             maxLength: 100,
             border: true,
@@ -250,7 +250,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           if(checkOwner == "1")
             CustomTextField(
               controller: storeNameController,
-              label: "Nama Toko",
+              label: "Nama Toko *",
               placeholder: "Misalnya Toko Makmur...",
               maxLine: 1,
               maxLength: 100,
