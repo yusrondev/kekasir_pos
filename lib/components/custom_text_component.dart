@@ -143,7 +143,7 @@ class ProductName extends StatelessWidget {
 
     return AutoSizeText(
       displayedText,
-      maxLines: 2,
+      maxLines: 1,
       minFontSize: 8,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),

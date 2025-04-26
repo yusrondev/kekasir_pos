@@ -331,7 +331,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     ),
                   ),
                 ),
-                Gap(7),
+                Gap(15),
                 Expanded(child: ProductName(text: product.name)),
                 if(product.shortDescription != "") ... [
                   ShortDesc(text: product.shortDescription),
