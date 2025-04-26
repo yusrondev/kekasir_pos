@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -411,13 +412,18 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        Text(
-                                          grandTotal,
-                                          style: TextStyle(
+                                        // ignore: deprecated_member_use
+                                        TyperAnimatedTextKit(
+                                          text: [grandTotal],
+                                          textStyle: TextStyle(
                                             fontSize: 30,
                                             fontWeight: FontWeight.w600,
                                             color: primaryColor
                                           ),
+                                          speed: Duration(milliseconds: 90),
+                                          pause: Duration(seconds: 0),
+                                          repeatForever: false,
+                                          isRepeatingAnimation: false,
                                         ),
                                       ],
                                     ),
