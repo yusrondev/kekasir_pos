@@ -81,6 +81,15 @@ class PrinterService {
           _formatCurrency(item['sub_total']),
           1,
         );
+
+        if (item['discount'] != "Rp 0") {
+          _printer.printLeftRight(
+            '- ${_formatCurrency(item['discount'])}',
+            '- ${_formatCurrency(item['sub_total_discount'])}',
+            1,
+          );
+        }
+
         if (i < items.length - 1) {
           _printer.printNewLine();
         }
@@ -88,8 +97,8 @@ class PrinterService {
       }
 
       _printer.printCustom("-------------------------------", 1, 1);
-      _printer.printLeftRight("Sub Total :", _formatCurrency(subTotal), 1);
-      _printer.printLeftRight("Diskon :", _formatCurrency(totalDiscount), 1);
+      _printer.printLeftRight("Sub Total   :", _formatCurrency(subTotal), 1);
+      _printer.printLeftRight("Diskon      :", _formatCurrency(totalDiscount), 1);
       _printer.printLeftRight("Grand Total :", _formatCurrency(total), 1);
       _printer.printCustom("-------------------------------", 1, 1);
       _printer.printLeftRight("Pembayaran", "", 1);

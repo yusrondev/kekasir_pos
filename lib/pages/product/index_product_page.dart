@@ -331,7 +331,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                     ),
                   ),
                 ),
-                Gap(5),
+                Gap(8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

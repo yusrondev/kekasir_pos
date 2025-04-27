@@ -463,7 +463,7 @@ class _FormProductPageState extends State<FormProductPage> {
 
   Future<void> saveProduct() async {
     if (_formKey.currentState!.validate()) {
-      bool success;
+      String? success;
 
       // Tampilkan Lottie loading animation
       showDialog(
@@ -573,7 +573,7 @@ class _FormProductPageState extends State<FormProductPage> {
         );
       }
 
-      if (success == true) {
+      if (success == "true") {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
@@ -590,7 +590,7 @@ class _FormProductPageState extends State<FormProductPage> {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
         // ignore: use_build_context_synchronously
-        alertLottie(context, 'Ada yang salah...', 'error');
+        alertLottie(context, success!, 'error');
         return;
       }
     }

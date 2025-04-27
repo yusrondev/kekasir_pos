@@ -51,7 +51,7 @@ class ApiService {
   }
 
 
-  Future<bool> _sendProductRequest(String url, {String? code, String? name, String? price, String? shortDescription, File? imageFile, String? type, String? quantity, String? costPrice, String? description}) async {
+  Future<String?> _sendProductRequest(String url, {String? code, String? name, String? price, String? shortDescription, File? imageFile, String? type, String? quantity, String? costPrice, String? description}) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll(await _headers);
     request.fields['code'] = code!;
@@ -68,14 +68,22 @@ class ApiService {
     }
 
     var response = await request.send();
-    return response.statusCode == 200;
+    // return response.statusCode == 200;
+
+    if (response.statusCode == 200) {
+      return "true";
+    } else {
+      final responseBody = await response.stream.bytesToString();
+      final data = jsonDecode(responseBody);
+      return data['error']; // Mengembalikan pesan error dari API
+    }
   }
 
-  Future<bool> createProduct(String code, String name, String price, File? imageFile, String shortDescription, String? type, String? quantity, String? costPrice, String? description) async {
+  Future<String?> createProduct(String code, String name, String price, File? imageFile, String shortDescription, String? type, String? quantity, String? costPrice, String? description) async {
     return _sendProductRequest('$apiUrl/product',code : code, name: name, price: price, shortDescription: shortDescription, imageFile: imageFile, type: type, quantity: quantity, costPrice: costPrice, description : description);
   }
 
-  Future<bool> updateProduct(int id, String code, String name, String price, File? imageFile, String shortDescription, String? type, String? quantity, String? costPrice, String? description) async {
+  Future<String?> updateProduct(int id, String code, String name, String price, File? imageFile, String shortDescription, String? type, String? quantity, String? costPrice, String? description) async {
     return _sendProductRequest('$apiUrl/product/$id',code : code, name: name, price: price, shortDescription: shortDescription, imageFile: imageFile, type: type, quantity: quantity, costPrice: costPrice , description : description);
   }
 
