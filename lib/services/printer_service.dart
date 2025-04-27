@@ -82,7 +82,7 @@ class PrinterService {
           1,
         );
 
-        if (item['discount'] != "Rp 0") {
+        if (item['discount'] != 0) {
           _printer.printLeftRight(
             'Disc (${_formatCurrency(item['discount'])})',
             '- ${_formatCurrency(item['sub_total_discount'])}',
