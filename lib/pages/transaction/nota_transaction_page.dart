@@ -289,6 +289,12 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
           'sub_total': int.tryParse(
             (item['sub_total']?.toString() ?? '0').replaceAll(RegExp(r'[^0-9]'), '')
           ) ?? 0,
+          'discount': int.tryParse(
+            (product['discount']?.toString() ?? '0').replaceAll(RegExp(r'[^0-9]'), '')
+          ) ?? 0,
+          'sub_total_discount': int.tryParse(
+            (product['sub_total_discount']?.toString() ?? '0').replaceAll(RegExp(r'[^0-9]'), '')
+          ) ?? 0,
           if (product['description']?.toString().isNotEmpty ?? false)
             'note': product['description'].toString()
         };
