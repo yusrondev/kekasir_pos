@@ -661,6 +661,11 @@ class _FormProductPageState extends State<FormProductPage> {
 
     final code = codeController.text;
 
+    if(code.isEmpty){
+      alertLottie(context, "Pastikan kode sudah terisi!", "error");
+      return;
+    }
+
     if (_isConnected == false) {
       alertLottie(context, "Printer belum terhubung!", "error");
       return;
