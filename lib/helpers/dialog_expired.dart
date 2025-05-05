@@ -12,7 +12,7 @@ AuthService authService = AuthService();
 
 void whatsappApps(BuildContext context) async {
   final Uri url = Uri.parse(
-      'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20ingin%20mengaktifkan%20layanan');
+      'https://wa.me/6288989690882?text=Halo%20*Kekasir*%20saya%20ingin%20mengaktifkan%20layanan');
   if (await canLaunchUrl(url)) {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   } else {

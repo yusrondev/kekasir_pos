@@ -54,7 +54,7 @@ class _IndexProfilePageState extends State<IndexProfilePage> {
 
   void openWhatsApp() async {
     final Uri url = Uri.parse(
-        'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan!');
+        'https://wa.me/6288989690882?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan!');
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {

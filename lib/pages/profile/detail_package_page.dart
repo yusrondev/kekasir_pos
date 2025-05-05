@@ -75,7 +75,7 @@ class _DetailPackagePageState extends State<DetailPackagePage> {
 
   void openWhatsApp() async {
     final Uri url = Uri.parse(
-      'https://wa.me/6281232705237?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan%20mengenai%20paket!',
+      'https://wa.me/6288989690882?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan%20mengenai%20paket!',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
