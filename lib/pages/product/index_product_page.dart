@@ -419,7 +419,7 @@ class _IndexProductPageState extends State<IndexProductPage> {
                                   overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
                                 )
                               ),
-                            Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
+                            Icon(Icons.arrow_forward_rounded, size: 14, color: primaryColor),
                           ],
                         ),
                       ),
