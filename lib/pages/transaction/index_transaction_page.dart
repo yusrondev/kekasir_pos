@@ -686,25 +686,25 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          width: 65,
-                          height: 65,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 65,
-                          height: 65,
-                          child: Center(
-                            child: Image.asset(
-                              'assets/icons/plus-minus.png',
-                              width: 25,
-                              height: 25,
-                            ),
-                          ),
-                        )
+                        // Container(
+                        //   width: 65,
+                        //   height: 65,
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.black.withValues(alpha: 0.4),
+                        //     borderRadius: BorderRadius.circular(10),
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   width: 65,
+                        //   height: 65,
+                        //   child: Center(
+                        //     child: Image.asset(
+                        //       'assets/icons/plus-minus.png',
+                        //       width: 25,
+                        //       height: 25,
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
