@@ -441,8 +441,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      SizedBox(
-                                        width: screenWidth * 0.65,
+                                      Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(
@@ -488,7 +487,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                               final paid = value.replaceAll(RegExp(r'[^0-9]'), '');
                                               final paidSelected = selectedNominal.replaceAll(RegExp(r'[^0-9]'), '');
                                               final paidGrandTotal = grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
-
+                                        
                                               if (paid != paidSelected) {
                                                 setModalState(() {
                                                   selectedIndex = -1;
@@ -514,39 +513,37 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                                                   selectedIndex = 0;
                                                 });
                                               }
-
+                                        
                                               final formatted = _formatCurrency(value);
                                               nominalCustomer.value = TextEditingValue(
                                                 text: formatted,
                                                 selection: TextSelection.collapsed(offset: formatted.length),
                                               );
                                             }
-
+                                        
                                           ),
                                         ),
                                       ),
                                       Gap(10),
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            DialogHelper.showFinishPayment(context: context, onConfirm: () => saveTransaction());
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(13),
-                                            decoration: BoxDecoration(
-                                              color: primaryColor,
-                                              borderRadius: BorderRadius.circular(
-                                                10,
-                                              ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          DialogHelper.showFinishPayment(context: context, onConfirm: () => saveTransaction());
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(13),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.circular(
+                                              10,
                                             ),
-                                            child: Text(
-                                              "Selesai",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15
-                                              ),
+                                          ),
+                                          child: Text(
+                                            "Selesai",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15
                                             ),
                                           ),
                                         ),

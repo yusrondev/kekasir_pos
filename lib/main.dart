@@ -53,6 +53,8 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]).then((_) {
     runApp(MainApp());
   });
@@ -92,6 +94,12 @@ class MainApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(0.98)), // Kunci ukuran font
+          child: child!,
+        );
+      },
       home: FutureBuilder(
         future: checkToken(context),
         builder: (context, AsyncSnapshot<Widget> snapshot) {

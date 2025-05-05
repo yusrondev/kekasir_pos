@@ -1055,7 +1055,7 @@ class _FormProductPageState extends State<FormProductPage> {
                           border: true,
                           controller: codeController,
                           label: "Kode Produk",
-                          shortDescription: !isEdit ? "Jika kosong, sistem akan membuatkan kode acak" : "Kode produk tidak bisa diubah setelah produk tersimpan",
+                          shortDescription: !isEdit ? "Kosongkan untuk membuat kode otomatis" : "Kode produk tidak bisa diubah setelah produk tersimpan",
                           placeholder: "Misalnya 3495083 (tidak wajib)...",
                           maxLength: 15,
                           maxLine: 1,

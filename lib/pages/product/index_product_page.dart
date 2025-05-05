@@ -195,199 +195,241 @@ class _IndexProductPageState extends State<IndexProductPage> {
         Gap(100),
         CustomLoader.showCustomLoader(),
       ],
-    ) : GridView.builder(
-      padding: EdgeInsets.all(0),
-      itemCount: products.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200, // Maksimal lebar tiap item
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 3 / 3.2, // Sesuaikan rasio aspek
-      ), 
-      itemBuilder: (context, index){
-        final product = products[index];
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-               tapped[index] = !tapped[index];
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: secondaryColor),
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Gap(10),
-                Center(
-                  child: SizedBox(
-                    width: 160,
-                    height: 100,
-                    child: Stack(
-                      children: [
-                        Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tapped[index] = !tapped[index];
-                                });
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: CachedNetworkImage(
-                                  imageUrl: product.image,
-                                  width: 160,
-                                  height: 160,
-                                  fit: BoxFit.fitWidth,
-                                  placeholder: (context, url) => Image.asset(
-                                    'assets/images/empty.png',
-                                    width: 160,
-                                    height: 160,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                  errorWidget: (context, url, error) => Image.asset(
-                                    'assets/images/empty.png',
-                                    width: 160,
-                                    height: 160,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            StockBadge(availableStock: product.availableStock),
-                            if( tapped[index] == true) ... [
-                              Container(
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
-                                          if (value == true) {
-                                            setState(() {
-                                              fetchProducts(searchField.text);
-                                            });
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.white),
-                                          color: primaryColor,
-                                          borderRadius: BorderRadius.circular(10)
+    ) : LayoutBuilder(
+      builder: (context, constraints) {
+
+         // Maksimum lebar item (misalnya 200 px)
+        double maxItemWidth = 200;
+
+        // Hitung berapa kolom yang bisa muat berdasarkan lebar layar
+        int columnCount = (constraints.maxWidth / maxItemWidth).floor();
+
+        // Hitung lebar aktual per item
+        double itemWidth = constraints.maxWidth / columnCount;
+
+        // Tentukan tinggi item sesuai rasio yang kamu inginkan (misal 3:3.2)
+        double itemHeight = itemWidth / (3 / 2.9);
+
+        // Hitung aspek rasio aktual
+        double aspectRatio = itemWidth / itemHeight;
+
+        return GridView.builder(
+            padding: EdgeInsets.all(0),
+            itemCount: products.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200, // Maksimal lebar tiap item
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: aspectRatio, // Sesuaikan rasio aspek
+            ), 
+            itemBuilder: (context, index){
+              final product = products[index];
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tapped[index] = !tapped[index];
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: secondaryColor),
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Gap(10),
+                      Center(
+                        child: SizedBox(
+                          width: 160,
+                          height: 100,
+                          child: Stack(
+                            children: [
+                              Stack(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        tapped[index] = !tapped[index];
+                                      });
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: CachedNetworkImage(
+                                        imageUrl: product.image,
+                                        width: 160,
+                                        height: 160,
+                                        fit: BoxFit.fitWidth,
+                                        placeholder: (context, url) => Image.asset(
+                                          'assets/images/empty.png',
+                                          width: 160,
+                                          height: 160,
+                                          fit: BoxFit.fitWidth,
                                         ),
-                                        child: Image.asset(
-                                          'assets/icons/pen.png',
-                                          width: 20,
-                                          height: 20,
+                                        errorWidget: (context, url, error) => Image.asset(
+                                          'assets/images/empty.png',
+                                          width: 160,
+                                          height: 160,
+                                          fit: BoxFit.fitWidth,
                                         ),
                                       ),
                                     ),
-                                    Gap(20),
-                                    GestureDetector(
-                                      onTap: () {
-                                        DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
-                                      },
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.white),
-                                          color: Color(0xffe74c3c),
-                                          borderRadius: BorderRadius.circular(10)
-                                        ),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.close_rounded,
-                                            color: Colors.white,
-                                            size: 20,
+                                  ),
+                                  if(product.shortDescription.isNotEmpty) ... [
+                                    Container(
+                                      width: 160,
+                                      height: 160,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [
+                                            Colors.black.withValues(alpha: 0.5),
+                                            Colors.black.withValues(alpha: 0.3),
+                                            Colors.black.withValues(alpha: 0.2),
+                                            Colors.transparent,
+                                          ]
+                                        )
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Text(
+                                          product.shortDescription,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.white
                                           ),
                                         ),
                                       ),
                                     )
                                   ],
-                                ),
+                                  StockBadge(availableStock: product.availableStock),
+                                  if( tapped[index] == true) ... [
+                                    Container(
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
+                                                if (value == true) {
+                                                  setState(() {
+                                                    fetchProducts(searchField.text);
+                                                  });
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(12),
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.white),
+                                                color: primaryColor,
+                                                borderRadius: BorderRadius.circular(10)
+                                              ),
+                                              child: Image.asset(
+                                                'assets/icons/pen.png',
+                                                width: 20,
+                                                height: 20,
+                                              ),
+                                            ),
+                                          ),
+                                          Gap(20),
+                                          GestureDetector(
+                                            onTap: () {
+                                              DialogHelper.showDeleteConfirmation(context: context, onConfirm: () => deleteProduct(product.id), content: product.name);
+                                            },
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.white),
+                                                color: Color(0xffe74c3c),
+                                                borderRadius: BorderRadius.circular(10)
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.close_rounded,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                                ],
                               ),
-                            ]
+                            ],
+                          ),
+                        ),
+                      ),
+                      Gap(10),
+                      Flexible(child: Text(product.name, style: TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w600))),
+                      // LineSM(),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: AutoSizeText(
+                                formatRupiah(product.realPrice),
+                                style: TextStyle(
+                                  fontSize: 14, // Ukuran maksimal
+                                  color: product.isDiscount == true ? softBlack : primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: product.isDiscount == true ? TextDecoration.lineThrough : TextDecoration.none,
+                                  decorationColor: dangerColor
+                                ),
+                                maxLines: 2, // Batasi menjadi 1 baris
+                                minFontSize: 8, // Ukuran minimal agar tetap terbaca
+                                overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
+                              )
+                            ),
+                            if(product.isDiscount == true)
+                              Expanded(
+                                child: AutoSizeText(
+                                  formatRupiah(product.price),
+                                  style: TextStyle(
+                                    fontSize: 14, // Ukuran maksimal
+                                    color: primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 2, // Batasi menjadi 1 baris
+                                  minFontSize: 8, // Ukuran minimal agar tetap terbaca
+                                  overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
+                                )
+                              ),
+                            Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                Gap(8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ProductName(text: product.name),
-                      if(product.shortDescription != "") ... [
-                        Expanded(child: ShortDesc(text: product.shortDescription)),
-                      ] else ... [
-                        Expanded(child: ShortDesc(text: product.code)),
-                      ],
-                    ],
-                  ),
-                ),
-                LineSM(),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          formatRupiah(product.realPrice),
-                          style: TextStyle(
-                            fontSize: 17, // Ukuran maksimal
-                            color: product.isDiscount == true ? softBlack : primaryColor,
-                            fontWeight: FontWeight.w600,
-                            decoration: product.isDiscount == true ? TextDecoration.lineThrough : TextDecoration.none,
-                            decorationColor: dangerColor
-                          ),
-                          maxLines: 2, // Batasi menjadi 1 baris
-                          minFontSize: 8, // Ukuran minimal agar tetap terbaca
-                          overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
-                        )
                       ),
-                      if(product.isDiscount == true)
-                        Expanded(
-                          child: AutoSizeText(
-                            formatRupiah(product.price),
-                            style: TextStyle(
-                              fontSize: 17, // Ukuran maksimal
-                              color: primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 2, // Batasi menjadi 1 baris
-                            minFontSize: 8, // Ukuran minimal agar tetap terbaca
-                            overflow: TextOverflow.ellipsis, // Tambahkan "..." jika masih kepanjangan
-                          )
-                        ),
-                      Icon(Icons.arrow_forward_rounded, size: 13, color: secondaryColor,),
+                      Gap(7)
                     ],
                   ),
                 ),
-                Gap(7)
-              ],
-            ),
-          ),
-        );
+              );
+            }
+          );
       }
     );
   }
