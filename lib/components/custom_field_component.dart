@@ -33,7 +33,7 @@ class CustomTextField extends StatelessWidget {
         if(label != null) ... [
           Text(label ?? "", style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14
+            fontSize: 12.5
           )),
         ],
         if(shortDescription != null) ... [
@@ -104,7 +104,7 @@ class CustomTextFieldNumber extends StatelessWidget {
         if(label != null) ... [
           Text(label ?? "", style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14
+            fontSize: 12.5
           )),
         ],
         if(shortDescription != null) ... [
@@ -189,7 +189,7 @@ class PriceField extends StatelessWidget {
         if(label != null) ... [
           Text(label ?? "", style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14
+            fontSize: 12.5
           )),
         ],
         if(shortDescription != null) ... [
@@ -278,7 +278,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         if(widget.label != null) ... [
           Text(widget.label ?? "", style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14
+            fontSize: 12.5
           )),
         ],
         if(widget.shortDescription != null) ... [
