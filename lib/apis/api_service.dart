@@ -25,10 +25,10 @@ class ApiService {
     return prefs.getString('access_token');
   }
 
-  Future<List<Product>> fetchProducts(String keyword, [String? sort, String? typePrice]) async {
+  Future<List<Product>> fetchProducts(String keyword, [String? sort, String? typePrice, int? offset, int? limit, String? orderBy]) async {
     try {
       final response = await http.get(
-        Uri.parse('$apiUrl/products?keyword=$keyword&sort_qty=$sort&type_price=$typePrice'),
+        Uri.parse('$apiUrl/products?keyword=$keyword&sort_qty=$sort&type_price=$typePrice&offset=$offset&limit=$limit&orderBy=$orderBy'),
         headers: await _headers,
       );
 

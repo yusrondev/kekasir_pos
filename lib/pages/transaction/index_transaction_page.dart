@@ -51,6 +51,11 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
   String? _selectedName = "";
   String? pendingBarcode;
 
+  int offset = 0;
+  final int limit = 20;
+  bool isLoadMore = false;
+  bool hasMore = true;
+
   @override
   void initState() {
     super.initState();
@@ -91,31 +96,59 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       Logger().d(labelPrices);
     }
   }
-
-  Future<void> fetchProducts(String keyword, String sort, String typePrice) async {
+  
+  Future<void> fetchProducts(String text, String sort, String typePrice, {bool append = false}) async {
+    // if (isLoadMore || !hasMore) return;
     try {
-      final data = await ApiService().fetchProducts(keyword, sort, typePrice);
-      if (mounted) {  
+      if (!append) {
+        offset = 0;
         setState(() {
-          isLoadProduct = false;
-          products = data;
-          quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
+          isLoadProduct = true;
         });
-        fetchCart(_selectedName.toString());
-        if (pendingBarcode != null) {
-          final index = products.indexWhere((p) => p.code == pendingBarcode);
-          if (index != -1) {
-            if (quantities[index] < products[index].availableStock) {
-              _increment(index); // Panggil fungsi agar semua efek ikut berjalan
-            }
-          }
-          pendingBarcode = null;
-        }
+      } else {
+        setState(() {
+          isLoadMore = true;
+        });
       }
+
+      final data = await ApiService().fetchProducts(text, sort, typePrice, offset, limit);
+
+      setState(() {
+        if (append) {
+          products.addAll(data);
+        } else {
+          products = data;
+        }
+        offset += limit;
+        hasMore = data.length == limit;
+        isLoadProduct = false;
+        isLoadMore = false;
+        quantities = List.generate(products.length, (index) => products[index].quantity); // Default jumlah 0
+      });
+
+      fetchCart(_selectedName.toString());
+      if (pendingBarcode != null) {
+        final index = products.indexWhere((p) => p.code == pendingBarcode);
+        if (index != -1) {
+          if (quantities[index] < products[index].availableStock) {
+            _increment(index); // Panggil fungsi agar semua efek ikut berjalan
+          }
+        }
+        pendingBarcode = null;
+      }
+      
+
     } catch (e) {
       if (mounted) {
+        setState(() {
+          isLoadProduct = false;
+          isLoadMore = false;
+        });
+      }
+
+      if (mounted) {
         if (e.toString().contains('expired')) {
-          showNoExpiredDialog(context); // <- context hanya tersedia di layer UI
+          showNoExpiredDialog(context);
         } else {
           showErrorBottomSheet(context, e.toString());
         }
@@ -629,202 +662,238 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
       );
     }
     
-    return ListView.builder(
-      padding: EdgeInsets.all(0),
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 7,horizontal: 7),
-          margin: EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: product.haveType == true ?  Color(0xfff9ca24): secondaryColor, width: 1)
-          ),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
-                    if (value == true) {
-                      setState(() {
-                        fetchProducts(keyword.text, 'true', _selectedName.toString());
-                      });
-                    }
-                  });
-                },
-                child: Align(
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      showInputDialog(index, product.availableStock);
-                    },
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                            imageUrl : product.image,
-                            width: 65,
-                            height: 65,
-                            fit: BoxFit.fitWidth,
-                            placeholder: (context, url) => Image.asset(
-                              'assets/images/empty.png', 
-                              width: 65,
-                              height: 65,
-                              fit: BoxFit.fitWidth,
-                            ),
-                            errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/empty.png',
-                              width: 65,
-                              height: 65,
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                        ),
-                        // Container(
-                        //   width: 65,
-                        //   height: 65,
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.black.withValues(alpha: 0.4),
-                        //     borderRadius: BorderRadius.circular(10),
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   width: 65,
-                        //   height: 65,
-                        //   child: Center(
-                        //     child: Image.asset(
-                        //       'assets/icons/plus-minus.png',
-                        //       width: 25,
-                        //       height: 25,
-                        //     ),
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  ),
-                ),
+    return Column(
+      children: [
+        ListView.builder(
+          padding: EdgeInsets.all(0),
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = products[index];
+        
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 7,horizontal: 7),
+              margin: EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: product.haveType == true ?  Color(0xfff9ca24): secondaryColor, width: 1)
               ),
-              Gap(10),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ProductName(text: product.name),
-                      if(product.shortDescription != "") ... [
-                        ShortDesc(text: product.shortDescription, maxline: 1)
-                      ]else ... [
-                        Gap(2)
-                      ],
-                      Row(
-                        children: [
-                          Flexible(child: PriceTag(text: formatRupiah(product.price), haveType : product.haveType)),
-                          Gap(5),
-                          Flexible(child: StockTag(text: 'Stok : ${product.availableStock.toString()}')),
-                        ],
-                      ),
-                      if(product.isDiscount && product.haveType == false)
-                      Row(
-                        children: [
-                          Expanded(child: Text(
-                              formatRupiah(product.realPrice), style: TextStyle(
-                                color: softBlack,
-                                fontSize: 13,
-                                decoration: TextDecoration.lineThrough,
-                                decorationColor: dangerColor,
-                                decorationThickness: 2,
-                                fontWeight: FontWeight.w600
-                              )
-                            )
-                          )
-                        ],
-                      ),
-                      Gap(5),
-                    ],
-                  ),
-                ),
-              ),
-              Gap(20),
-              // Bagian Quantity (Plus Minus)
-              Column(
+              child: Row(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Color(0xffF2F4F8),
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 15,
-                          child: IconButton(
-                            iconSize: 15,
-                            highlightColor: Colors.white,
-                            icon: Icon(Icons.remove, color: Colors.black),
-                            onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40,
-                          height: 20,
-                          child: TextField(
-                            readOnly: true,
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            controller: TextEditingController(text: quantities[index].toString()),
-                            decoration: InputDecoration(
-                              counterText: "",
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 10),
-                              hintStyle: TextStyle(
-                                color: Color(0xffB1B9C3),
-                                fontSize: 16,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/edit-product', arguments: product).then((value){
+                        if (value == true) {
+                          setState(() {
+                            fetchProducts(keyword.text, 'true', _selectedName.toString());
+                          });
+                        }
+                      });
+                    },
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () {
+                          showInputDialog(index, product.availableStock);
+                        },
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl : product.image,
+                                width: 65,
+                                height: 65,
+                                fit: BoxFit.fitWidth,
+                                placeholder: (context, url) => Image.asset(
+                                  'assets/images/empty.png', 
+                                  width: 65,
+                                  height: 65,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  'assets/images/empty.png',
+                                  width: 65,
+                                  height: 65,
+                                  fit: BoxFit.fitWidth,
+                                ),
                               ),
                             ),
-                            onTap: () {
-                              showInputDialog(index, product.availableStock); // Pindahkan ke sini
-                            },
-                            onChanged: (value) {
-                              setState(() {
-                                int? val = int.tryParse(value);
-                                if (val == null || val < 0) {
-                                  quantities[index] = 0;
-                                } else {
-                                  quantities[index] = val;
-                                }
-                              });
-                            },
-                          ),
+                            // Container(
+                            //   width: 65,
+                            //   height: 65,
+                            //   decoration: BoxDecoration(
+                            //     color: Colors.black.withValues(alpha: 0.4),
+                            //     borderRadius: BorderRadius.circular(10),
+                            //   ),
+                            // ),
+                            // SizedBox(
+                            //   width: 65,
+                            //   height: 65,
+                            //   child: Center(
+                            //     child: Image.asset(
+                            //       'assets/icons/plus-minus.png',
+                            //       width: 25,
+                            //       height: 25,
+                            //     ),
+                            //   ),
+                            // )
+                          ],
                         ),
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 15,
-                          child: IconButton(
-                            iconSize: 15,
-                            icon: Icon(Icons.add, color: Colors.black),
-                            onPressed: () => product.availableStock != 0 && quantities[index] != product.availableStock ? _increment(index) : null,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                  Gap(5),
-                  LabelSemiBold(text: formatRupiah(product.price * quantities[index]), primary: true,),
+                  Gap(10),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ProductName(text: product.name),
+                          if(product.shortDescription != "") ... [
+                            ShortDesc(text: product.shortDescription, maxline: 1)
+                          ]else ... [
+                            Gap(2)
+                          ],
+                          Row(
+                            children: [
+                              Flexible(child: PriceTag(text: formatRupiah(product.price), haveType : product.haveType)),
+                              Gap(5),
+                              Flexible(child: StockTag(text: 'Stok : ${product.availableStock.toString()}')),
+                            ],
+                          ),
+                          if(product.isDiscount && product.haveType == false)
+                          Row(
+                            children: [
+                              Expanded(child: Text(
+                                  formatRupiah(product.realPrice), style: TextStyle(
+                                    color: softBlack,
+                                    fontSize: 13,
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationColor: dangerColor,
+                                    decorationThickness: 2,
+                                    fontWeight: FontWeight.w600
+                                  )
+                                )
+                              )
+                            ],
+                          ),
+                          Gap(5),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Gap(20),
+                  // Bagian Quantity (Plus Minus)
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Color(0xffF2F4F8),
+                          borderRadius: BorderRadius.circular(100)
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 15,
+                              child: IconButton(
+                                iconSize: 15,
+                                highlightColor: Colors.white,
+                                icon: Icon(Icons.remove, color: Colors.black),
+                                onPressed: () => quantities[index] > 0 ? _decrement(index) : null,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 40,
+                              height: 20,
+                              child: TextField(
+                                readOnly: true,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                controller: TextEditingController(text: quantities[index].toString()),
+                                decoration: InputDecoration(
+                                  counterText: "",
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(vertical: 10),
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffB1B9C3),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                onTap: () {
+                                  showInputDialog(index, product.availableStock); // Pindahkan ke sini
+                                },
+                                onChanged: (value) {
+                                  setState(() {
+                                    int? val = int.tryParse(value);
+                                    if (val == null || val < 0) {
+                                      quantities[index] = 0;
+                                    } else {
+                                      quantities[index] = val;
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 15,
+                              child: IconButton(
+                                iconSize: 15,
+                                icon: Icon(Icons.add, color: Colors.black),
+                                onPressed: () => product.availableStock != 0 && quantities[index] != product.availableStock ? _increment(index) : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Gap(5),
+                      LabelSemiBold(text: formatRupiah(product.price * quantities[index]), primary: true,),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+        if (hasMore)
+            isLoadMore
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomLoader.showCustomLoader(),
+                  )
+                : Column(
+                  children: [
+                    Gap(20),
+                    GestureDetector(
+                      onTap: () {
+                        fetchProducts(keyword.text, 'true', _selectedName.toString(), append: true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: primaryColor,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Muat Lebih", style: TextStyle(color: Colors.white)),
+                            Gap(5),
+                            Icon(Icons.arrow_downward_outlined, color: Colors.white, size: 14,)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Gap(20),
+                  ],
+                )
+      ],
     );
   }
 

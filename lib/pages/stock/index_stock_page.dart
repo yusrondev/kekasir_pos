@@ -10,11 +10,11 @@ import 'package:kekasir/components/custom_other_component.dart';
 import 'package:kekasir/components/custom_text_component.dart';
 import 'package:kekasir/components/qr_scanner_button.dart';
 import 'package:kekasir/helpers/currency_helper.dart';
+import 'package:kekasir/helpers/dialog_expired.dart';
 import 'package:kekasir/helpers/lottie_helper.dart';
 import 'package:kekasir/models/product.dart';
 import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
-import 'package:logger/web.dart';
 
 class IndexStockPage extends StatefulWidget {
   const IndexStockPage({super.key});
@@ -28,6 +28,11 @@ class _IndexStockPageState extends State<IndexStockPage> {
   List<Product> products = [];
   TextEditingController keyword = TextEditingController();
   bool isLoading = true;
+
+  int offset = 0;
+  final int limit = 20;
+  bool isLoadMore = false;
+  bool hasMore = true;
 
   Timer? _debounce;
   Timer? _debounceHit;
@@ -57,18 +62,50 @@ class _IndexStockPageState extends State<IndexStockPage> {
     super.dispose();
   }
 
-  Future<void> fetchProducts(String keyword) async {
-    final data = await ApiService().fetchProducts(keyword);
-    Logger().d(data);
+  Future<void> fetchProducts(String text, {bool append = false}) async {
+    // if (isLoadMore || !hasMore) return;
     try {
-      if(mounted){
+      if (!append) {
+        offset = 0;
         setState(() {
-          products = data;
-          isLoading = false;
+          isLoading = true;
+        });
+      } else {
+        setState(() {
+          isLoadMore = true;
         });
       }
+
+      final data = await ApiService().fetchProducts(text, null, null, offset, limit);
+
+      setState(() {
+        if (append) {
+          products.addAll(data);
+        } else {
+          products = data;
+        }
+
+        offset += limit;
+        hasMore = data.length == limit;
+        isLoading = false;
+        isLoadMore = false;
+      });
+
     } catch (e) {
-      showErrorBottomSheet(context, e.toString());
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          isLoadMore = false;
+        });
+      }
+
+      if (mounted) {
+        if (e.toString().contains('expired')) {
+          showNoExpiredDialog(context);
+        } else {
+          showErrorBottomSheet(context, e.toString());
+        }
+      }
     }
   }
 
@@ -143,74 +180,110 @@ class _IndexStockPageState extends State<IndexStockPage> {
           Gap(100),
           CustomLoader.showCustomLoader(),
         ],
-      ) : ListView.builder(
-      padding: EdgeInsets.all(0),
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: products.length,
-      itemBuilder: (context, index){
-        final product = products[index];
-        return GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/stock-detail', arguments: product);
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: secondaryColor)
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl : product.image,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.fitWidth,
-                        placeholder: (context, url) => Image.asset(
-                          'assets/images/empty.png', 
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          'assets/images/empty.png', 
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.fitWidth
-                        )
-                      )
-                    ),
-                    Gap(10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 150,child: ProductNameStock(text: product.name)),
-                        Gap(2),
-                        SizedBox(width: 150,child: Label(text: formatRupiah(product.price)))
-                      ],
-                    ),
-                  ],
+      ) : Column(
+        children: [
+          ListView.builder(
+            padding: EdgeInsets.all(0),
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: products.length,
+            itemBuilder: (context, index){
+              final product = products[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/stock-detail', arguments: product);
+                },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: secondaryColor)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl : product.image,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.fitWidth,
+                              placeholder: (context, url) => Image.asset(
+                                'assets/images/empty.png', 
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.fitWidth,
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/empty.png', 
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.fitWidth
+                              )
+                            )
+                          ),
+                          Gap(10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 150,child: ProductNameStock(text: product.name)),
+                              Gap(2),
+                              SizedBox(width: 150,child: Label(text: formatRupiah(product.price)))
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          StockBadgeWithoutRadius(availableStock: product.availableStock),
+                          Icon(Icons.arrow_forward_ios_sharp, size: 13, color: darkColor,)
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    StockBadgeWithoutRadius(availableStock: product.availableStock),
-                    Icon(Icons.arrow_forward_ios_sharp, size: 13, color: darkColor,)
-                  ],
-                ),
-              ],
-            ),
+              );
+            }
           ),
-        );
-      }
-    );
+           if (hasMore)
+            isLoadMore
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomLoader.showCustomLoader(),
+                  )
+                : Column(
+                  children: [
+                    Gap(20),
+                    GestureDetector(
+                      onTap: () {
+                        fetchProducts(keyword.text, append: true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: primaryColor,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Muat Lebih", style: TextStyle(color: Colors.white)),
+                            Gap(5),
+                            Icon(Icons.arrow_downward_outlined, color: Colors.white, size: 14,)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Gap(20),
+                  ],
+                )
+        ],
+      );
   }
 }
