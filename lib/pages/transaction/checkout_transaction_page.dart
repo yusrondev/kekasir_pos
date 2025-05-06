@@ -292,7 +292,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
-                              color: dangerColor
+                              color: red
                             ),
                           ),
                         ],
@@ -309,12 +309,23 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                     ),
                     Gap(10),
                     Expanded(
-                      // Pastikan subtotal punya lebar tetap
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: LabelSemiBold(text: cartItem.subtotal),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          LabelSemiBold(text: cartItem.subtotal),
+                          if(cartItem.subTotalDiscount != "Rp 0") ... [
+                            Text('- ${cartItem.subTotalDiscount}', 
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                color: red
+                              ),
+                            )
+                          ]
+                        ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               );
@@ -349,7 +360,7 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
           Gap(5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Label(text: "Diskon"), LabelSemiBoldMD(text: totalDiscount)],
+            children: [Label(text: "Diskon"), LabelSemiBoldMDRed(text: '- $totalDiscount')],
           ),
           Line(),
           Row(

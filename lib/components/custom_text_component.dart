@@ -77,6 +77,27 @@ class LabelSemiBoldMD extends StatelessWidget {
   }
 }
 
+class LabelSemiBoldMDRed extends StatelessWidget {
+  final String? text;
+  final bool primary;
+  const LabelSemiBoldMDRed({super.key, this.text, this.primary = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      text ?? "",
+      maxLines: 1,
+      minFontSize: 12, // Ukuran font minimum agar tetap terbaca
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: red,
+      ),
+    );
+  }
+}
+
 class PageTitle extends StatelessWidget {
   final String? text;
   final bool back;

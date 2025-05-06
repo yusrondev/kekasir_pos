@@ -143,13 +143,16 @@ class ButtonDangerOutline extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: dangerColor, width: 1), // Warna & ketebalan garis
-        foregroundColor: dangerColor, // Warna teks & ikon
-        padding: EdgeInsets.symmetric(vertical: 13)
+        side: BorderSide(color: red, width: 1), // Warna & ketebalan garis
+        foregroundColor: red, // Warna teks & ikon
+        padding: EdgeInsets.symmetric(vertical: 13),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Atur border radius di sini
+        ),
       ),
       onPressed: onPressed,
       child: Text(text ?? "", style: TextStyle(
-          color: dangerColor,
+          color: red,
           fontSize: 15,
           fontFamily: 'Lexend',
           fontWeight: FontWeight.w600

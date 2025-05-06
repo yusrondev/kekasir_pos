@@ -624,16 +624,23 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Disc (${cartItem['product']['discount']})',
+                                        '- ${cartItem['product']['discount']}',
                                         maxLines: 1,
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
                                           overflow: TextOverflow.ellipsis,
-                                          color: dangerColor
+                                          color: red
                                         ),
                                       ),
-                                      Text(cartItem['product']['sub_total_discount'])
+                                      Text('- ${cartItem['product']['sub_total_discount']}', 
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          overflow: TextOverflow.ellipsis,
+                                          color: red
+                                        ),
+                                      )
                                     ]
                                   ),
                                 ],
@@ -656,17 +663,25 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                             )
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Diskon :"
-                            ),
-                            Text(
-                              transaction['total_discount']
-                            )
-                          ],
-                        ),
+                        if(transaction['total_discount'] != "Rp 0") ... [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Diskon :"
+                              ),
+                              Text(
+                                '- ${transaction['total_discount']}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: red
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
