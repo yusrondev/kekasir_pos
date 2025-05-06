@@ -248,84 +248,81 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Row(
+                child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl : cartItem.productImage,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.fitWidth,
-                        placeholder: (context, url) => Image.asset(
-                          'assets/images/empty.png', 
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          'assets/images/empty.png', 
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.fitWidth
-                        )
-                      ),
-                    ),
-                    Gap(10),
-                    SizedBox(
-                      width: 130,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Label(text: cartItem.productName),
-                          if (cartItem.productShortDescription != "") ...[
-                            ShortDesc(text: cartItem.productShortDescription, maxline: 1),
-                          ] else ...[
-                            Gap(2),
-                          ],
-                          Label(text: cartItem.unitPrice),
-                          if(cartItem.discount != "Rp 0")
-                          Text(
-                            '- ${cartItem.discount}',
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              overflow: TextOverflow.ellipsis,
-                              color: red
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: CachedNetworkImage(
+                            imageUrl : cartItem.productImage,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.fitWidth,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/empty.png', 
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.fitWidth,
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Gap(10),
-                    SizedBox(
-                      // width: 50,
-                      // Ganti Expanded dengan SizedBox untuk jumlah item
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: LabelSemiBold(text: '${cartItem.quantity}x'),
-                      ),
-                    ),
-                    Gap(10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          LabelSemiBold(text: cartItem.subtotal),
-                          if(cartItem.subTotalDiscount != "Rp 0") ... [
-                            Text('- ${cartItem.subTotalDiscount}', 
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                color: red
-                              ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/empty.png', 
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.fitWidth
                             )
-                          ]
-                        ],
-                      ),
-                    )
+                          ),
+                        ),
+                        Gap(10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Label(text: cartItem.productName),
+                              if (cartItem.productShortDescription != "") ...[
+                                ShortDesc(text: cartItem.productShortDescription, maxline: 1),
+                              ] else ...[
+                                Gap(2),
+                              ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Label(text: cartItem.unitPrice),
+                                  Label(text: '${cartItem.quantity}x'),
+                                  Gap(10),
+                                  LabelSemiBold(text: cartItem.subtotal)
+                                ],
+                              ),
+                              if(cartItem.discount != "Rp 0") ... [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '- ${cartItem.discount}',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: red
+                                      ),
+                                    ),
+                                    Text('- ${cartItem.subTotalDiscount}', 
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: red
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ]
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               );
@@ -358,10 +355,12 @@ class _CheckoutTransactionPageState extends State<CheckoutTransactionPage> {
             ],
           ),
           Gap(5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Label(text: "Diskon"), LabelSemiBoldMDRed(text: '- $totalDiscount')],
-          ),
+          if(totalDiscount != "Rp 0") ... [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Label(text: "Diskon"), LabelSemiBoldMDRed(text: '- $totalDiscount')],
+            ),
+          ],
           Line(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
