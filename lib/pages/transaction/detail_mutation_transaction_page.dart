@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:kekasir/apis/api_service_transaction.dart';
@@ -16,6 +19,8 @@ import 'package:kekasir/utils/colors.dart';
 import 'package:kekasir/utils/ui_helper.dart';
 import 'package:kekasir/utils/variable.dart';
 import 'package:logger/web.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailMutationTransactionPage extends StatefulWidget {
@@ -53,6 +58,8 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
   String transactionDate = '';
   String transactionTime = '';
   String createdBy = '';
+
+  GlobalKey previewContainer = new GlobalKey();
 
   dynamic details;
 
@@ -334,6 +341,32 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
     }
   }
 
+  Future<Uint8List?> captureWidget() async {
+    try {
+      RenderRepaintBoundary boundary =
+          previewContainer.currentContext!.findRenderObject() as RenderRepaintBoundary;
+
+      var image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+      return byteData?.buffer.asUint8List();
+    } catch (e) {
+      Logger().d(e);
+      return null;
+    }
+  }
+
+  void saveAndShareImage() async {
+    final pngBytes = await captureWidget();
+    if (pngBytes == null) return;
+
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = File('${directory.path}/Nota - ${transaction['code']}.png');
+    await imagePath.writeAsBytes(pngBytes);
+
+    // ignore: deprecated_member_use
+    await Share.shareFiles([imagePath.path], text: 'Berikut nota transaksi Anda.');
+  }
+
   Future<void> _showPrinterSelectionDialog(BuildContext context) async {
     await showDialog(
       context: context,
@@ -428,17 +461,230 @@ class _DetailMutationTransactionPageState extends State<DetailMutationTransactio
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               PageTitle(text: "Detail Transaksi", back: true),
-              Label(text: transaction['created_at'],)
+              // Label(text: transaction['created_at'],)
             ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(15),
-              buildListCart(),
-              buildPayment(),
-              buildAuthor(),
-              LineXM(),
+              // buildListCart(),
+              // buildPayment(),
+              // buildAuthor(),
+              // LineXM(),
+              RepaintBoundary(
+                key: previewContainer,
+                child : Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: ligthSky,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: secondaryColor)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          transaction['merchant_name'],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          transaction['merchant_address'],
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Nota :"
+                          ),
+                          Text(
+                            transaction['code']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Tanggal :"
+                          ),
+                          Text(
+                            transaction['created_date']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Jam :"
+                          ),
+                          Text(
+                            transaction['created_time']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Kasir :"
+                          ),
+                          Text(
+                            transaction['created_by']
+                          )
+                        ],
+                      ),
+                      Gap(5),
+                      LineSM(),
+                      Gap(5),
+                      ListView.builder(
+                        padding: EdgeInsets.all(0),
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: transaction['details'].length,
+                        itemBuilder: (context, index) {
+                          final cartItem = transaction['details'][index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(cartItem['product']['name']),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('${cartItem['product']['price']} (${cartItem['quantity']}x)'),
+                                  Text(cartItem['sub_total']),
+                                ],
+                              ),
+                              if(cartItem['product']['discount'] != "Rp 0") ... [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Disc (${cartItem['product']['discount']})',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: dangerColor
+                                      ),
+                                    ),
+                                    Text(cartItem['product']['sub_total_discount'])
+                                  ]
+                                ),
+                              ],
+                              Gap(10)
+                            ],
+                          );
+                        },
+                      ),
+
+                      LineSM(),
+                      Gap(5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Sub Total :"
+                          ),
+                          Text(
+                            transaction['sub_total']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Diskon :"
+                          ),
+                          Text(
+                            transaction['total_discount']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Grand Total :"
+                          ),
+                          Text(
+                            transaction['grand_total']
+                          )
+                        ],
+                      ),
+                      Gap(5),
+                      LineSM(),
+                      Gap(5),
+                      Text('Pembayaran'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Tunai :"
+                          ),
+                          Text(
+                            transaction['paid']
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Kembalian :"
+                          ),
+                          Text(
+                            transaction['change']
+                          )
+                        ],
+                      ),
+
+                      Gap(20),
+                      Center(
+                        child: Text(
+                          "Terima kasih telah berbelanja",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Sistem ini didukung oleh",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Gap(10),
+                      Center(
+                        child: Image.asset(
+                          "assets/images/kekasir-black.png",
+                          width: 70,
+                        )
+                      ),
+                      Gap(10)
+                    ],
+                  ),
+                ),
+              ),
+              Gap(10),
+              GestureDetector(
+                onTap: saveAndShareImage,
+                child: Row(children: [
+                  Expanded(child: ButtonPrimary(text: "Bagikan Nota"))
+                ]),
+              ),
+              Gap(10),
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
