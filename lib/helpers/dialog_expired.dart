@@ -8,11 +8,28 @@ import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool _isDialogOpen = false;
+Map<String, dynamic>? dataMe;
 AuthService authService = AuthService();
 
 void whatsappApps(BuildContext context) async {
-  final Uri url = Uri.parse(
-      'https://wa.me/6288989690882?text=Halo%20*Kekasir*%20saya%20ingin%20mengaktifkan%20layanan');
+
+  final dataMe = await authService.fetchUser();
+
+  if (dataMe == null) {
+    Navigator.pop(context);
+    throw Exception("Gagal mengambil data pengguna.");
+  }
+
+ final Uri url = Uri.parse(
+    "https://wa.me/6288989690882?text="
+    "Halo%20*Kekasir*%0A"
+    "Saya%20ingin%20mengaktifkan%20layanan%0A%0A"
+    "store_id%20:%20${dataMe['store_id']}%0A"
+    "user_id%20:%20${dataMe['id']}%0A"
+    "name%20:%20${dataMe['name']}%0A"
+    "email%20:%20${dataMe['email']}"
+  );
+
   if (await canLaunchUrl(url)) {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   } else {
@@ -102,7 +119,7 @@ void showNoExpiredDialog(BuildContext context) {
                 const Gap(5),
                 const Center(
                   child: Text(
-                    "Notifikasi ini akan tetap ditampilkan hingga akun Anda diaktifkan kembali.",
+                    "Notifikasi ini akan tetap ditampilkan sampai akun Anda diaktifkan kembali.",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 10),
                   ),

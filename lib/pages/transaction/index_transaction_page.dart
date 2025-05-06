@@ -784,7 +784,7 @@ class _IndexTransactionPageState extends State<IndexTransactionPage> {
                             decoration: InputDecoration(
                               counterText: "",
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 11),
+                              contentPadding: EdgeInsets.symmetric(vertical: 10),
                               hintStyle: TextStyle(
                                 color: Color(0xffB1B9C3),
                                 fontSize: 16,
