@@ -69,31 +69,39 @@ class ButtonPrimaryOutline extends StatelessWidget {
 
 class ButtonSecondary extends StatelessWidget {
 
+  final VoidCallback? onPressed;
+
   final String? text;
 
   const ButtonSecondary({
     super.key,
-    this.text
+    this.text, 
+    this.onPressed
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: Color(0xffced6e0),
-        borderRadius: BorderRadius.circular(10)
+    return OutlinedButton(
+      onPressed: onPressed, // Gunakan fungsi yang diberikan dari luar
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Color(0xffced6e0), // Warna background
+        side: BorderSide(color: Color(0xffced6e0), width: 1), // Warna & ketebalan garis
+        foregroundColor: Color(0xff2f3542), // Warna teks & ikon
+        padding: EdgeInsets.symmetric(vertical: 13),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Atur border radius di sini
+        ),
       ),
-      child: Center(
-        child: Text(text ?? "", style: TextStyle(
-          color: Color(0xff2f3542),
-          fontSize: 17,
-          fontFamily: 'Lexend'
-        ),),
-      ),
+      child: Text(text ?? "", style: TextStyle(
+        color: Color(0xff2f3542),
+        fontSize: 15,
+        fontFamily: 'Lexend',
+        fontWeight: FontWeight.w600
+      )),
     );
   }
 }
+
 
 class ButtonSecondaryOutline extends StatelessWidget {
 

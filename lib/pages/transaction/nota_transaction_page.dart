@@ -730,14 +730,9 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                     ),
                   ),
                 ),
-                Gap(10),
-                GestureDetector(
-                  onTap: saveAndShareImage,
-                  child: Row(children: [
-                    Expanded(child: ButtonPrimary(text: "Bagikan Nota"))
-                  ]),
-                ),
-                Gap(10),
+                Gap(5),
+                LineSM(),
+                Gap(5),
                 Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -841,7 +836,46 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                       ),
                     ],
                   ),
-                )
+                ),
+                Gap(10),
+                GestureDetector(
+                  onTap: saveAndShareImage,
+                  child: Row(children: [
+                    Expanded(child: ButtonPrimary(text: "Bagikan Nota")),
+                    Gap(5),
+                    if(_isConnected) ... [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _isPrinting ? null : _printTest,
+                          child: AbsorbPointer(
+                            absorbing: _isPrinting,
+                            child: Opacity(
+                              opacity: _isPrinting ? 0.5 : 1.0,
+                              child: ButtonPrimary(
+                                text: "Cetak",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]else ... [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _isPrinting ? null : _printTest,
+                          child: AbsorbPointer(
+                            absorbing: _isPrinting,
+                            child: Opacity(
+                              opacity: _isPrinting ? 0.5 : 1.0,
+                              child: ButtonSecondary(
+                                text: "Cetak",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                  ]),
+                ),
               ],
             )
           ],
@@ -867,22 +901,7 @@ class _NotaTransactionPageState extends State<NotaTransactionPage> {
                     text: "Selesai",
                   )
                 ),
-              ),
-              Gap(10),
-              Expanded(
-                child: GestureDetector(
-                  onTap: _isPrinting ? null : _printTest,
-                  child: AbsorbPointer(
-                    absorbing: _isPrinting,
-                    child: Opacity(
-                      opacity: _isPrinting ? 0.5 : 1.0,
-                      child: ButtonPrimary(
-                        text: "Cetak",
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              )
             ],
           ),
         ) : null,
