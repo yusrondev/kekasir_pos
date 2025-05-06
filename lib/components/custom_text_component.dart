@@ -158,12 +158,9 @@ class ProductName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayedText = (text != null && text!.length > maxChar)
-        ? '${text!.substring(0, maxChar)}...'
-        : text ?? "";
 
     return AutoSizeText(
-      displayedText,
+      text ?? "",
       maxLines: 1,
       minFontSize: 8,
       overflow: TextOverflow.ellipsis,
