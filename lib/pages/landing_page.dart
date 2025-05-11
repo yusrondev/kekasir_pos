@@ -193,7 +193,7 @@ class _LandingPageState extends State<LandingPage> {
                             text: TextSpan(
                               text: 'Sudah punya akun? ',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 13,
                                 color: darkColor,
                                 fontFamily: 'Lexend'
                               ),
@@ -203,7 +203,7 @@ class _LandingPageState extends State<LandingPage> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: kekasirColor,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ],

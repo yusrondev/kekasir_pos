@@ -187,6 +187,80 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void showPrivacyPolicy() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black54, // Agar tetap fokus ke dialog
+      useSafeArea: false, // Menghindari batas layar
+      builder: (context) {
+        return AlertDialog(
+          clipBehavior: Clip.hardEdge,
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Text('Kebijakan Privasi', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600), textAlign: TextAlign.start,)),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.close, size: 20,))
+                ],
+              ),
+              Gap(5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('Kami menghargai privasi Anda. Aplikasi ini dikembangkan untuk membantu pengguna mencatat dan mengelola transaksi penjualan.', textAlign: TextAlign.start, style: TextStyle(fontSize: 13),)),
+                ],
+              ),
+
+              Gap(20),
+              Text('Data yang Dikumpulkan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Aplikasi ini dapat menyimpan informasi berikut:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('• Email', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Nama pengguna', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Nomor Telepon', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Akses Izin', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Aplikasi ini dapat meminta izin:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('• Bluetooth', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Lokasi', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Kamera', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Akses Bluetooth dan Lokasi digunakan hanya untuk Koneksi dengan Printer.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(2),
+              Text('Akses Kamera digunakan hanya untuk memindai barcode dan foto produk.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Perubahan Kebijakan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Kami dapat memperbarui kebijakan ini sewaktu-waktu. Pengguna disarankan untuk memeriksa halaman ini secara berkala.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Kontak', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Jika ada pertanyaan tentang kebijakan ini, silakan hubungi kami melalui email:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('kekasir.dev@gmail.com', textAlign: TextAlign.start, style: TextStyle(fontSize: 13),)),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void openWhatsApp() async {
     final Uri url = Uri.parse(
         'https://wa.me/6288989690882?text=Halo%20*Kekasir*%20saya%20butuh%20bantuan!');
@@ -238,11 +312,6 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xff57606f)
                 )
               ),
-              Text("Masuk ke akun Anda di bawah ini", style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xff57606f)
-                )
-              )
             ],
           ),
           Gap(10),
@@ -251,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Email *", style: TextStyle(
+                Text("Email", style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14
                 )),
@@ -283,7 +352,7 @@ class _LoginPageState extends State<LoginPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Password *", style: TextStyle(
+                    Text("Password", style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14
                     )),
@@ -320,7 +389,39 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Gap(10),
                   ],
-                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icons/done.png', width: 20),
+                    Gap(5),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: showPrivacyPolicy,
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Saya telah menyetujui',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              fontFamily: 'Lexend',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: " Kebijakan Privasi",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

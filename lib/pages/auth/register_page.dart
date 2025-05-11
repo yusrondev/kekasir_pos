@@ -230,7 +230,114 @@ class _RegisterPageState extends State<RegisterPage> {
                     )
                   ),
                 ],
-              )
+              ),
+              Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/icons/done.png', width: 20),
+                  Gap(5),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: showPrivacyPolicy,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Saya telah menyetujui',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Lexend',
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: " Kebijakan Privasi",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showPrivacyPolicy() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black54, // Agar tetap fokus ke dialog
+      useSafeArea: false, // Menghindari batas layar
+      builder: (context) {
+        return AlertDialog(
+          clipBehavior: Clip.hardEdge,
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('Kebijakan Privasi', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600), textAlign: TextAlign.start,)),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.close, size: 20,))
+                ],
+              ),
+              Gap(5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('Kami menghargai privasi Anda. Aplikasi ini dikembangkan untuk membantu pengguna mencatat dan mengelola transaksi penjualan.', textAlign: TextAlign.start, style: TextStyle(fontSize: 13),)),
+                ],
+              ),
+
+              Gap(20),
+              Text('Data yang Dikumpulkan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Aplikasi ini dapat menyimpan informasi berikut:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('• Email', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Nama pengguna', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Nomor Telepon', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Akses Izin', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Aplikasi ini dapat meminta izin:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('• Bluetooth', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Lokasi', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Text('• Kamera', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Akses Bluetooth dan Lokasi digunakan hanya untuk Koneksi dengan Printer.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Gap(2),
+              Text('Akses Kamera digunakan hanya untuk memindai barcode dan foto produk.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Perubahan Kebijakan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Kami dapat memperbarui kebijakan ini sewaktu-waktu. Pengguna disarankan untuk memeriksa halaman ini secara berkala.', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+
+              Gap(20),
+              Text('Kontak', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600), textAlign: TextAlign.start,),
+              Gap(5),
+              Text('Jika ada pertanyaan tentang kebijakan ini, silakan hubungi kami melalui email:', style: TextStyle(fontSize: 13), textAlign: TextAlign.start,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(child: Text('kekasir.dev@gmail.com', textAlign: TextAlign.start, style: TextStyle(fontSize: 13),)),
+                ],
+              ),
             ],
           ),
         );
@@ -268,20 +375,23 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 25,
                 ),
                 Gap(10),
-                Column(
-                  children: [
-                    Text("Buat Akun Baru", style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Column(
+                    children: [
+                      Text("Buat Akun Baru", style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17
+                        )
+                      ),
+                      Gap(2),
+                      Text("Hanya butuh beberapa detik untuk jadi bagian dari Kekasir", style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff57606f)
+                        )
                       )
-                    ),
-                    Gap(2),
-                    Text("Hanya butuh beberapa detik untuk jadi bagian dari Kekasir 👏", style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff57606f)
-                      )
-                    )
-                  ],
+                    ],
+                  ),
                 ),
                 Gap(10),
                 Padding(
@@ -459,7 +569,39 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           Gap(10),
                         ],
-                      )
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/icons/done.png', width: 20),
+                          Gap(5),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: showPrivacyPolicy,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Saya telah menyetujui',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    fontFamily: 'Lexend',
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: " Kebijakan Privasi",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
