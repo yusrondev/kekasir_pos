@@ -106,6 +106,8 @@ class _IndexProductPageState extends State<IndexProductPage> {
 
       final data = await ApiService().fetchProducts(text, null, null, offset, limit, _selectedName);
 
+      Logger().d(data);
+
       setState(() {
         if (append) {
           products.addAll(data);
